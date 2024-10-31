@@ -77,7 +77,7 @@ const SignIn = () => {
             </svg>
           </button>
           <a href="https://flowbite.com/" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-            <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
+            <img src="/images/autek/autek_white.png" className="h-8" alt="Flowbite Logo" />
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">AUTEK</span>
           </a>
         </div>
@@ -183,7 +183,7 @@ const SignIn = () => {
         </form>
         <p className="mt-4 text-center text-sm text-gray-600">
           ¿No tienes cuenta?{' '}
-          <a href="/register" className="text-blue-600 hover:underline">
+          <a href="/auth/signup" className="text-blue-600 hover:underline">
             Regístrate
           </a>
         </p>

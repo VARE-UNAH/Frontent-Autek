@@ -22,6 +22,9 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <script src="https://kit.fontawesome.com/cda6c667bd.js" crossOrigin="anonymous"></script>
+      </head>
       <body suppressHydrationWarning={true}>
         <div className="dark:bg-boxdark-2 dark:text-bodydark">
           {loading ? <Loader /> : children}
