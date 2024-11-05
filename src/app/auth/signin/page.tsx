@@ -11,6 +11,7 @@ import Alert from "@/components/Alert/alertred";
 import firebase from "firebase/compat/app";
 import { FirebaseError } from "firebase/app";
 import { fetchUserProfile } from "@/services/user/userService";
+import Footer from "@/components/Footer";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -101,7 +102,7 @@ const SignIn = () => {
           <p className="text-base">Programa citas, paga mantenimientos y más</p>
         </div>
       </div>
-      <div className="max-w-md w-full bg-white rounded-lg shadow-lg  p-8 relative">
+      <div className="max-w-md w-full bg-white  p-8 relative">
         <h1 className="text-title-lg font-bold text-black pb-2">Inicio de Sesión</h1>
         <p className="text-base text-black pb-5">
           Inicia sesión con tu cuenta de <span className="font-bold">AUTEK</span>
@@ -192,6 +193,7 @@ const SignIn = () => {
           </a>
         </p>
       </div>
+      <Footer></Footer>
     </LoginLayout>
   );
 };
