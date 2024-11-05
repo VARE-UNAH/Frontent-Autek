@@ -11,7 +11,7 @@ import { fetchUserProfile } from "@/services/user/userService";
 import Beneficios from '@/components/Grid';
 import Social from '@/components/Social';
 
-const home = () => {
+const Home = () => {
     const items = [
         { icon: 'fa-calendar-days', title: 'Citas', description: 'Programación de citas según tu conveniencia y disponibilidad' },
         { icon: 'fa-dollar-sign', title: 'Presupuestos', description: 'Aprobación de presupuestos en línea para el mantenimiento de tu auto' },
@@ -75,7 +75,8 @@ const home = () => {
             <nav className="bg-black border-gray-200 items-center justify-center dark:bg-gray-900 h-15">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
                     <a href="https://flowbite.com/" className="flex items-center transform rtl:space-x-reverse">
-                        <img src="/images/autek/autek_white.png" className="h-8" alt="Flowbite Logo" />
+                        <Image src="/images/autek/autek_white.png" className="h-8" alt="Autek Logo" width={40} // Set your desired width here
+                            height={32} />
                         <span className="self-center ps-2 text-2xl font-normal whitespace-nowrap text-white dark:text-white">AUTEK</span>
                     </a>
                 </div>
@@ -88,6 +89,7 @@ const home = () => {
                     layout="fill"
                     objectFit="cover"
                     className="-z-10"
+                    
                 />
                 {/* Superposición con texto */}
                 <div className="absolute inset-0 flex flex-col justify-end bg-black bg-opacity-50 px-6 pb-6 text-white">
@@ -133,4 +135,4 @@ const home = () => {
     );
 };
 
-export default home;
+export default Home;

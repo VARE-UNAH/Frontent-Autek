@@ -135,7 +135,8 @@ const SignUp = () => {
             </svg>
           </button>
           <a href="https://flowbite.com/" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-            <img src="/images/autek/autek.png" className="h-8" alt="Flowbite Logo" />
+            <Image src="/images/autek/autek.png" className="h-8" alt="Flowbite Logo" width={40} // Set your desired width here
+              height={32}/>
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-primary dark:text-white">AUTEK</span>
           </a>
         </div>
