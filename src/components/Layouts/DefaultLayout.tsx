@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Toaster, toast } from 'sonner'
 import Footermenu from "../FooterMenu";
-import { Footer } from "antd/es/layout/layout";
+import  Footer  from "../Footer";
 export default function DefaultLayout({
   children,
 }: {
@@ -15,7 +15,7 @@ export default function DefaultLayout({
   return (
     <>
       {/* <!-- ===== Page Wrapper Start ===== --> */}
-      <div className="flex">
+      <div className="flex min-h-screen flex-col">
         {/* <!-- ===== Sidebar Start ===== --> */}
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         {/* <!-- ===== Sidebar End ===== --> */}
@@ -27,18 +27,22 @@ export default function DefaultLayout({
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}
-          <main>
+          <main className="flex-grow">
             <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
               {children}
               <Toaster position="top-right"/>
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
-          <Footermenu></Footermenu>
+          <Footer></Footer>
+          
+          
+          
         </div>
         
         {/* <!-- ===== Content Area End ===== --> */}
       </div>
+      <Footermenu></Footermenu>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </>
   );
