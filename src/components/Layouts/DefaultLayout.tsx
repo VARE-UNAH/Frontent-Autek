@@ -3,6 +3,8 @@ import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Toaster, toast } from 'sonner'
+import Footermenu from "../FooterMenu";
+import { Footer } from "antd/es/layout/layout";
 export default function DefaultLayout({
   children,
 }: {
@@ -32,7 +34,9 @@ export default function DefaultLayout({
             </div>
           </main>
           {/* <!-- ===== Main Content End ===== --> */}
+          <Footermenu></Footermenu>
         </div>
+        
         {/* <!-- ===== Content Area End ===== --> */}
       </div>
       {/* <!-- ===== Page Wrapper End ===== --> */}

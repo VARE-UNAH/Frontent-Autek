@@ -13,7 +13,7 @@ interface BeneficiosProps {
 
 const Beneficios: React.FC<BeneficiosProps> = ({ title, items }) => {
     return (
-        <div className="max-w-md w-full bg-whiten rounded-b-lg shadow-lg p-8 relative">
+        <div className="max-w-md w-full bg-whiten rounded-b-lg p-8 relative">
             <h1 className="text-title-lg text-center font-bold text-slate-500 pb-2">{title}</h1>
             <div className="grid grid-cols-2 gap-4 place-items-center justify-center pt-8">
                 {items.map((item, index) => (
@@ -24,7 +24,9 @@ const Beneficios: React.FC<BeneficiosProps> = ({ title, items }) => {
                     </div>
                 ))}
             </div>
+            
         </div>
+        
     );
 };
 

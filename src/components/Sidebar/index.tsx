@@ -17,6 +17,16 @@ const menuGroups = [
   {
     name: "MENU",
     menuItems: [
+      //CLIENTES
+      {
+        icon: (
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-person-fill" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+          </svg>
+        ),
+        label: "Ver Perfil",
+        route: "/clients/show-clients",
+      },
       //MENU DASHBOARD
       {
         icon: (
@@ -69,16 +79,7 @@ const menuGroups = [
         label: "Calendario",
         route: "/calendar",
       },
-      //CLIENTES
-      {
-        icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-person-fill" viewBox="0 0 16 16">
-            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-          </svg>
-        ),
-        label: "Clientes",
-        route: "/clients/show-clients",
-      },
+      
       //PLANES DE ENTRENAMIENTO
       {
         icon: (
@@ -108,19 +109,10 @@ const menuGroups = [
             </defs>
           </svg>
         ),
-        label: "Planes",
+        label: "Citas",
         route: "/plans/show-plans",
       },
       //EJERCICIOS
-      {
-        icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-universal-access" viewBox="0 0 16 16">
-            <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6 5.5l-4.535-.442A.531.531 0 0 1 1.531 4H14.47a.531.531 0 0 1 .066 1.058L10 5.5V9l.452 6.42a.535.535 0 0 1-1.053.174L8.243 9.97c-.064-.252-.422-.252-.486 0l-1.156 5.624a.535.535 0 0 1-1.053-.174L6 9z" />
-          </svg>
-        ),
-        label: "Planes de Entrenamiento",
-        route: "#",
-      },
       {
         icon: (
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-egg-fried" viewBox="0 0 16 16">
@@ -211,6 +203,7 @@ const menuGroups = [
           { label: "Sign Up", route: "/auth/signup" },
         ],
       },
+      
     ],
   },
 ];
@@ -222,13 +215,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
-        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark  lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark  lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         {/* <!-- SIDEBAR HEADER --> */}
-        <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+        <div className="flex bg-white items-center shadow-lg justify-between gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
-            <strong style={{ fontSize: '40px' }}>fitmentor</strong>
+          
+            <strong className="text-primary font-medium"style={{ fontSize: '30px' }}>AUTEK</strong>
           </Link>
 
           <button
@@ -258,7 +252,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <nav className="mt-5 px-4 py-4 lg:mt-9 lg:px-6">
             {menuGroups.map((group, groupIndex) => (
               <div key={groupIndex}>
-                <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
+                <h3 className="mb-4 ml-4 text-sm font-semibold text-black">
                   {group.name}
                 </h3>
 

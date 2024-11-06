@@ -11,6 +11,7 @@ import { fetchUserProfile } from "@/services/user/userService";
 import Beneficios from '@/components/Grid';
 import Social from '@/components/Social';
 import Footer from "@/components/Footer";
+import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 const Home = () => {
     const items = [
@@ -72,7 +73,7 @@ const Home = () => {
     };
 
     return (
-        <LoginLayout>
+        <DefaultLayout>
             <nav className="bg-black border-gray-200 items-center justify-center dark:bg-gray-900 h-15">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
                     <a href="/home" className="flex items-center transform rtl:space-x-reverse">
@@ -133,7 +134,7 @@ const Home = () => {
             </div>
             <Beneficios title="BENEFICIOS" items={items} />
             <Footer></Footer>
-        </LoginLayout>
+        </DefaultLayout>
     );
 };
 
