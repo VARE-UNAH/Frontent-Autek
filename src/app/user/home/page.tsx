@@ -10,7 +10,6 @@ import { FirebaseError } from "firebase/app";
 import { fetchUserProfile } from "@/services/user/userService";
 import Beneficios from '@/components/Grid';
 import Social from '@/components/Social';
-import Footer from "@/components/Footer";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 const Home = () => {
@@ -133,7 +132,6 @@ const Home = () => {
 
             </div>
             <Beneficios title="BENEFICIOS" items={items} />
-            <Footer></Footer>
         </DefaultLayout>
     );
 };
