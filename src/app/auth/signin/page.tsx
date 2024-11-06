@@ -6,19 +6,19 @@ import LoginLayout from "@/components/Layouts/LoginLayout";
 import { useRouter } from "next/navigation"; // Reemplaza `next/router` por `next/navigation`
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/app/firebase/firebase"; // Importa la configuración de Firebase
-import alert from "@/components/Alert/alertred";
-import Alert from "@/components/Alert/alertred";
-import firebase from "firebase/compat/app";
 import { FirebaseError } from "firebase/app";
 import { fetchUserProfile } from "@/services/user/userService";
-import Footer from "@/components/Footer";
-
+import { toast } from "sonner";
+import TrLoader from "@/components/common/TrLoader";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const handleSubmit = async () => {
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar la visibilidad del loader
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    setIsLoading(true); // Mostrar el loader al empezar el proceso de inicio de sesión
+    event.preventDefault(); // Evita la recarga de la página
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -34,9 +34,12 @@ const SignIn = () => {
       const userProfile = await fetchUserProfile();
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
-      router.push("/"); // Redirige a la página del dashboard tras iniciar sesión
+      router.push("/user/home"); // Redirige a la página del dashboard tras iniciar sesión
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
+      if (error instanceof Error) {
+        toast.error(error.message); // Mostrar el mensaje del error en el toast
+      }
 
       if (error instanceof FirebaseError) {
         console.log(error.code)
@@ -62,6 +65,8 @@ const SignIn = () => {
       } else {
         setError("Ocurrió un error inesperado. Inténtalo de nuevo.");
       }
+    } finally {
+      setIsLoading(false); // Ocultar el loader cuando termine la operación
 
     }
   };
@@ -69,7 +74,8 @@ const SignIn = () => {
 
   return (
     <LoginLayout>
-      <nav className="bg-black border-gray-200 dark:bg-gray-900">
+      {isLoading && <TrLoader />} {/* Mostrar el loader solo cuando isLoading sea true */}
+      <nav className="bg-black border-gray-200 dark:bg-gray-900 w-full">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link href="/home" passHref>
             <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
@@ -80,7 +86,7 @@ const SignIn = () => {
               </svg>
             </button>
           </Link>
-          <a href="https://flowbite.com/" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
+          <a href="/home" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
             <Image src="/images/autek/autek_white.png" className="h-8" alt="Flowbite Logo" width={40} // Set your desired width here
               height={32} />
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">AUTEK</span>
@@ -102,7 +108,7 @@ const SignIn = () => {
           <p className="text-base">Programa citas, paga mantenimientos y más</p>
         </div>
       </div>
-      <div className="max-w-md w-full bg-white  p-8 relative">
+      <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white  p-8 relative">
         <h1 className="text-title-lg font-bold text-black pb-2">Inicio de Sesión</h1>
         <p className="text-base text-black pb-5">
           Inicia sesión con tu cuenta de <span className="font-bold">AUTEK</span>
@@ -193,7 +199,6 @@ const SignIn = () => {
           </a>
         </p>
       </div>
-      <Footer></Footer>
     </LoginLayout>
   );
 };

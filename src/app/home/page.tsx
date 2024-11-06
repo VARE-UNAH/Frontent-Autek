@@ -3,11 +3,6 @@ import React, { useState } from "react";
 import Image from 'next/image';
 import Link from "next/link";
 import LoginLayout from "@/components/Layouts/LoginLayout";
-import { useRouter } from "next/navigation"; // Reemplaza `next/router` por `next/navigation`
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/firebase/firebase"; // Importa la configuración de Firebase
-import { FirebaseError } from "firebase/app";
-import { fetchUserProfile } from "@/services/user/userService";
 import Beneficios from '@/components/Grid';
 import Social from '@/components/Social';
 import Footer from "@/components/Footer";
@@ -19,58 +14,6 @@ const Home = () => {
         { icon: 'fa-clock', title: 'Seguimiento', description: 'Seguimiento en tiempo real del progreso de tu vehículo' },
         { icon: 'fa-credit-card', title: 'Pagos en línea', description: 'Paga de forma segura las facturas de tu mantenimiento' },
     ];
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const router = useRouter();
-    const handleSubmit = async () => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            const token = await user.getIdToken();
-            console.log("Token de ID:", token);
-
-            // Aquí haces el console log del usuario
-            console.log("Usuario autenticado:", user);
-
-            localStorage.setItem("user", JSON.stringify(user)); // Guardar el objeto user
-            localStorage.setItem("accessToken", token); // Guardar solo el token
-            const userProfile = await fetchUserProfile();
-            localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-            router.push("/"); // Redirige a la página del dashboard tras iniciar sesión
-        } catch (error) {
-            console.error("Error al iniciar sesión:", error);
-
-            if (error instanceof FirebaseError) {
-                console.log(error.code)
-                switch (error.code) {
-                    case "auth/invalid-credential":
-                        setError("El usuario o contraseña no son validos, Inténtalo de nuevo.");
-                        break;
-                    case "auth/user-disabled":
-                        setError("Este usuario ha sido deshabilitado.");
-                        break;
-                    case "auth/user-not-found":
-                        setError("No se encontró una cuenta con este correo electrónico.");
-                        break;
-                    case "auth/wrong-password":
-                        setError("La contraseña es incorrecta.");
-                        break;
-                    case "auth/too-many-requests":
-                        setError("Demsiados intentos usuario bloqueado momentaneamente.");
-                        break;
-                    default:
-                        setError("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
-                }
-            } else {
-                setError("Ocurrió un error inesperado. Inténtalo de nuevo.");
-            }
-
-        }
-    };
-
     return (
         <LoginLayout>
             <nav className="bg-black border-gray-200 items-center justify-center dark:bg-gray-900 h-15">
@@ -82,7 +25,7 @@ const Home = () => {
                     </a>
                 </div>
             </nav>
-            <div className="relative w-full h-55 shadow-black shadow-lg">
+            <div className="relative w-full h-55 shadow-black">
                 {/* Imagen de fondo */}
                 <Image
                     src={'https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
@@ -98,7 +41,7 @@ const Home = () => {
                     <p className="text-base">Programa citas, paga mantenimientos y más</p>
                 </div>
             </div>
-            <div className="max-w-md w-full bg-white  shadow-lg  p-8 relative">
+            <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white justify-center p-8 relative mx-auto">
                 <h1 className="text-title-lg font-bold text-black pb-2">Ingresa ahora</h1>
                 <p className="text-base text-black pb-3">
                     Ingresa para poder ayudarte en todo lo que necesites en <span className="font-bold">AUTEK</span>
@@ -132,7 +75,7 @@ const Home = () => {
 
             </div>
             <Beneficios title="BENEFICIOS" items={items} />
-            <Footer></Footer>
+            
         </LoginLayout>
     );
 };

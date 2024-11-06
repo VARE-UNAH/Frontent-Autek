@@ -142,7 +142,7 @@ const SignUp = () => {
           </a>
         </div>
       </nav>
-      <div className="max-w-md w-full bg-white pt-1 p-8 relative">
+      <div className="max-w-full md:max-w-lg lg:max-w-xl w-full  bg-white pt-1 p-8 relative">
         <h1 className="text-title-lg font-bold text-black pb-2">Registro</h1>
         <p className="text-base text-black pb-5">
           Registrate llenando los siguientes datos
@@ -308,7 +308,7 @@ const SignUp = () => {
           </a>
         </p>
       </div>
-    <Footer></Footer>
+    
     </LoginLayout>
   );
 };
