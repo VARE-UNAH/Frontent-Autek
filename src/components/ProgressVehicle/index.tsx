@@ -1,15 +1,15 @@
 import Image from 'next/image';
+import { Progress } from "@nextui-org/react";
 
 const LatestCustomers = () => {
     const customers = [
-        { name: "Toyota Corolla 2017", color: "Negro",plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024"},
-        { name: "Toyota Corolla 2017", color: "Negro",plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024"},
+        { name: "Toyota Corolla 2017", color: "Negro", plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024" },
     ];
 
     return (
 
-        <div className=" bg-white p-2 rounded-lg">
-            <h1 className="font-bold text-black text-start">Tus Vehículos</h1>
+        <div className=" bg-white p-2 rounded-lg mb-2">
+            <h1 className="font-bold text-black text-start">En Taller</h1>
             <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
                 {customers.map((customer, index) => (
                     <li key={index} className="py-3 sm:py-4 border rounded-lg border-whiten shadow-md mb-5">
@@ -41,6 +41,21 @@ const LatestCustomers = () => {
                                 />
                             </div>
                         </div>
+                        <Progress
+                            size="md"
+                            radius="full"
+                            classNames={{
+                                base: "max-w-md",
+                                track: "shadow-md border border-black",
+                                indicator: "bg-gradient-to-r from-blue-600 to-blue-400",
+                                label: "tracking-wider font-medium text-default-600",
+                                value: "text-foreground/60",
+                            }}
+                            className='p-3 pb-0 pt-1'
+                            
+                            value={65}
+                            
+                        />
                     </li>
                 ))}
             </ul>

@@ -124,9 +124,6 @@ const Profile = () => {
               </div>
 
               <div className="mx-auto max-w-180">
-                <h4 className="font-semibold text-start text-black dark:text-white">
-                  Tus vehículos
-                </h4>
               </div>
               <Vehiculos></Vehiculos>
 

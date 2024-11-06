@@ -8,9 +8,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/app/firebase/firebase"; // Importa la configuración de Firebase
 import { FirebaseError } from "firebase/app";
 import { fetchUserProfile } from "@/services/user/userService";
-import Beneficios from '@/components/Grid';
-import Social from '@/components/Social';
-import Footer from "@/components/Footer";
+import Vehiculos from "@/components/Vehiculos";
+import ProgressVehicle from "@/components/ProgressVehicle";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 const Home = () => {
@@ -74,8 +73,21 @@ const Home = () => {
 
     return (
         <DefaultLayout>
+            <h1 className="text-3xl font-bold text-black pb-2">Inicio</h1>
+            <div
+                className="relative bg-cover bg-center p-2 rounded-lg mb-2 h-20 shadow-md"
+                style={{
+                    backgroundImage: "url('/images/cover/bg.jpg')",
+                }}
+            >
+                {/* Capa de color superpuesta solo dentro del div */}
+                <div className="absolute inset-0 bg-green-600 opacity-60 rounded-lg pointer-events-none"></div>
 
-            <Beneficios title="BENEFICIOS" items={items} />
+                {/* Contenido del div */}
+                <h2 className="relative font-bold text-white text-xl">Crear Nueva Cita</h2>
+            </div>
+            <ProgressVehicle></ProgressVehicle>
+            <Vehiculos></Vehiculos>
         </DefaultLayout>
     );
 };
