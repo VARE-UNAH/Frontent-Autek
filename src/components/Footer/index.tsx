@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="bg-white shadow dark:bg-gray-800  bottom-0 left-0 w-full">
+        <footer className="bg-white shadow dark:bg-gray-800 bottom-0 left-0 w-full">
             <div className="w-full mx-auto max-w-screen-xl border-t-2 border-stroke p-4 md:items-center md:justify-between sticky bottom-0 left-0">
                 <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
                     © 2024 <a href="/home" className="hover:underline">Autek™</a>. All Rights Reserved.

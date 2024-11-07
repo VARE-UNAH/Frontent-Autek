@@ -37,33 +37,39 @@ const SignIn = () => {
       router.push("/user/home"); // Redirige a la página del dashboard tras iniciar sesión
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      if (error instanceof Error) {
-        toast.error(error.message); // Mostrar el mensaje del error en el toast
-      }
+      
 
       if (error instanceof FirebaseError) {
-        console.log(error.code)
+        console.log(error.code);
         switch (error.code) {
           case "auth/invalid-credential":
-            setError("El usuario o contraseña no son validos, Inténtalo de nuevo.");
+            setError("El usuario o contraseña no son válidos, Inténtalo de nuevo.");
+            toast.error("El usuario o contraseña no son válidos, Inténtalo de nuevo.");
             break;
           case "auth/user-disabled":
             setError("Este usuario ha sido deshabilitado.");
+            toast.error("Este usuario ha sido deshabilitado.");
             break;
           case "auth/user-not-found":
             setError("No se encontró una cuenta con este correo electrónico.");
+            toast.error("No se encontró una cuenta con este correo electrónico.");
             break;
           case "auth/wrong-password":
             setError("La contraseña es incorrecta.");
+            toast.error("La contraseña es incorrecta.");
             break;
           case "auth/too-many-requests":
-            setError("Demsiados intentos usuario bloqueado momentaneamente.");
+            setError("Demasiados intentos. Usuario bloqueado momentáneamente.");
+            toast.error("Demasiados intentos. Usuario bloqueado momentáneamente.");
             break;
           default:
             setError("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
+            toast.error("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
         }
       } else {
-        setError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+        if (error instanceof Error) {
+          toast.error(error.message); // Mostrar el mensaje del error en el toast
+        }
       }
     } finally {
       setIsLoading(false); // Ocultar el loader cuando termine la operación

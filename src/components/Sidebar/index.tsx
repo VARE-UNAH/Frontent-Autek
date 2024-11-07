@@ -25,7 +25,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Ver Perfil",
-        route: "/clients/show-clients",
+        route: "/profile",
       },
       //MENU DASHBOARD
       {
