@@ -57,7 +57,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Inicio",
-        route: "/",
+        route: "/user/home",
       },
       //CALENDARIO 
       {
