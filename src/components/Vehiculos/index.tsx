@@ -24,8 +24,8 @@ const LatestCustomers = () => {
             <CardBody>
                 <ul role="list" className="mt-2">
                     {customers.map((customer, index) => (
-                        <Accordion variant="splitted">
-                            <AccordionItem className="mb-2" key="1" aria-label={customer.name} title={customer.name}>
+                        <Accordion variant="splitted" key={index}>
+                            <AccordionItem className="mb-2" key={index} aria-label={customer.name} title={customer.name}>
                                 <li key={index} className="pb-3 sm:pb-4 rounded-lg">
                                     <div className="grid grid-cols-2 justify-between">
                                         <div className="">
