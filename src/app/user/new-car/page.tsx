@@ -6,7 +6,10 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useEffect } from 'react';
 import { fetchCarBrands } from '@/services/car/brandsService';
 import { fetchCarModels } from '@/services/car/modelService';
+import { toast } from "sonner";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import TrLoader from "@/components/common/TrLoader";
 
 type Brand = {
     key: string;
@@ -19,10 +22,12 @@ type Model = {
 };
 
 const Newcar = () => {
-    const [name, setName] = useState("");
+    const [isLoading, setIsLoading] = useState(false); 
     const [brands, setBrands] = useState<Brand[]>([]);
     const [models, setModels] = useState<Model[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Cargar marcas solo una vez
     useEffect(() => {
@@ -37,6 +42,13 @@ const Newcar = () => {
 
         loadCarBrands();
     }, []); // La dependencia está vacía, se ejecuta solo una vez al montar el componente
+
+    const handleCreateCar = () => {
+        // Lógica para añadir el vehículo puede ir aquí, si es necesario
+      
+        // Mostrar notificación de éxito
+        toast.success("Vehículo añadido correctamente");
+      };
 
     // Cargar modelos cuando se seleccione una marca
     useEffect(() => {
@@ -65,8 +77,34 @@ const Newcar = () => {
             setSelectedBrand(null);
         }
     };
+
+
     return (
+        
         <DefaultLayout>
+            {isLoading && <TrLoader />}
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1 text-black">Confirmar nuevo vehículo</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    Esta seguro que sea añadir este nuevo vehículo
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger"  onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
+                                    Close
+                                </Button>
+                                <Button color="primary" onPress={onClose } onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
+                                    Action
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
             <Breadcrumbs size="lg" variant="bordered">
                 <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
                 <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
@@ -233,13 +271,7 @@ const Newcar = () => {
 
                             </div>
 
-
-                            <button
-                                type="submit"
-                                className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition"
-                            >
-                                Añadir Vehículo
-                            </button>
+                            <Button onPress={onOpen} className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Añadir Vehículo</Button>
                         </form>
                     </div>
                 </div>
