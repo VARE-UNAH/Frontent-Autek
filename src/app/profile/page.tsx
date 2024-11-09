@@ -4,11 +4,16 @@ import Image from "next/image";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
 import Link from "next/link";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 
 
 const Profile = () => {
   return (
     <DefaultLayout>
+      <Breadcrumbs size="lg" variant="bordered" className="pb-2">
+        <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
+        <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
+      </Breadcrumbs>
       <div className="mx-auto max-w-242.5">
 
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
