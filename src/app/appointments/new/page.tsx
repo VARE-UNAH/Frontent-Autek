@@ -32,7 +32,7 @@ const Newappointment = () => {
         <DefaultLayout>
             <Breadcrumbs size="lg" variant="bordered" className="pb-2">
                 <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
-                <BreadcrumbItem href="/profile">Citas</BreadcrumbItem>
+                <BreadcrumbItem href="/appointments">Citas</BreadcrumbItem>
                 <BreadcrumbItem href="/appointments/new">Nueva Cita</BreadcrumbItem>
             </Breadcrumbs>
             <h1 className="text-3xl font-bold pt-2 text-black pb-2">Nueva Cita</h1>
