@@ -5,6 +5,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
 import Link from "next/link";
 import { useState } from "react";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 
 
 const Profile = () => {
@@ -15,6 +16,11 @@ const Profile = () => {
   const [lastName, setLastName] = useState("");
   return (
     <DefaultLayout>
+      <Breadcrumbs size="lg" variant="bordered" className="pb-2">
+        <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
+        <BreadcrumbItem href="/profile">Perfil</BreadcrumbItem>
+        <BreadcrumbItem href="/profile-edit">Editar</BreadcrumbItem>
+      </Breadcrumbs>
       <div className="mx-auto max-w-242.5">
 
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

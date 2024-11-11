@@ -14,7 +14,7 @@ const LatestCustomers = () => {
     );
 
     return (
-        <Card>
+        <Card className="shadow-sm rounded-lg">
             <CardHeader className="flex gap-3">
                 <div className="flex flex-col">
                     <p className="text-md font-bold">Tus Vehículos</p>
@@ -25,7 +25,14 @@ const LatestCustomers = () => {
                 <ul role="list" className="mt-2">
                     {customers.map((customer, index) => (
                         <Accordion variant="splitted" key={index}>
-                            <AccordionItem className="mb-2" key={index} aria-label={customer.name} title={customer.name}>
+                            <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke" startContent={
+                                <Image
+                                    alt="logo"
+                                    src="/images/cars/toyota.png"
+                                    width={51}
+                                    height={38}
+                                    className="rounded-lg"
+                                />} key={index} aria-label={customer.name} title={customer.name}>
                                 <li key={index} className="pb-3 sm:pb-4 rounded-lg">
                                     <div className="grid grid-cols-2 justify-between">
                                         <div className="">
@@ -52,6 +59,7 @@ const LatestCustomers = () => {
                                             />
                                         </div>
                                     </div>
+                                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
                                 </li>
                             </AccordionItem>
                         </Accordion>
@@ -65,7 +73,7 @@ const LatestCustomers = () => {
                     <Link
                         href="/user/new-car"
                     >
-                        <Button color="primary" variant="bordered" startContent={<i className="fa-solid fa-plus"></i>}>
+                        <Button color="primary" variant="bordered" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
                             Añadir Vehículo
                         </Button>
                     </Link>

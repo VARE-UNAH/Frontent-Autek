@@ -62,6 +62,13 @@ const menuGroups = [
       //CALENDARIO 
       {
         icon: (
+          <i className="fa-solid fa-car text-lg"></i>
+        ),
+        label: "Tus Vehículos",
+        route: "/user/cars",
+      },
+      {
+        icon: (
           <svg
             className="fill-current"
             width="18"
@@ -123,7 +130,7 @@ const menuGroups = [
           { label: "Sign Up", route: "/auth/signup" },
         ],
       },
-      
+
     ],
   },
 ];
@@ -141,8 +148,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         {/* <!-- SIDEBAR HEADER --> */}
         <div className="flex bg-white items-center shadow-lg justify-between gap-2 px-6 py-5.5 lg:py-6.5">
           <Link href="/">
-          
-            <strong className="text-primary font-medium"style={{ fontSize: '30px' }}>AUTEK</strong>
+
+            <strong className="text-primary font-medium" style={{ fontSize: '30px' }}>AUTEK</strong>
           </Link>
 
           <button
