@@ -77,7 +77,7 @@ const Newappointment = () => {
                                             ))}
                                         </Select>
                                     </div>
-                                    <Card className="max-w-full shadow-none border border-1 border-stroke rounded-lg">
+                                    <Card className="max-w-full shadow-none border-stroke rounded-lg">
                                         <CardHeader className="flex gap-3">
                                             <Image
                                                 src="/images/cars/toyota.png"
@@ -135,7 +135,7 @@ const Newappointment = () => {
                                         <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                             Selecciona la fecha de tu visita
                                         </label>
-                                        <DatePicker color="primary" label={"Birth date"} variant="bordered"
+                                        <DatePicker color="primary" label={"Fecha de la Cita"} variant="bordered"
                                             classNames={{
                                                 inputWrapper: "border rounded-lg"
 
@@ -146,12 +146,15 @@ const Newappointment = () => {
                                         <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                             Selecciona la hora
                                         </label>
-                                        <DatePicker color="primary" label={"Birth date"} variant="bordered"
-                                            classNames={{
-                                                inputWrapper: "border rounded-lg"
-
-                                            }}
-                                        />
+                                        <Select
+                                            variant="bordered"
+                                            color="primary"
+                                            label="Hora de tu cita"
+                                            placeholder="Select an animal"
+                                            className="max-w-xs"
+                                        >
+                                            <SelectItem key={""}>12:00</SelectItem>
+                                        </Select>
                                     </div>
                                     <div className="flex">
                                         <Button fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
