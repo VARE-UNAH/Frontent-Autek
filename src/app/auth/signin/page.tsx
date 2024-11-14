@@ -3,13 +3,12 @@ import React, { useState } from "react";
 import Image from 'next/image';
 import Link from "next/link";
 import LoginLayout from "@/components/Layouts/LoginLayout";
-import { useRouter } from "next/navigation"; // Reemplaza `next/router` por `next/navigation`
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/firebase/firebase"; // Importa la configuración de Firebase
-import { FirebaseError } from "firebase/app";
+import { useRouter } from "next/navigation"; 
 import { fetchUserProfile } from "@/services/user/userService";
 import { toast } from "sonner";
 import TrLoader from "@/components/common/TrLoader";
+
+
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,64 +16,56 @@ const SignIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la visibilidad del loader
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    setIsLoading(true); // Mostrar el loader al empezar el proceso de inicio de sesión
-    event.preventDefault(); // Evita la recarga de la página
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  setIsLoading(true); 
+  event.preventDefault(); 
+console.log(email,password)
 
-      const token = await user.getIdToken();
-      console.log("Token de ID:", token);
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/users/auth/login/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      // Aquí haces el console log del usuario
-      console.log("Usuario autenticado:", user);
-
-      localStorage.setItem("user", JSON.stringify(user)); // Guardar el objeto user
-      localStorage.setItem("accessToken", token); // Guardar solo el token
-      const userProfile = await fetchUserProfile();
-      localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-      router.push("/user/home"); // Redirige a la página del dashboard tras iniciar sesión
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      
-
-      if (error instanceof FirebaseError) {
-        console.log(error.code);
-        switch (error.code) {
-          case "auth/invalid-credential":
-            setError("El usuario o contraseña no son válidos, Inténtalo de nuevo.");
-            toast.error("El usuario o contraseña no son válidos, Inténtalo de nuevo.");
-            break;
-          case "auth/user-disabled":
-            setError("Este usuario ha sido deshabilitado.");
-            toast.error("Este usuario ha sido deshabilitado.");
-            break;
-          case "auth/user-not-found":
-            setError("No se encontró una cuenta con este correo electrónico.");
-            toast.error("No se encontró una cuenta con este correo electrónico.");
-            break;
-          case "auth/wrong-password":
-            setError("La contraseña es incorrecta.");
-            toast.error("La contraseña es incorrecta.");
-            break;
-          case "auth/too-many-requests":
-            setError("Demasiados intentos. Usuario bloqueado momentáneamente.");
-            toast.error("Demasiados intentos. Usuario bloqueado momentáneamente.");
-            break;
-          default:
-            setError("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
-            toast.error("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
-        }
-      } else {
-        if (error instanceof Error) {
-          toast.error(error.message); // Mostrar el mensaje del error en el toast
-        }
-      }
-    } finally {
-      setIsLoading(false); // Ocultar el loader cuando termine la operación
-
+    if (!response.ok) {
+      throw new Error("Failed to log in.");
     }
+
+    const data = await response.json();
+
+    // Log the user data
+    console.log("Authenticated user:", data);
+
+    // Store the user and token in localStorage
+    localStorage.setItem("access_token", JSON.stringify(data.access_token));
+    localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token));
+    localStorage.setItem("email", JSON.stringify(data.email));
+    localStorage.setItem("full_name",JSON.stringify(data.full_name));
+
+
+    const userProfile = await fetchUserProfile();
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+    router.push("/user/home"); // Redirect to dashboard on successful login
+  } catch (error) {
+    console.error("Login error:", error);
+
+    if (error instanceof Error) {
+      
+      if (error.message.includes("Failed")) {
+        setError("Login failed. Please try again.");
+        toast.error("Login failed. Please try again.");
+      } else {
+        toast.error(error.message); 
+      }
+    } else {
+      toast.error("An unknown error occurred.");
+    }
+  } finally {
+    setIsLoading(false); 
+  }
   };
 
 

@@ -9,44 +9,44 @@ export function SignUpFormValidator(
     const warnings = [];
 
     if (email.length === 0) {
-        warnings.push('Email is required');
+        warnings.push('El correo electrónico es obligatorio');
     }
 
     if (password.length === 0) {
-        warnings.push('Password is required');
+        warnings.push('La contraseña es obligatoria');
     }
 
     if (name.length === 0) {
-        warnings.push('Name is required');
+        warnings.push('El nombre es obligatorio');
     }
 
     if (lastname.length === 0) {
-        warnings.push('Lastname is required');
+        warnings.push('El apellido es obligatorio');
     }
 
     if (password !== confirmPassword) {
-        warnings.push('Passwords do not match');
+        warnings.push('Las contraseñas no coinciden');
     }
 
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     if (!emailPattern.test(email)) {
-        warnings.push('Invalid email format');
+        warnings.push('Formato de correo electrónico no válido');
     }
 
     if (password.length < 6) {
-        warnings.push('Password must be at least 6 characters');
+        warnings.push('La contraseña debe tener al menos 6 caracteres');
     }
 
     if (!/[A-Z]/.test(password)) {
-        warnings.push('Password must contain at least one uppercase letter');
+        warnings.push('La contraseña debe contener al menos una letra mayúscula');
     }
 
     if (!/[\W_]/.test(password)) {
-        warnings.push('Password must contain at least one special character');
+        warnings.push('La contraseña debe contener al menos un carácter especial');
     }
 
     if (/(012|123|234|345|456|567|678|789|890)/.test(password)) {
-        warnings.push('Password cannot contain sequences of three consecutive numbers');
+        warnings.push('La contraseña no puede contener secuencias de tres números consecutivos');
     }
 
     return warnings;
