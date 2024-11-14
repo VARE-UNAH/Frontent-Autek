@@ -1,36 +1,116 @@
 'use client'
 import React, { useState } from "react";
-import { Select, SelectItem, Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useEffect } from 'react';
 import { fetchCarBrands } from '@/services/car/brandsService';
+import { fetchCarModels } from '@/services/car/modelService';
+import { toast } from "sonner";
+import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
+import TrLoader from "@/components/common/TrLoader";
 
 type Brand = {
     key: string;
     label: string;
 };
 
+type Model = {
+    key: string;
+    label: string;
+};
 
 const Newcar = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [name, setName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [isLoading, setIsLoading] = useState(false); 
     const [brands, setBrands] = useState<Brand[]>([]);
+    const [models, setModels] = useState<Model[]>([]);
+    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
 
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    // Cargar marcas solo una vez
     useEffect(() => {
         const loadCarBrands = async () => {
-            const brandsData = await fetchCarBrands();
-            setBrands(brandsData);
-            console.log(brands)
+            try {
+                const brandsData = await fetchCarBrands();
+                setBrands(brandsData);
+            } catch (error) {
+                console.error("Error cargando marcas:", error);
+            }
         };
 
         loadCarBrands();
-    }, []);
+    }, []); // La dependencia está vacía, se ejecuta solo una vez al montar el componente
+
+    const handleCreateCar = () => {
+        // Lógica para añadir el vehículo puede ir aquí, si es necesario
+      
+        // Mostrar notificación de éxito
+        toast.success("Vehículo añadido correctamente");
+      };
+
+    // Cargar modelos cuando se seleccione una marca
+    useEffect(() => {
+        const loadCarModels = async () => {
+            if (selectedBrand) {
+                try {
+                    const modelsData = await fetchCarModels(selectedBrand);
+                    setModels(modelsData);
+                    console.log(modelsData.length)
+                    console.log(models)
+                    console.log(models.length)
+                } catch (error) {
+                    console.error("Error cargando modelos:", error);
+                }
+            }
+        };
+
+        loadCarModels();
+    }, [selectedBrand]); // Solo se ejecuta cuando `selectedBrand` cambia
+
+    const onSelectionChange = (key: React.Key | null) => {
+        if (typeof key === "string") {
+            setSelectedBrand(key);
+            console.log(key)
+        } else {
+            setSelectedBrand(null);
+        }
+    };
+
+
     return (
+        
         <DefaultLayout>
-            <h1 className="text-3xl font-bold text-black pb-2">Añadir Vehículo Nuevo</h1>
+            {isLoading && <TrLoader />}
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1 text-black">Confirmar nuevo vehículo</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    Esta seguro que sea añadir este nuevo vehículo
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger"  onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
+                                    Close
+                                </Button>
+                                <Button color="primary" onPress={onClose } onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
+                                    Action
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+            <Breadcrumbs size="lg" variant="bordered">
+                <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
+                <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
+                <BreadcrumbItem href="/user/new-car">New Car</BreadcrumbItem>
+            </Breadcrumbs>
+            <h1 className="text-3xl font-bold pt-2 text-black pb-2">Añadir Vehículo Nuevo</h1>
             <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
                     <div className="mt-4">
@@ -39,21 +119,20 @@ const Newcar = () => {
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Marca del Vehículo
                                 </label>
-                                
+
                                 <Autocomplete
                                     label="Selecciona la marca de tu vehiculo"
                                     className="bg-white shadow-none"
                                     variant="bordered"
                                     color="primary"
+                                    isRequired
+                                    onSelectionChange={onSelectionChange}
                                     inputProps={{
                                         classNames: {
-                                          input: "ml-1",
-                                          inputWrapper: "shadow-none border border-1 rounded-lg",
-                                          label: "ms-2 text-gray2 text-md"
+                                            input: 'ml-1',
+                                            inputWrapper: 'shadow-none border border-1 rounded-lg',
+                                            label: 'ms-2 text-gray2 text-md',
                                         },
-                                      }}
-                                    
-                                    classNames={{
                                     }}
                                 >
                                     {brands.map((animal) => (
@@ -63,51 +142,136 @@ const Newcar = () => {
                                     ))}
                                 </Autocomplete>
                             </div>
-                            
+
                             <div className="mb-4">
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                    Nombre
+                                    Modelo del Vehículo
                                 </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Ingrese su nombre completo"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required
-                                        autoComplete="off" //
-                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    />
 
-                                    <span className="absolute right-4 top-4">
-                                        <svg
-                                            className="fill-current"
-                                            width="22"
-                                            height="22"
-                                            viewBox="0 0 22 22"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <g opacity="0.5">
-                                                <path
-                                                    d="M11.0008 9.52185C13.5445 9.52185 15.607 7.5281 15.607 5.0531C15.607 2.5781 13.5445 0.584351 11.0008 0.584351C8.45703 0.584351 6.39453 2.5781 6.39453 5.0531C6.39453 7.5281 8.45703 9.52185 11.0008 9.52185ZM11.0008 2.1656C12.6852 2.1656 14.0602 3.47185 14.0602 5.08748C14.0602 6.7031 12.6852 8.00935 11.0008 8.00935C9.31641 8.00935 7.94141 6.7031 7.94141 5.08748C7.94141 3.47185 9.31641 2.1656 11.0008 2.1656Z"
-                                                    fill=""
-                                                />
-                                                <path
-                                                    d="M13.2352 11.0687H8.76641C5.08828 11.0687 2.09766 14.0937 2.09766 17.7719V20.625C2.09766 21.0375 2.44141 21.4156 2.88828 21.4156C3.33516 21.4156 3.67891 21.0719 3.67891 20.625V17.7719C3.67891 14.9531 5.98203 12.6156 8.83516 12.6156H13.2695C16.0883 12.6156 18.4258 14.9187 18.4258 17.7719V20.625C18.4258 21.0375 18.7695 21.4156 19.2164 21.4156C19.6633 21.4156 20.007 21.0719 20.007 20.625V17.7719C19.9039 14.0937 16.9133 11.0687 13.2352 11.0687Z"
-                                                    fill=""
-                                                />
-                                            </g>
-                                        </svg>
-                                    </span>
-                                </div>
+                                <Autocomplete
+                                    label="Selecciona el modelo de tu vehiculo"
+                                    className="bg-white shadow-none"
+                                    variant="bordered"
+                                    isRequired
+                                    color="primary"
+                                    inputProps={{
+                                        classNames: {
+                                            input: "ml-1",
+                                            inputWrapper: "shadow-none border border-1 rounded-lg",
+                                            label: "ms-2 text-gray2 text-md"
+                                        },
+                                    }}
+
+                                    classNames={{
+                                    }}
+                                >
+                                    {models.length > 0 ? (
+                                        models.map((model) => (
+                                            <AutocompleteItem key={model.key} value={model.label}>
+                                                {model.label}
+                                            </AutocompleteItem>
+                                        ))
+                                    ) : (
+                                        <AutocompleteItem key="no-models" isDisabled value="No hay modelos disponibles">
+                                            No hay modelos disponibles
+                                        </AutocompleteItem>
+                                    )}
+                                </Autocomplete>
                             </div>
-                            <button
-                                type="submit"
-                                className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition"
-                            >
-                                Guardar Cambios
-                            </button>
+
+                            <div className="mb-4">
+                                <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                    Color del Vehículo
+                                </label>
+
+                                <Autocomplete
+                                    label="Selecciona el color de tu vehiculo"
+                                    className="bg-white shadow-none"
+                                    variant="bordered"
+                                    isRequired
+                                    color="primary"
+                                    inputProps={{
+                                        classNames: {
+                                            input: "ml-1",
+                                            inputWrapper: "shadow-none border border-1 rounded-lg",
+                                            label: "ms-2 text-gray2 text-md"
+                                        },
+                                    }}
+
+                                    classNames={{
+                                    }}
+                                >
+                                    {models.length > 0 ? (
+                                        models.map((model) => (
+                                            <AutocompleteItem key={model.key} value={model.label}>
+                                                {model.label}
+                                            </AutocompleteItem>
+                                        ))
+                                    ) : (
+                                        <AutocompleteItem key="no-models" isDisabled value="No hay modelos disponibles">
+                                            No hay modelos disponibles
+                                        </AutocompleteItem>
+                                    )}
+                                </Autocomplete>
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                    Año
+                                </label>
+                                <Input
+                                    type="number"
+                                    placeholder="Ingresa el año de tu vehiculo"
+                                    isRequired
+                                    variant="bordered"
+                                    labelPlacement="outside"
+                                    color="primary"
+                                    size="lg"
+                                    classNames={{
+                                        label: "text-gray2 text-md",
+                                        input: [
+                                            "bg-transparent",
+                                            "text-black/90 dark:text-white/90",
+                                            "ps-2",
+                                            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                                        ],
+                                        inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
+
+                                    }}
+
+                                />
+
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                    Número de Placa
+                                </label>
+                                <Input
+                                    type="string"
+                                    placeholder="Ingresa la placa de tu vehiculo"
+                                    isRequired
+                                    variant="bordered"
+                                    labelPlacement="outside"
+                                    color="primary"
+                                    size="lg"
+                                    classNames={{
+                                        label: "text-gray2 text-md",
+                                        input: [
+                                            "bg-transparent",
+                                            "text-black/90 dark:text-white/90",
+                                            "ps-2",
+                                            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                                        ],
+                                        inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
+
+                                    }}
+
+                                />
+
+                            </div>
+
+                            <Button onPress={onOpen} className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Añadir Vehículo</Button>
                         </form>
                     </div>
                 </div>

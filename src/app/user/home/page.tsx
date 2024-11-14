@@ -74,6 +74,7 @@ const Home = () => {
     return (
         <DefaultLayout>
             <h1 className="text-3xl font-bold text-black pb-2">Inicio</h1>
+            <Link href="/appointments/new">
             <div
                 className="relative bg-cover bg-center p-2 rounded-lg mb-2 h-20 shadow-md"
                 style={{
@@ -86,6 +87,7 @@ const Home = () => {
                 {/* Contenido del div */}
                 <h2 className="relative font-bold text-white text-xl">Crear Nueva Cita</h2>
             </div>
+            </Link>
             <ProgressVehicle></ProgressVehicle>
             <Vehiculos></Vehiculos>
         </DefaultLayout>
