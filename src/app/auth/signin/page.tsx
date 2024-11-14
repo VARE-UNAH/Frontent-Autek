@@ -21,7 +21,7 @@ const SignIn = () => {
 console.log(email,password)
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/users/auth/login/`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/auth/login/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -38,12 +38,8 @@ console.log(email,password)
     // Log the user data
     console.log("Authenticated user:", data);
 
-    // Store the user and token in localStorage
-    localStorage.setItem("access_token", JSON.stringify(data.access_token));
-    localStorage.setItem("refresh_token", JSON.stringify(data.refresh_token));
-    localStorage.setItem("email", JSON.stringify(data.email));
-    localStorage.setItem("full_name",JSON.stringify(data.full_name));
-
+    localStorage.setItem("userProfile", JSON.stringify(data))
+    localStorage.setItem("accessToken", JSON.stringify(data.access_token));
 
     const userProfile = await fetchUserProfile();
     localStorage.setItem("userProfile", JSON.stringify(userProfile));

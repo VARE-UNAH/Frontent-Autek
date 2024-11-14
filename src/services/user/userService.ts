@@ -1,20 +1,12 @@
 import axios from 'axios';
 
-interface Person {
-    firstName: string;
-    lastName: string;
-  }
-  
   interface UserProfile {
-    user: {
-      id: number;
+      access_token: string;
       email: string;
-      active: boolean;
-      verified: boolean;
-      firebaseUid: string;
-    };
-    person: Person;
-  }
+      full_name: string;
+      refresh_token: string;
+
+};
 
   const checkServerConnection = async () => {
     try {
@@ -34,12 +26,7 @@ interface Person {
     }
   
     // Verificar si el servidor está disponible antes de intentar la solicitud
-    const serverAvailable = await checkServerConnection();
-  
-    if (!serverAvailable) {
-      throw new Error("El servidor no está funcionando correctamente. Intenta nuevamente más tarde.");
-    }
-  
+  /* 
     try {
       // Realizar la solicitud GET para obtener el perfil del usuario
       const response = await axios.get<UserProfile>(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`, {
@@ -58,5 +45,5 @@ interface Person {
         // Si no es un error de Axios, lanzar un error genérico
         throw new Error("Ocurrió un error inesperado. Inténtalo de nuevo.");
       }
-    }
+    } */
   };

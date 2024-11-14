@@ -59,7 +59,7 @@ const SignUp = () => {
   
       // debugger;
   
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/users/register/`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/register/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
