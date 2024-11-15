@@ -17,12 +17,39 @@ import axios from 'axios';
     }
   };
 
-  export const fetchUserProfile = async () => {
-    // Obtener el token de localStorage
-    const token = localStorage.getItem("accessToken");
+  export const fetchUserProfile = async (): Promise<UserProfile> => {
+    try {
+      // Obtain the token from localStorage
+      const token = localStorage.getItem("accessToken");
   
-    if (!token) {
-      throw new Error("No se encontró ningún token en localStorage.");
+      if (!token) {
+        throw new Error("No se encontró ningún token en localStorage.");
+      }
+  
+      // Configure the request to fetch the user profile
+      const response = await fetch("https://api.example.com/user/profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error al obtener el perfil del usuario: ${response.status}`);
+      }
+  
+      const data: UserProfile = await response.json();
+  
+      // Validate that the profile data is not null or empty
+      if (!data || Object.keys(data).length === 0) {
+        throw new Error("El perfil del usuario está vacío o no es válido.");
+      }
+  
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error; // Rethrow the error for higher-level handling
     }
   
     // Verificar si el servidor está disponible antes de intentar la solicitud
