@@ -7,40 +7,23 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/app/firebase/firebase";
 import Loader from "@/components/common/Loader";
-import { fetchUserProfile } from "@/services/user/userService";
-
-interface Person {
-  firstName: string;
-  lastName: string;
-}
 
 interface UserProfile {
-  user: {
     id: number;
     email: string;
-    active: boolean;
-    verified: boolean;
-    firebaseUid: string;
-  };
-  person: Person;
-}
+};
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile>();
 
   useEffect(() => {
     const loadUserProfile = async () => {
       try {
         const cachedProfile = localStorage.getItem("userProfile");
-
-        if (cachedProfile) {
+        if(cachedProfile !== null){
           setUserProfile(JSON.parse(cachedProfile));
-        } else {
-          const userinfo = await fetchUserProfile();
-          setUserProfile(userinfo);
-          localStorage.setItem("userProfile", JSON.stringify(userinfo));
         }
       } catch (err) {
         console.error("Error al obtener el perfil del usuario:", err);

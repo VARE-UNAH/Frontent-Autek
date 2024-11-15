@@ -1,120 +1,98 @@
 'use client'
 import React, { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import LoginLayout from "@/components/Layouts/LoginLayout";
 import { SignUpFormValidator } from "@/validators/auth/authValidators";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/app/firebase/firebase";
-import Alert from "@/components/Alert/alertred";
-import axios from 'axios';
-import { FirebaseError } from "firebase/app";
 import { toast } from 'sonner'
-import Footer from "@/components/Footer";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
+  const [id,setId] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [date_of_birth, setDate] = useState("");
+  const [password_confirm, setConfirmPassword] = useState("");
+  const [first_name, setName] = useState("");
+  const [last_name, setLastName] = useState("");
   const router = useRouter();
   const [error, setError] = useState("");
   const [warningMessage, setWarningMessage] = useState([""]);
 
-  const handleSignUp = async () => {
-    const wa = SignUpFormValidator(email, password, confirmPassword, name, lastName);
-    setWarningMessage(wa);
-    if (wa.length === 0) {
-    } else {
-      wa.forEach(element => {
-        toast.error(`${wa}`);
-      });
-    };
-    if (password !== confirmPassword) {
-      console.error("Las contraseñas no coinciden");
-      toast.error("Las contraseñas no coinciden");
-      return;
-    }
-
-    const nameParts = name.trim().split(" ");
-    const lastNameParts = lastName.trim().split(" ");
-
-    if (nameParts.length < 1 || nameParts.length > 2) {
-      console.error("El campo 'Nombres' debe contener una o dos palabras.");
-      toast.error("El campo 'Nombres' debe contener una o dos palabras.");
-      return;
-    }
-
-    if (lastNameParts.length < 1 || lastNameParts.length > 2) {
-      console.error("El campo 'Apellidos' debe contener una o dos palabras.");
-      toast.error("El campo 'Apellidos' debe contener una o dos palabras.");
-      return;
-    }
-
-
+  const handleSignUp = async (event: React.FormEvent) => {
+    event.preventDefault();
+  
     try {
-      // Crear el usuario en Firebase
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Guardar el usuario autenticado en localStorage o sessionStorage
-      localStorage.setItem("user", JSON.stringify(user));
-      const token = await user.getIdToken();
-      localStorage.setItem("accessToken", token);
-
-      // Aquí haces el console log del usuario
-      console.log("Usuario autenticado:", user);
-
-      try {
-        // Intentar registrar al usuario en el backend
-        console.log(name, lastName)
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/user/register`, {
-          email: user.email,
-          uid: user.uid,
-          name: name,
-          lastName: lastName
-        });
-        console.log(process.env.NEXT_PUBLIC_API_URL);
-
-        if (response.status !== 201) {
-          throw new Error('Error al registrar el usuario en la base de datos.');
-        }
-
-        router.push("/"); // Redirige a la página del dashboard tras iniciar sesión
-      } catch (backendError) {
-        console.error(`Error al registrar el usuario en la base de datos : `, backendError,);
-        toast.error("Error al registrar el usuario en la base de datos")
-        setError("Error al registrar el usuario. Inténtalo de nuevo.");
+      // Basic validation
+      const validationErrors = SignUpFormValidator(email, password, password_confirm, first_name, last_name);
+      
+      if (validationErrors.length > 0) {
+        validationErrors.forEach(error => toast.error(error));
+        setWarningMessage(validationErrors);
+        return;
       }
-
-    } catch (firebaseError) {
-      console.error("Error al crear el usuario en Firebase:", firebaseError);
-      if (firebaseError instanceof FirebaseError) {
-        console.log(firebaseError.code)
-        switch (firebaseError.code) {
-          case "auth/email-already-in-use":
-            setError("El email ya esta en uso, utiliza otro.");
-            break;
-          case "auth/user-disabled":
-            setError("Este usuario ha sido deshabilitado.");
-            break;
-          case "auth/user-not-found":
-            setError("No se encontró una cuenta con este correo electrónico.");
-            break;
-          case "auth/wrong-password":
-            setError("La contraseña es incorrecta.");
-            break;
-          case "auth/too-many-requests":
-            setError("Demsiados intentos usuario bloqueado momentaneamente.");
-            break;
-          default:
-            setError("Ocurrió un error al iniciar sesión. Inténtalo de nuevo.");
-        }
+  
+      // Additional validations
+      if (password !== password_confirm) {
+        toast.error("Las contraseñas no coinciden");
+        return;
+      }
+  
+      if (first_name.trim().split(/\s+/).length !== 1) {
+        toast.error("El campo 'Nombre' debe contener solo una palabra.");
+        return;
+      }
+  
+      if (last_name.trim().split(/\s+/).length !== 1) {
+        toast.error("El campo 'Apellido' debe contener solo una palabra.");
+        return;
+      }
+  
+      console.log('Attempting to send request with data:', {
+        id,
+        last_name: last_name.trim(),
+        email: email.trim(),
+        first_name: first_name.trim(),
+        date_of_birth,
+        password,
+        password_confirm
+      });
+  
+      // debugger;
+  
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/register/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id,
+          last_name: last_name.trim(),
+          email: email.trim(),
+          first_name: first_name.trim(),
+          date_of_birth,
+          password,
+          password_confirm
+        })
+      });
+  
+      if (response.status === 201) {
+        toast.success("Usuario registrado exitosamente");
+        router.push("/auth/signin");
       } else {
-        setError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+        const errorData = await response.json();
+        throw new Error(`Unexpected response status: ${response.status} - ${errorData.message}`);
       }
+  
+    } catch (error) {
+      console.error("Error al registrar el usuario:", error);
+      
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Error al registrar el usuario. Inténtalo de nuevo.");
+      }
+      
+      setError("Error al registrar el usuario. Inténtalo de nuevo.");
     }
   };
 
@@ -148,6 +126,160 @@ const SignUp = () => {
           Registrate llenando los siguientes datos
         </p>
         <form onSubmit={handleSignUp} className="space-y-6">
+
+        <div className="mb-4">
+            <label className="mb-2.5 block font-bold text-black dark:text-white">
+              Nombre
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Ingrese su primer nombre"
+                value={first_name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                autoComplete="off" //
+                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+
+              <span className="absolute right-4 top-4">
+                <svg
+                  className="fill-current"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g opacity="0.5">
+                    <path
+                      d="M11.0008 9.52185C13.5445 9.52185 15.607 7.5281 15.607 5.0531C15.607 2.5781 13.5445 0.584351 11.0008 0.584351C8.45703 0.584351 6.39453 2.5781 6.39453 5.0531C6.39453 7.5281 8.45703 9.52185 11.0008 9.52185ZM11.0008 2.1656C12.6852 2.1656 14.0602 3.47185 14.0602 5.08748C14.0602 6.7031 12.6852 8.00935 11.0008 8.00935C9.31641 8.00935 7.94141 6.7031 7.94141 5.08748C7.94141 3.47185 9.31641 2.1656 11.0008 2.1656Z"
+                      fill=""
+                    />
+                    <path
+                      d="M13.2352 11.0687H8.76641C5.08828 11.0687 2.09766 14.0937 2.09766 17.7719V20.625C2.09766 21.0375 2.44141 21.4156 2.88828 21.4156C3.33516 21.4156 3.67891 21.0719 3.67891 20.625V17.7719C3.67891 14.9531 5.98203 12.6156 8.83516 12.6156H13.2695C16.0883 12.6156 18.4258 14.9187 18.4258 17.7719V20.625C18.4258 21.0375 18.7695 21.4156 19.2164 21.4156C19.6633 21.4156 20.007 21.0719 20.007 20.625V17.7719C19.9039 14.0937 16.9133 11.0687 13.2352 11.0687Z"
+                      fill=""
+                    />
+                  </g>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-2.5 block font-bold text-black dark:text-white">
+              Apellido
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Ingrese su primer apellido"
+                value={last_name}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                autoComplete="off" //
+                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+
+              <span className="absolute right-4 top-4">
+                <svg
+                  className="fill-current"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g opacity="0.5">
+                    <path
+                      d="M11.0008 9.52185C13.5445 9.52185 15.607 7.5281 15.607 5.0531C15.607 2.5781 13.5445 0.584351 11.0008 0.584351C8.45703 0.584351 6.39453 2.5781 6.39453 5.0531C6.39453 7.5281 8.45703 9.52185 11.0008 9.52185ZM11.0008 2.1656C12.6852 2.1656 14.0602 3.47185 14.0602 5.08748C14.0602 6.7031 12.6852 8.00935 11.0008 8.00935C9.31641 8.00935 7.94141 6.7031 7.94141 5.08748C7.94141 3.47185 9.31641 2.1656 11.0008 2.1656Z"
+                      fill=""
+                    />
+                    <path
+                      d="M13.2352 11.0687H8.76641C5.08828 11.0687 2.09766 14.0937 2.09766 17.7719V20.625C2.09766 21.0375 2.44141 21.4156 2.88828 21.4156C3.33516 21.4156 3.67891 21.0719 3.67891 20.625V17.7719C3.67891 14.9531 5.98203 12.6156 8.83516 12.6156H13.2695C16.0883 12.6156 18.4258 14.9187 18.4258 17.7719V20.625C18.4258 21.0375 18.7695 21.4156 19.2164 21.4156C19.6633 21.4156 20.007 21.0719 20.007 20.625V17.7719C19.9039 14.0937 16.9133 11.0687 13.2352 11.0687Z"
+                      fill=""
+                    />
+                  </g>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-2.5 block font-bold text-black dark:text-white">
+              Fecha de nacimiento
+            </label>
+            <div className="relative">
+              <input
+                type="date"
+                placeholder="Ingrese su fecha de nacimiento"
+                value={date_of_birth}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                autoComplete="off" //
+                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+
+              <span className="absolute right-4 top-4">
+                <svg
+                  className="fill-current"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g opacity="0.5">
+                    <path
+                      d="M11.0008 9.52185C13.5445 9.52185 15.607 7.5281 15.607 5.0531C15.607 2.5781 13.5445 0.584351 11.0008 0.584351C8.45703 0.584351 6.39453 2.5781 6.39453 5.0531C6.39453 7.5281 8.45703 9.52185 11.0008 9.52185ZM11.0008 2.1656C12.6852 2.1656 14.0602 3.47185 14.0602 5.08748C14.0602 6.7031 12.6852 8.00935 11.0008 8.00935C9.31641 8.00935 7.94141 6.7031 7.94141 5.08748C7.94141 3.47185 9.31641 2.1656 11.0008 2.1656Z"
+                      fill=""
+                    />
+                    <path
+                      d="M13.2352 11.0687H8.76641C5.08828 11.0687 2.09766 14.0937 2.09766 17.7719V20.625C2.09766 21.0375 2.44141 21.4156 2.88828 21.4156C3.33516 21.4156 3.67891 21.0719 3.67891 20.625V17.7719C3.67891 14.9531 5.98203 12.6156 8.83516 12.6156H13.2695C16.0883 12.6156 18.4258 14.9187 18.4258 17.7719V20.625C18.4258 21.0375 18.7695 21.4156 19.2164 21.4156C19.6633 21.4156 20.007 21.0719 20.007 20.625V17.7719C19.9039 14.0937 16.9133 11.0687 13.2352 11.0687Z"
+                      fill=""
+                    />
+                  </g>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="mb-2.5 block font-bold text-black dark:text-white">
+              Numero de identidad
+            </label>
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="Ingresa tu identidad"
+                value={id}
+                onChange={(e) => setId(e.target.value)}
+                required
+                autoComplete="id"
+                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+              />
+
+              <span className="absolute right-4 top-4">
+                <svg
+                  className="fill-current"
+                  width="22"
+                  height="22"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g opacity="0.5">
+                  <path
+  d="M3 4C2.44771 4 2 4.44771 2 5V19C2 19.5523 2.44771 20 3 20H21C21.5523 20 22 19.5523 22 19V5C22 4.44771 21.5523 4 21 4H3ZM4 6H20V9H4V6ZM6 11H10C10.5523 11 11 11.4477 11 12V16C11 16.5523 10.5523 17 10 17H6C5.44772 17 5 16.5523 5 16V12C5 11.4477 5.44772 11 6 11ZM14 13C14 12.4477 14.4477 12 15 12H18C18.5523 12 19 12.4477 19 13C19 13.5523 18.5523 14 18 14H15C14.4477 14 14 13.5523 14 13ZM14 15C14 14.4477 14.4477 14 15 14H18C18.5523 14 19 14.4477 19 15C19 15.5523 18.5523 16 18 16H15C14.4477 16 14 15.5523 14 15Z"
+  fill=""
+/>
+
+                  </g>
+                </svg>
+              </span>
+            </div>
+          </div>
+
           <div className="mb-4">
             <label className="mb-2.5 block font-bold text-black dark:text-white">
               Email
@@ -182,6 +314,7 @@ const SignUp = () => {
               </span>
             </div>
           </div>
+
           <div className="mb-4">
             <label className="mb-2.5 block font-bold text-black dark:text-white">
               Password
@@ -219,6 +352,7 @@ const SignUp = () => {
               </span>
             </div>
           </div>
+
           <div className="mb-6">
             <label className="mb-2.5 block font-bold text-black dark:text-white">
               Confirma tu contraseña
@@ -228,7 +362,7 @@ const SignUp = () => {
                 type="password"
                 placeholder="Ingresa de nuevo tu contraseña"
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                value={confirmPassword}
+                value={password_confirm}
                 required
                 className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
@@ -256,44 +390,9 @@ const SignUp = () => {
               </span>
             </div>
           </div>
-          <div className="mb-4">
-            <label className="mb-2.5 block font-bold text-black dark:text-white">
-              Nombre
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Ingrese su nombre completo"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                autoComplete="off" //
-                className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              />
 
-              <span className="absolute right-4 top-4">
-                <svg
-                  className="fill-current"
-                  width="22"
-                  height="22"
-                  viewBox="0 0 22 22"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g opacity="0.5">
-                    <path
-                      d="M11.0008 9.52185C13.5445 9.52185 15.607 7.5281 15.607 5.0531C15.607 2.5781 13.5445 0.584351 11.0008 0.584351C8.45703 0.584351 6.39453 2.5781 6.39453 5.0531C6.39453 7.5281 8.45703 9.52185 11.0008 9.52185ZM11.0008 2.1656C12.6852 2.1656 14.0602 3.47185 14.0602 5.08748C14.0602 6.7031 12.6852 8.00935 11.0008 8.00935C9.31641 8.00935 7.94141 6.7031 7.94141 5.08748C7.94141 3.47185 9.31641 2.1656 11.0008 2.1656Z"
-                      fill=""
-                    />
-                    <path
-                      d="M13.2352 11.0687H8.76641C5.08828 11.0687 2.09766 14.0937 2.09766 17.7719V20.625C2.09766 21.0375 2.44141 21.4156 2.88828 21.4156C3.33516 21.4156 3.67891 21.0719 3.67891 20.625V17.7719C3.67891 14.9531 5.98203 12.6156 8.83516 12.6156H13.2695C16.0883 12.6156 18.4258 14.9187 18.4258 17.7719V20.625C18.4258 21.0375 18.7695 21.4156 19.2164 21.4156C19.6633 21.4156 20.007 21.0719 20.007 20.625V17.7719C19.9039 14.0937 16.9133 11.0687 13.2352 11.0687Z"
-                      fill=""
-                    />
-                  </g>
-                </svg>
-              </span>
-            </div>
-          </div>
+          
+
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
