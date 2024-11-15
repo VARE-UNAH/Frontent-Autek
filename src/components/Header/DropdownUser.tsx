@@ -5,30 +5,20 @@ import ClickOutside from "@/components/ClickOutside";
 import { signOut } from "firebase/auth"; // Importar el método signOut de Firebase
 import { useRouter } from "next/navigation"; // Para redirigir al usuario después de logout
 import { auth } from "@/app/firebase/firebase"; // Importa la configuración de Firebase
-import axios from "axios";
 import { fetchUserProfile } from "@/services/user/userService";
-import Loader from "../common/Loader";
-
-interface Person {
-  firstName: string;
-  lastName: string;
-}
 
 interface UserProfile {
-  user: {
-    id: number;
-    email: string;
-    active: boolean;
-    verified: boolean;
-    firebaseUid: string;
-  };
-  person: Person;
-}
+  access_token: string;
+  email: string;
+  full_name: string;
+  refresh_token: string;
+
+};
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const router = useRouter();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | undefined>();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -78,7 +68,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {userProfile?.person.firstName} {userProfile?.person.lastName}
+            {userProfile?.full_name}
           </span>
           <span className="block text-xs">Entrenador</span>
         </span>

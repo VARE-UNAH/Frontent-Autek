@@ -67,7 +67,7 @@ const Newcar = () => {
         };
 
         loadCarModels();
-    }, [selectedBrand]); // Solo se ejecuta cuando `selectedBrand` cambia
+    }, [selectedBrand, models]); // Solo se ejecuta cuando `selectedBrand` cambia
 
     const onSelectionChange = (key: React.Key | null) => {
         if (typeof key === "string") {
