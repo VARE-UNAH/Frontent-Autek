@@ -84,6 +84,7 @@ const Newappointment = () => {
                                                 width={64}
                                                 height={48}
                                                 className="rounded-lg"
+                                                alt="un carro"
                                             />
                                             <div className="flex flex-col">
                                                 <p className="text-md">Toyota</p>
