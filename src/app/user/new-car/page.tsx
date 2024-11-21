@@ -22,7 +22,7 @@ type Model = {
 };
 
 const Newcar = () => {
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [models, setModels] = useState<Model[]>([]);
     const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
@@ -45,42 +45,43 @@ const Newcar = () => {
 
     const handleCreateCar = () => {
         // Lógica para añadir el vehículo puede ir aquí, si es necesario
-      
         // Mostrar notificación de éxito
         toast.success("Vehículo añadido correctamente");
-      };
+    };
 
     // Cargar modelos cuando se seleccione una marca
     useEffect(() => {
         const loadCarModels = async () => {
             if (selectedBrand) {
                 try {
+                    setIsLoading(true);  // Mostrar cargando
                     const modelsData = await fetchCarModels(selectedBrand);
                     setModels(modelsData);
-                    console.log(modelsData.length)
-                    console.log(models)
-                    console.log(models.length)
+                    setIsLoading(false);  // Ocultar cargando
                 } catch (error) {
+                    setIsLoading(false);  // Ocultar cargando en caso de error
                     console.error("Error cargando modelos:", error);
                 }
             }
         };
 
-        loadCarModels();
-    }, [selectedBrand, models]); // Solo se ejecuta cuando `selectedBrand` cambia
+        // Solo cargar modelos si se selecciona una marca
+        if (selectedBrand) {
+            loadCarModels();
+        }
+    }, [selectedBrand]); // Dependencia solo en selectedBrand
 
     const onSelectionChange = (key: React.Key | null) => {
         if (typeof key === "string") {
             setSelectedBrand(key);
-            console.log(key)
+            console.log(key);
         } else {
             setSelectedBrand(null);
         }
     };
 
-
     return (
-        
+
         <DefaultLayout>
             {isLoading && <TrLoader />}
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
@@ -94,10 +95,10 @@ const Newcar = () => {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger"  onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
+                                <Button color="danger" onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
                                     Close
                                 </Button>
-                                <Button color="primary" onPress={onClose } onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
+                                <Button color="primary" onPress={onClose} onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
                                     Action
                                 </Button>
                             </ModalFooter>
