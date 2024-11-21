@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { logoutUser } from "@/services/user/authService";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { Button } from "@nextui-org/react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -59,6 +60,14 @@ const menuGroups = [
         label: "Inicio",
         route: "/user/home",
       },
+      //MENU DASHBOARD
+      {
+        icon: (
+          <i className="fa-solid fa-wrench"></i>
+        ),
+        label: "Talleres",
+        route: "/talleres",
+      },
       //CALENDARIO 
       {
         icon: (
@@ -86,6 +95,8 @@ const menuGroups = [
         label: "Calendario",
         route: "/calendar",
       },
+      //MENU DASHBOARD
+
     ],
   },
   {
@@ -133,12 +144,40 @@ const menuGroups = [
 
     ],
   },
+
 ];
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
+  const handleLogout = async () => {
+    // Llama a la función logoutUser desde el servicio
+    const logoutSuccessful = await logoutUser();
 
+    if (logoutSuccessful) {
+      // Si el logout fue exitoso, limpia el almacenamiento
+      localStorage.clear();
+      sessionStorage.clear();
+      // Elimina el token del almacenamiento local y de la sesión
+      // Redirige al usuario a la página de login
+      router.push("/auth/signin");
+    } else {
+      // Si hubo un error, muestra un mensaje o maneja el error
+      console.error("No se pudo cerrar sesión correctamente.");
+    }
+  };
+  /* const handleLogout = async () => {
+    try {
+      router.push("/auth/signin"); // Redirigir al usuario a la página de login
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+
+    }
+    localStorage.clear();
+    sessionStorage.clear();
+    document.cookie = 'firebase-auth-token=; Max-Age=0';
+  }; */
   return (
     <ClickOutside onClick={() => setSidebarOpen(false)}>
       <aside
@@ -195,6 +234,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </ul>
               </div>
             ))}
+            <Button color="danger" onClick={handleLogout} className='w-full h-10 bg-gradient-to-r from-red to-rose-700 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mt-2' >
+              Cerrar Sesion
+            </Button>
           </nav>
           {/* <!-- Sidebar Menu --> */}
         </div>

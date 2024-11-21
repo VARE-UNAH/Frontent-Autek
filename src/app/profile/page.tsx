@@ -5,9 +5,59 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
 import Link from "next/link";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { useCallback, useEffect, useState } from "react";
+import { useValidateToken } from "@/services/user/authService";
+import Loader from "@/components/common/Loader";
 
+interface UserProfile {
+  id: number;
+  first_name: string;
+  last_name: string,
+  email: string;
+
+};
 
 const Profile = () => {
+  const isValidated = useValidateToken();
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+
+  /**
+   * Carga el perfil desde el almacenamiento local.
+   */
+  const loadUserProfile = () => {
+    const storedUserProfile = localStorage.getItem("userProfile");
+    if (storedUserProfile) {
+      setUserProfile(JSON.parse(storedUserProfile));
+    } else {
+      console.warn("No se encontró un perfil de usuario en el almacenamiento local.");
+    }
+    setIsLoadingProfile(false);
+  };
+
+  useEffect(() => {
+    if (isValidated) {
+      loadUserProfile();
+    }
+  }, [isValidated]);
+
+  // Muestra el Loader mientras se valida el token o se carga el perfil
+  if (!isValidated || isLoadingProfile) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader />
+      </div>
+    );
+  }
+
+  // Maneja el caso donde el perfil no se encuentra después de cargar
+  if (!userProfile) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-gray-500">Error al cargar el perfil del usuario.</p>
+      </div>
+    );
+  }
   return (
     <DefaultLayout>
       <Breadcrumbs size="lg" variant="bordered" className="pb-2">
@@ -113,10 +163,10 @@ const Profile = () => {
             </div>
             <div className="mt-4">
               <h3 className="text-2xl font-semibold text-blue-600 dark:text-white">
-                Max Verstappen
+                {userProfile.first_name} {userProfile.last_name}
               </h3>
-              <p className="font-regular text-black text-sm">maxverstappen@gmail.com</p>
-              <p className="font-regular text-sm">Tegucigalpa, Francisco Morazán, Honduras</p>
+              <p className="font-regular text-black text-sm">{userProfile.email}</p>
+              <p className="font-regular text-sm">{userProfile.id}</p>
               <div className="mx-auto mb-5.5 mt-4.5  dark:bg-[#37404F]">
                 <Link href="/profile-edit" passHref>
                   <button

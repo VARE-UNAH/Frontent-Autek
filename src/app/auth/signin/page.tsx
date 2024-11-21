@@ -39,7 +39,9 @@ console.log(email,password)
     console.log("Authenticated user:", data);
 
     localStorage.setItem("userProfile", JSON.stringify(data))
-    localStorage.setItem("accessToken", JSON.stringify(data.access_token));
+    localStorage.setItem("accessToken", data.access_token);
+    localStorage.setItem("refreshToken", data.refresh_token);
+    console.log("token login", localStorage.getItem("refreshToken"));
 
     const userProfile = await fetchUserProfile();
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
