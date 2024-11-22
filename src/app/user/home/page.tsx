@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation"; // Reemplaza `next/router` por `nex
 import Vehiculos from "@/components/Vehiculos";
 import ProgressVehicle from "@/components/ProgressVehicle";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import { fetchUserProfile } from "@/services/user/userService";
+
+
 
 const Home = () => {
+    const userProfile = fetchUserProfile();
+    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
     const items = [
         { icon: 'fa-calendar-days', title: 'Citas', description: 'Programación de citas según tu conveniencia y disponibilidad' },
         { icon: 'fa-dollar-sign', title: 'Presupuestos', description: 'Aprobación de presupuestos en línea para el mantenimiento de tu auto' },

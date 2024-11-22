@@ -41,8 +41,8 @@ console.log(email,password)
     localStorage.setItem("userProfile", JSON.stringify(data))
     localStorage.setItem("accessToken", JSON.stringify(data.access_token));
 
-    const userProfile = await fetchUserProfile();
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    //const userProfile = await fetchUserProfile();
+    //localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
     router.push("/user/home"); // Redirect to dashboard on successful login
   } catch (error) {

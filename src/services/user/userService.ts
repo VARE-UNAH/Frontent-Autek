@@ -8,26 +8,14 @@ import axios from 'axios';
 
 };
 
-  const checkServerConnection = async () => {
-    try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/health`);
-      return response.status === 200; // Si el estado es 200, el servidor está funcionando
-    } catch (error) {
-      return false; // Si hay un error, el servidor no está disponible
-    }
-  };
-
   export const fetchUserProfile = async (): Promise<UserProfile> => {
-    try {
-      // Obtain the token from localStorage
-      const token = localStorage.getItem("accessToken");
-  
+    try {      
+      const token = getAccessToken()
       if (!token) {
         throw new Error("No se encontró ningún token en localStorage.");
       }
-  
       // Configure the request to fetch the user profile
-      const response = await fetch("https://api.example.com/user/profile", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -74,3 +62,14 @@ import axios from 'axios';
       }
     } */
   };
+
+  export function getAccessToken(): string | null {
+    try {
+      const token = localStorage.getItem("accessToken");
+      return token ? JSON.parse(token) as string : null;
+    } catch (error) {
+      console.error("Failed to parse access token:", error);
+      return null;
+    }
+  }
+  
