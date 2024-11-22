@@ -48,6 +48,7 @@ const Newcar = () => {
     // Cargar marcas solo una vez
     useEffect(() => {
         const loadCarBrands = async () => {
+            setIsLoading(true);
             try {
                 const brandsData = await fetchCarBrands();
                 const colorsData = await fetchCarColors();
@@ -56,6 +57,7 @@ const Newcar = () => {
             } catch (error) {
                 console.error("Error cargando marcas:", error);
             }
+            setIsLoading(false);
         };
 
         loadCarBrands();
