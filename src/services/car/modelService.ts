@@ -3,11 +3,11 @@
 import axios from 'axios';
 
 type Model = {
-  key: string;
+  key: number;
   label: string;
 };
 
-export const fetchCarModels = async (brandKey: string): Promise<Model[]> => {
+export const fetchCarModels = async (brandKey: number): Promise<Model[]> => {
   try {
     // Obtener el token del localStorage
     const token = localStorage.getItem('accessToken');
@@ -23,7 +23,7 @@ export const fetchCarModels = async (brandKey: string): Promise<Model[]> => {
         'Content-Type': 'application/json',
       },
     });
-
+    console.log(response.data);
     // Si la respuesta es exitosa, formatear los datos de los modelos de autos
     const data = response.data;
 
