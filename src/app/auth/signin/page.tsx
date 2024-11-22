@@ -41,7 +41,7 @@ console.log(email,password)
     localStorage.setItem("userProfile", JSON.stringify(data))
     localStorage.setItem("accessToken", data.access_token);
     localStorage.setItem("refreshToken", data.refresh_token);
-    console.log("token login", localStorage.getItem("refreshToken"));
+    console.log("token login", localStorage.getItem("accessToken"));
 
     const userProfile = await fetchUserProfile();
     localStorage.setItem("userProfile", JSON.stringify(userProfile));

@@ -1,11 +1,55 @@
 import Image from 'next/image';
 import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link } from "@nextui-org/react";
+import { useEffect, useState } from 'react';
+import getCars from '@/services/car/getService';
 
-const LatestCustomers = () => {
-    const customers = [
-        { name: "Toyota Corolla 2017", color: "Negro", plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024" },
-        { name: "Toyota Corolla 2017", color: "Negro", plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024" },
-    ];
+type Car = {
+    id_car: number;
+    brand: {
+        id_brand: number;
+        name: string;
+    };
+    model: {
+        id_model: number;
+        name: string;
+    };
+    color: {
+        id_color: number;
+        name: string;
+    };
+    license_plate: string;
+    year: string;
+    user: {
+        id: string;
+        email: string;
+        first_name: string;
+        last_name: string;
+        date_of_birth: string;
+    };
+}
+
+interface CarsProps {
+    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Definir el tipo de la función que se pasará como prop
+}
+
+const Cars = ({ setIsLoading }: CarsProps) => {
+    const [cars, setCars] = useState<Car[]>([]);
+
+    useEffect(() => {
+        const fetchCars = async () => {
+            setIsLoading(true);
+            try {
+                const carData = await getCars(); // Llamar al servicio para obtener los vehículos
+                setCars(carData); // Almacenar los datos de los vehículos en el estado
+            } catch (error) {
+                console.error('Error al cargar los vehículos:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchCars(); // Llamar a la función para obtener los datos cuando el componente se monta
+    }, [setIsLoading]);
 
     const mySvg = (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -23,7 +67,7 @@ const LatestCustomers = () => {
             <Divider />
             <CardBody>
                 <ul role="list" className="mt-2">
-                    {customers.map((customer, index) => (
+                    {cars.map((car, index) => (
                         <Accordion variant="splitted" key={index}>
                             <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke" startContent={
                                 <Image
@@ -32,27 +76,27 @@ const LatestCustomers = () => {
                                     width={51}
                                     height={38}
                                     className="rounded-lg"
-                                />} key={index} aria-label={customer.name} title={customer.name}>
+                                />} key={index} aria-label={car.brand.name} title={`${car.brand.name} ${car.model.name} ${car.year}`}>
                                 <li key={index} className="pb-3 sm:pb-4 rounded-lg">
                                     <div className="grid grid-cols-2 justify-between">
                                         <div className="">
                                             <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Color:{customer.color}
+                                                Color:{car.color.name}
                                             </p>
                                             <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Placa:{customer.plate}
+                                                Placa:{car.license_plate}
                                             </p>
                                             <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Proxima Visita:{customer.next}
+                                                Proxima Visita: pendiente implementacion
                                             </p>
                                             <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Ultima Visita:{customer.last}
+                                                Ultima Visita: pendiente implementacion
                                             </p>
                                         </div>
                                         <div className="self-center justify-self-end">
                                             <Image
-                                                src={customer.image}
-                                                alt={`${customer.name} image`}
+                                                src={"/images/cars/toyota.png"}
+                                                alt={`/images/cars/toyota.png image`}
                                                 width={100}
                                                 height={60}
                                                 className="rounded-lg"
@@ -83,4 +127,4 @@ const LatestCustomers = () => {
     );
 };
 
-export default LatestCustomers;
+export default Cars;
