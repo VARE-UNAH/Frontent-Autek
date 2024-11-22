@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from "react";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Tooltip } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useEffect } from 'react';
@@ -286,7 +286,7 @@ const Newcar = () => {
                                         ))
                                     ) : (
                                         <AutocompleteItem key="no-models" isDisabled value="No hay modelos disponibles">
-                                            No hay modelos disponibles
+                                            No hay modelos disponibles o primero seleccione una marca
                                         </AutocompleteItem>
                                     )}
                                 </Autocomplete>
@@ -334,6 +334,7 @@ const Newcar = () => {
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Año
                                 </label>
+                                <Tooltip color="default" className="text-black" content="El año de tu vehiculo debe de estar en el rango de 1990 a 2025">
                                 <Input
                                     type="number"
                                     placeholder="Ingresa el año de tu vehículo"
@@ -357,6 +358,7 @@ const Newcar = () => {
                                         inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
                                     }}
                                 />
+                                </Tooltip>
 
                             </div>
 
@@ -364,30 +366,31 @@ const Newcar = () => {
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Número de Placa
                                 </label>
-                                <Input
-                                    type="string"
-                                    placeholder="Ingresa la placa de tu vehiculo"
-                                    isRequired
-                                    variant="bordered"
-                                    labelPlacement="outside"
-                                    color="primary"
-                                    size="lg"
-                                    value={plate}
-                                    onValueChange={setPlate}
-                                    classNames={{
-                                        label: "text-gray2 text-md",
-                                        input: [
-                                            "bg-transparent",
-                                            "text-black/90 dark:text-white/90",
-                                            "ps-2",
-                                            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                                        ],
-                                        inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
+                                <Tooltip color="default" className="text-black" content="El número de placa debe contener 6 digitos, los primeros 3 caracter, los ultimos 3 númericos">
+                                    <Input
+                                        type="string"
+                                        placeholder="Ingresa la placa de tu vehiculo"
+                                        isRequired
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        color="primary"
+                                        size="lg"
+                                        value={plate}
+                                        onValueChange={setPlate}
+                                        classNames={{
+                                            label: "text-gray2 text-md",
+                                            input: [
+                                                "bg-transparent",
+                                                "text-black/90 dark:text-white/90",
+                                                "ps-2",
+                                                "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                                            ],
+                                            inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
 
-                                    }}
+                                        }}
 
-                                />
-
+                                    />
+                                </Tooltip>
                             </div>
 
                             <Button type="submit" onPress={() => {
