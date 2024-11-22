@@ -1,7 +1,8 @@
 import Image from 'next/image';
-import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link } from "@nextui-org/react";
+import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
 import getCars from '@/services/car/getService';
+import Loader from '../common/Loader';
 
 type Car = {
     id_car: number;
@@ -28,28 +29,24 @@ type Car = {
     };
 }
 
-interface CarsProps {
-    setIsLoading: React.Dispatch<React.SetStateAction<boolean>>; // Definir el tipo de la función que se pasará como prop
-}
 
-const Cars = ({ setIsLoading }: CarsProps) => {
+const Cars = () => {
     const [cars, setCars] = useState<Car[]>([]);
-
+    const [isLoading, setIsLoading] = useState(true);
+    const fetchCars = async () => {
+        try {
+            const carData = await getCars(); // Llamar al servicio para obtener los vehículos
+            setCars(carData); // Almacenar los datos de los vehículos en el estado
+        } catch (error) {
+            console.error('Error al cargar los vehículos:', error);
+        } finally {
+            setIsLoading(false);  // Asegúrate de que se ejecute solo una vez cuando termine la carga
+            console.log("Vehículos cargados");
+        }
+    };
     useEffect(() => {
-        const fetchCars = async () => {
-            setIsLoading(true);
-            try {
-                const carData = await getCars(); // Llamar al servicio para obtener los vehículos
-                setCars(carData); // Almacenar los datos de los vehículos en el estado
-            } catch (error) {
-                console.error('Error al cargar los vehículos:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
         fetchCars(); // Llamar a la función para obtener los datos cuando el componente se monta
-    }, [setIsLoading]);
+    }, []);
 
     const mySvg = (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -66,6 +63,12 @@ const Cars = ({ setIsLoading }: CarsProps) => {
             </CardHeader>
             <Divider />
             <CardBody>
+            {isLoading ? (
+                    // Componente de carga mientras los datos se cargan
+                    <div className="flex justify-center items-center">
+                        <Spinner label="Obteniendo Vehiculos..."/>
+                    </div>
+                ) : (
                 <ul role="list" className="mt-2">
                     {cars.map((car, index) => (
                         <Accordion variant="splitted" key={index}>
@@ -110,6 +113,7 @@ const Cars = ({ setIsLoading }: CarsProps) => {
 
                     ))}
                 </ul>
+                )}
             </CardBody>
             <Divider />
             <CardFooter>

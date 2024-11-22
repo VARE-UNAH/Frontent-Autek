@@ -9,7 +9,6 @@ import Loader from "@/components/common/Loader";
 import { useState } from "react";
 
 const Home = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const items = [
         { icon: 'fa-calendar-days', title: 'Citas', description: 'Programación de citas según tu conveniencia y disponibilidad' },
         { icon: 'fa-dollar-sign', title: 'Presupuestos', description: 'Aprobación de presupuestos en línea para el mantenimiento de tu auto' },
@@ -44,7 +43,7 @@ const Home = () => {
                 </div>
             </Link>
             <ProgressVehicle />
-            <Vehiculos setIsLoading={setIsLoading} /> 
+            <Vehiculos /> 
         </DefaultLayout>
     );
 };

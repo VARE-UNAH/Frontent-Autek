@@ -42,7 +42,7 @@ const Profile = () => {
   }, [isValidated]);
 
   // Muestra el Loader mientras se valida el token o se carga el perfil
-  if (!isValidated || isLoadingProfile) {
+  if (!isValidated || isLoadingProfile ) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader />
