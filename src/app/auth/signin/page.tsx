@@ -38,12 +38,13 @@ console.log(email,password)
     // Log the user data
     console.log("Authenticated user:", data);
 
-    localStorage.setItem("userProfile", JSON.stringify(data))
     localStorage.setItem("accessToken", data.access_token);
     localStorage.setItem("refreshToken", data.refresh_token);
     console.log("token login", localStorage.getItem("accessToken"));
+    
 
     const userProfile = await fetchUserProfile();
+    console.log(userProfile);
     localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
     router.push("/user/home"); // Redirect to dashboard on successful login

@@ -25,7 +25,7 @@ type Car = {
     };
   }
 // Función para obtener vehículos
-const getCars = async (): Promise<Car[]> => {
+export const getCars = async (): Promise<Car[]> => {
   try {
     const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
     if (!accessToken) {

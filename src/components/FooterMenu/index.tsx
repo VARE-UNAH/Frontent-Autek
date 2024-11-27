@@ -22,7 +22,7 @@ const Footermenu: React.FC = () => {
                         </a>
                     </li>
                     <li className="text-center">
-                        <a href="/user/paymments" className="hover:underline text-white">
+                        <a href="/user/payments" className="hover:underline text-white">
                             <i className="fa-solid fa-wallet text-lg"></i>
                         </a>
                     </li>
