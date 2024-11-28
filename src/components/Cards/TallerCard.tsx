@@ -45,7 +45,7 @@ const TallerCard: React.FC<CardProps> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className="flex items-center w-full pt-1 pb-1">
+                        <div className="flex items-center w-full pt-2 pb-1">
                             <i className="fa-solid text-default-500 fa-location-dot pe-1"></i>
                             <p className="text-sm text-default-500 ">{location}</p>
                         </div>

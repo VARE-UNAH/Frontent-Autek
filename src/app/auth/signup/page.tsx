@@ -1,10 +1,10 @@
 'use client'
 import React, { useState } from "react";
-import Image from "next/image";
 import LoginLayout from "@/components/Layouts/LoginLayout";
 import { SignUpFormValidator } from "@/validators/auth/authValidators";
 import { useRouter } from "next/navigation";
 import { toast } from 'sonner'
+import { Navbar, Image, NavbarContent, Link, NavbarBrand } from "@nextui-org/react";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -106,20 +106,40 @@ const SignUp = () => {
 
   return (
     <LoginLayout>
-      <nav className="bg-white dark:bg-gray-900">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <button type="button" onClick={handleBack} className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-            <svg className="w-5 h-5 text-primary fill-current" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z" />
-            </svg>
-          </button>
-          <a href="https://flowbite.com/" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-            <Image src="/images/autek/autek.png" className="h-8" alt="Flowbite Logo" width={40} // Set your desired width here
-              height={32}/>
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-primary dark:text-white">AUTEK</span>
-          </a>
-        </div>
-      </nav>
+      <Navbar className="bg-white h-15">
+        <NavbarContent className="relative flex items-center justify-center">
+          <div className="absolute left-0">
+            <Link href="/home">
+              <svg
+                className="w-4 h-4 text-blue-800 fill-current"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z" />
+              </svg>
+            </Link>
+          </div>
+          <NavbarBrand className="flex items-center justify-center">
+            {/* <Image
+              src="/images/autek/autek_white.png"
+              alt="Autek Logo"
+              className="h-8"
+              width={30}
+              height={32}
+              layout="intrinsic"
+            /> */}
+            <Image
+              src="/images/autek/autek.png"
+              alt="Autek Logo"
+              width={30}
+              height={32}
+              style={{ height: 'auto', maxWidth: '100%' }}
+            />
+            <p className="font-bold text-inherit ps-1 text-blue-800">AUTEK</p>
+          </NavbarBrand>
+        </NavbarContent>
+      </Navbar>
       <div className="max-w-full md:max-w-lg lg:max-w-xl w-full  bg-white pt-1 p-8 relative">
         <h1 className="text-title-lg font-bold text-black pb-2">Registro</h1>
         <p className="text-base text-black pb-5">

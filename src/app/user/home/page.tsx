@@ -9,12 +9,6 @@ import Loader from "@/components/common/Loader";
 import { useState } from "react";
 
 const Home = () => {
-    const items = [
-        { icon: 'fa-calendar-days', title: 'Citas', description: 'Programación de citas según tu conveniencia y disponibilidad' },
-        { icon: 'fa-dollar-sign', title: 'Presupuestos', description: 'Aprobación de presupuestos en línea para el mantenimiento de tu auto' },
-        { icon: 'fa-clock', title: 'Seguimiento', description: 'Seguimiento en tiempo real del progreso de tu vehículo' },
-        { icon: 'fa-credit-card', title: 'Pagos en línea', description: 'Paga de forma segura las facturas de tu mantenimiento' },
-    ];
     useValidateToken();
     const isValidated = useValidateToken(); // Hook personalizado
 
@@ -28,7 +22,7 @@ const Home = () => {
     return (
         <DefaultLayout>
             <h1 className="text-3xl font-bold text-black pb-2">Inicio</h1>
-            <Link href="/appointments/new">
+            <Link href="/talleres">
                 <div
                     className="relative bg-cover bg-center p-2 rounded-lg mb-2 h-20 shadow-md"
                     style={{

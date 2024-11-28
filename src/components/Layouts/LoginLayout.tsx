@@ -12,8 +12,8 @@ export default function LoginLayout({
     return (
         <>
             <div className="flex min-h-screen flex-col">
-                <div className="flex-1 flex flex-col lg:ml-72.5 relative">
-                    <main className="flex-grow">
+                <div className="flex-1 flex flex-col w-full relative"> {/* Cambié lg:ml-72.5 a w-full */}
+                    <main className="flex-grow w-full"> {/* Añadí w-full para asegurar el ancho completo */}
                         {children}
                         <Toaster position="top-right" />
                     </main>

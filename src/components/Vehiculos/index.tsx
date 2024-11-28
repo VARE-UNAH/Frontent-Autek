@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner } from "@nextui-org/react";
+import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner, Skeleton } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
 import getCars from '@/services/car/getService';
 import Loader from '../common/Loader';
@@ -48,6 +48,10 @@ const Cars = () => {
         fetchCars(); // Llamar a la función para obtener los datos cuando el componente se monta
     }, []);
 
+    const capitalizeFirstLetter = (str: string) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     const mySvg = (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z" />
@@ -57,75 +61,104 @@ const Cars = () => {
     return (
         <Card className="shadow-sm rounded-lg">
             <CardHeader className="flex gap-3">
-                <div className="flex flex-col">
-                    <p className="text-md font-bold">Tus Vehículos</p>
-                </div>
+                {isLoading ? (
+                    <div className="flex flex-col">
+                        {Array(1).fill(null).map((_, index) => (
+                            <div key={index} className="">
+                                <Skeleton className="rounded-lg border border-stroke">
+                                    <p className="text-md font-bold">Tus Vehículos</p>
+                                </Skeleton>
+                            </div>
+                        ))}
+                    </div>) : (
+                    <div className="flex flex-col">
+                        <p className="text-md font-bold">Tus Vehículos</p>
+                    </div>
+                )}
             </CardHeader>
             <Divider />
             <CardBody>
-            {isLoading ? (
+                {isLoading ? (
                     // Componente de carga mientras los datos se cargan
-                    <div className="flex justify-center items-center">
-                        <Spinner label="Obteniendo Vehiculos..."/>
+                    <div className="mt-2">
+                        {Array(4).fill(null).map((_, index) => (
+                            <div key={index} className="">
+                                <Skeleton className="rounded-lg mx-2 mb-2 border border-stroke">
+                                    <div className="h-17 rounded-lg bg-white"></div>
+                                </Skeleton>
+                            </div>
+                        ))}
                     </div>
                 ) : (
-                <ul role="list" className="mt-2">
-                    {cars.map((car, index) => (
-                        <Accordion variant="splitted" key={index}>
-                            <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke" startContent={
-                                <Image
-                                    alt="logo"
-                                    src="/images/cars/toyota.png"
-                                    width={51}
-                                    height={38}
-                                    className="rounded-lg"
-                                />} key={index} aria-label={car.brand.name} title={`${car.brand.name} ${car.model.name} ${car.year}`}>
-                                <li key={index} className="pb-3 sm:pb-4 rounded-lg">
-                                    <div className="grid grid-cols-2 justify-between">
-                                        <div className="">
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Color:{car.color.name}
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Placa:{car.license_plate}
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Proxima Visita: pendiente implementacion
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Ultima Visita: pendiente implementacion
-                                            </p>
+                    <ul role="list" className="mt-2">
+                        {cars.map((car, index) => (
+                            <Accordion variant="splitted" key={index}>
+                                <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke font-normal" startContent={
+                                    <Image
+                                        alt="logo"
+                                        src="/images/cars/toyota.png"
+                                        width={51}
+                                        height={38}
+                                        className="rounded-lg uppercase"
+                                    />} key={index} aria-label={car.brand.name} title={`${capitalizeFirstLetter(car.brand.name)} ${capitalizeFirstLetter(car.model.name)} ${car.year}`}>
+                                    <li key={index} className="pb-3 sm:pb-4 rounded-lg">
+                                        <div className="grid grid-cols-2 justify-between">
+                                            <div className="">
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Color:{car.color.name}
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Placa:{car.license_plate}
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Proxima Visita: pendiente implementacion
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Ultima Visita: pendiente implementacion
+                                                </p>
+                                            </div>
+                                            <div className="self-center justify-self-end">
+                                                <Image
+                                                    src={"/images/cars/toyota.png"}
+                                                    alt={`/images/cars/toyota.png image`}
+                                                    width={100}
+                                                    height={60}
+                                                    className="rounded-lg"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="self-center justify-self-end">
-                                            <Image
-                                                src={"/images/cars/toyota.png"}
-                                                alt={`/images/cars/toyota.png image`}
-                                                width={100}
-                                                height={60}
-                                                className="rounded-lg"
-                                            />
-                                        </div>
-                                    </div>
-                                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
-                                </li>
-                            </AccordionItem>
-                        </Accordion>
+                                        <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
+                                    </li>
+                                </AccordionItem>
+                            </Accordion>
 
-                    ))}
-                </ul>
+                        ))}
+                    </ul>
                 )}
             </CardBody>
             <Divider />
             <CardFooter>
-                <div className="w-full flex justify-center mb-2">
-                    <Link
-                        href="/user/new-car"
-                    >
-                        <Button color="primary" variant="bordered" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
-                            Añadir Vehículo
-                        </Button>
-                    </Link>
-                </div>
+                {isLoading ? (<div className="w-full flex justify-center mb-2">
+                    {Array(1).fill(null).map((_, index) => (
+                        <div key={index} className="">
+                            <Skeleton className="rounded-lg border border-stroke">
+                                <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
+                                    Añadir Vehículo
+                                </Button>
+                            </Skeleton>
+                        </div>
+                    ))}
+                </div>) : (
+                    <div className="w-full flex justify-center mb-2">
+                        <Link
+                            href="/user/new-car"
+                        >
+                            <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
+                                Añadir Vehículo
+                            </Button>
+                        </Link>
+                    </div>)}
+
             </CardFooter>
         </Card>
     );
