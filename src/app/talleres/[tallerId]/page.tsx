@@ -107,7 +107,7 @@ function TallerDetails({ params }: {
 
     useEffect(() => {
         fetchData(); // Llamar a la función para obtener los datos cuando el componente se monta
-    }, []);
+    }, );
 
     const validateForm = (): boolean => {
 
