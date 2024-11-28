@@ -5,7 +5,7 @@ const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/c
 
 export const createAppointment = async (data: {
     id_car: number;
-    id_workshop: 1;
+    id_workshop: number;
     description: string;
     date: string;
 }): Promise<void> => {

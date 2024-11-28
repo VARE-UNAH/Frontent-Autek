@@ -4,6 +4,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { today, isWeekend, getLocalTimeZone, DateValue } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
+import { WorkShop } from "@/types/workshop";
 import {
     Tabs,
     Tab,
@@ -27,6 +28,8 @@ import { DatePicker } from "@nextui-org/react";
 import getCars from "@/services/car/getService";
 import { toast } from "sonner";
 import { createAppointment } from "@/services/appointments/appointmentsService";
+import TrLoader from "@/components/common/TrLoader";
+import { fetchWorkShopData } from "@/services/workshops/workshopsService";
 
 type Car = {
     id_car: number;
@@ -62,13 +65,18 @@ const generateHours = () => {
     return hoursArray;
 };
 
-const Newappointment = () => {
+function TallerDetails({ params }: {
+    params: { tallerId: number };
+}) {
+    const tallerId = params.tallerId;
+    console.log("ID TALLER", tallerId);
     const hours = generateHours();
     const [selected, setSelected] = useState<string>("Detalle"); // Inicia en el tab "Detalle"
     const [isSelected, setIsSelected] = useState<Boolean>(false);
     const [cars, setCars] = useState<Car[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+    const [selectedWorkShop, setSelectedWorkShop] = useState<WorkShop | null>(null);
     const [selectedCarKey, setSelectedCarKey] = useState<string[]>([]);
     const [detalleCita, setDetalleCita] = useState<string>("");
     const [isValidteFirst, setIsValidteFirst] = useState<Boolean>(false);
@@ -80,9 +88,13 @@ const Newappointment = () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     /* Obtener vehiculos para llenar el select */
-    const fetchCars = async () => {
+    const fetchData = async () => {
+        setIsLoading(true);
         try {
             const carData = await getCars(); // Llamar al servicio para obtener los vehículos
+            const workShopData = await fetchWorkShopData(tallerId);
+            console.log(workShopData);
+            setSelectedWorkShop(workShopData);
             setCars(carData); // Almacenar los datos de los vehículos en el estado
         } catch (error) {
             console.error('Error al cargar los vehículos:', error);
@@ -90,9 +102,11 @@ const Newappointment = () => {
             setIsLoading(false);  // Asegúrate de que se ejecute solo una vez cuando termine la carga
             console.log("Vehículos cargados");
         }
+        setIsLoading(false);
     };
+
     useEffect(() => {
-        fetchCars(); // Llamar a la función para obtener los datos cuando el componente se monta
+        fetchData(); // Llamar a la función para obtener los datos cuando el componente se monta
     }, []);
 
     const validateForm = (): boolean => {
@@ -134,13 +148,22 @@ const Newappointment = () => {
 
             await createAppointment({
                 id_car: selectedCar?.id_car as number,
-                id_workshop: 1,
+                id_workshop: selectedWorkShop?.id_workshop as number,
                 description: detalleCita,
-                date : combinedDateString
+                date: combinedDateString
             });
 
             toast.success("Cita creada correctamente");
             // Resetear el formulario después de la creación
+            setSelectedCar(null);
+            setSelectedCarKey([]);
+            setDetalleCita("");
+            setSelected("Detalle");
+            setIsSelected(false);
+            setIsValidteFirst(false);
+            setSelectedDate(null);
+            setSelectedHour(null);
+            setSelectedHourKey([]);
         } catch (error) {
             console.error("Error creando vehículo:", error);
             toast.error("Hubo un error al crear tu cita. Inténtalo de nuevo.");
@@ -174,7 +197,7 @@ const Newappointment = () => {
                 console.error("No se seleccionó ninguna clave.");
                 return;
             }
-    
+
             const selectedKey = keyArray[0] as number; // Tomar el primer valor del conjunto
             console.log("Elemento seleccionado:", selectedKey);
             setSelectedHourKey([selectedKey.toString()]);
@@ -182,7 +205,7 @@ const Newappointment = () => {
                 console.error("El valor seleccionado no es un número válido:", selectedKey);
                 return;
             }
-    
+
             const selectedHour = selectedKey; // Convertir a cadena
             setSelectedHour(selectedHour); // Actualizamos el estado
             console.log("Hora seleccionada:", selectedHour);
@@ -193,6 +216,7 @@ const Newappointment = () => {
         if (keys === "all") {
             console.log("Seleccionar todos no está permitido en este caso");
         } else {
+            console.log("Tienda", selectedWorkShop?.name);
             const selectedKey = [...keys][0] as number; // Tomar solo el primer valor del conjunto
             setSelectedCarKey([selectedKey.toString()]);
             console.log("Elemento seleccionado:", selectedKey);
@@ -217,6 +241,7 @@ const Newappointment = () => {
 
     return (
         <DefaultLayout>
+            {isLoading && <TrLoader />}
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
                 <ModalContent>
                     {(onClose) => (
@@ -224,15 +249,15 @@ const Newappointment = () => {
                             <ModalHeader className="flex flex-col gap-1 text-black">Confirmar nuevo vehículo</ModalHeader>
                             <ModalBody>
                                 <p>
-                                    Esta seguro que sea añadir este nuevo vehículo
+                                    Esta seguro que desea realizar esta cita?
                                 </p>
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
-                                    Close
+                                    Cancelar
                                 </Button>
                                 <Button color="primary" onPress={onClose} onClick={handleCreateAppointment} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
-                                    Action
+                                    Confirmar
                                 </Button>
                             </ModalFooter>
                         </>
@@ -241,13 +266,13 @@ const Newappointment = () => {
             </Modal>
             <Breadcrumbs size="lg" variant="bordered" className="pb-2">
                 <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
-                <BreadcrumbItem href="/appointments">Citas</BreadcrumbItem>
-                <BreadcrumbItem href="/appointments/new">Nueva Cita</BreadcrumbItem>
+                <BreadcrumbItem href="/talleres">Talleres</BreadcrumbItem>
+                <BreadcrumbItem href="/talleres">{selectedWorkShop?.name}</BreadcrumbItem>
             </Breadcrumbs>
             <div className="border border-stroke shadow-sm rounded-2xl bg-white">
                 <Card className="col-span-12 sm:col-span-4 rounded-b-none border-none shadow-none">
                     <CardHeader className="absolute z-10 top-1 flex-col !items-start shadow-none">
-                        <h4 className="text-white font-bold text-3xl">Ford el Trapiche</h4>
+                        <h4 className="text-white font-bold text-3xl">{selectedWorkShop?.name}</h4>
                     </CardHeader>
                     <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
                         <Image
@@ -259,7 +284,7 @@ const Newappointment = () => {
                                 height: "100%",
                                 objectFit: "cover", // Asegura que la imagen se ajuste correctamente
                             }}
-                            src="https://nextui.org/images/card-example-4.jpeg"
+                            src="/images/cover/excel.jpeg"
                         />
                     </div>
                 </Card>
@@ -395,7 +420,7 @@ const Newappointment = () => {
                                                     </SelectItem>
                                                 ))}
                                             </Select>
-                                            
+
                                         </div>
                                         <div className="flex">
                                             <Button onPress={() => {
@@ -420,4 +445,4 @@ const Newappointment = () => {
     );
 };
 
-export default Newappointment;
+export default TallerDetails;
