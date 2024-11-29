@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { Toaster, toast } from 'sonner'
 import Footermenu from "../FooterMenu";
 import  Footer  from "../Footer";
+import Navbarr from "../Navbarr";
 export default function DefaultLayout({
   children,
 }: {
@@ -17,13 +18,15 @@ export default function DefaultLayout({
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex min-h-screen flex-col">
         {/* <!-- ===== Sidebar Start ===== --> */}
+        {/* <Navbarr></Navbarr> */}
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="relative flex flex-1 flex-col lg:ml-72.5">
           {/* <!-- ===== Header Start ===== --> */}
-          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> 
+
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}

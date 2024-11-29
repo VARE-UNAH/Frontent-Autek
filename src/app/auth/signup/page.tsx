@@ -136,7 +136,7 @@ const SignUp = () => {
               height={32}
               style={{ height: 'auto', maxWidth: '100%' }}
             />
-            <p className="font-bold text-inherit ps-1 text-blue-800">AUTEK</p>
+            <p className="font-bold text-inherit ps-1 text-blue-500">AUTEK</p>
           </NavbarBrand>
         </NavbarContent>
       </Navbar>
