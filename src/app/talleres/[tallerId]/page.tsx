@@ -33,6 +33,7 @@ import TrLoader from "@/components/common/TrLoader";
 import { fetchWorkShopData } from "@/services/workshops/workshopsService";
 import { useValidateToken } from "@/services/user/authService";
 import Loader from "@/components/common/Loader";
+import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
 
 type Car = {
     id_car: number;
@@ -252,7 +253,7 @@ function TallerDetails({ params }: {
     }
 
     return (
-        <DefaultLayout>
+        <DefaultLayoutBack>
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
                 <ModalContent>
                     {(onClose) => (
@@ -564,7 +565,7 @@ function TallerDetails({ params }: {
 
 
 
-        </DefaultLayout>
+        </DefaultLayoutBack>
     );
 };
 

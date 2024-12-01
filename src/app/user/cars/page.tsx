@@ -2,10 +2,11 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
-import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Link, Slider } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Link, Skeleton, Slider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Car } from "@/types/car";
 import getCars from "@/services/car/getService";
+import VehicleCard from "@/components/Cards/VehicleCard";
 
 
 const Cars = () => {
@@ -32,165 +33,149 @@ const Cars = () => {
     return (
         <DefaultLayout>
             <Breadcrumbs size="md" variant="bordered" className="pb-1">
-                <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
-                <BreadcrumbItem href="/user/cars">Cars</BreadcrumbItem>
-                <BreadcrumbItem href="/user/cars/">Cars</BreadcrumbItem>
+                <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
+                <BreadcrumbItem href="/user/cars">Tus Vehiculos</BreadcrumbItem>
             </Breadcrumbs>
             <h1 className="text-black/90 text-md font-bold pb-1">Mis vehiculos</h1>
-            <Input
-                label="Buscar"
-                isClearable
-                variant="bordered"
-                color="primary"
-                radius="lg"
-                classNames={{
-                    label: "text-black/50 dark:text-white/90",
-                    input: [
-                        "bg-transparent",
-                        "text-black/90 dark:text-white/90",
-                        "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                    ],
-                    innerWrapper: "bg-transparent",
-                    inputWrapper: [
-                        "shadow-sm",
-                        "bg-white",
-                        "rounded-lg",
-                        "dark:bg-default/60",
-                        "backdrop-blur-xl",
-                        "backdrop-saturate-200",
-                        "!cursor-text",
-                    ],
-                }}
-                placeholder="Buscar vehículo..."
-                startContent={
-                    <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
-                }
-            />
-            <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Añadir Vehiculo</Button>
-            <p className="pb-0 font-normal text-sm mt-2">3 vehiculos</p>
-            <div className="mb-3">
-                <div className="rounded-t-lg rounded-b-none">
-                    <Card className="rounded-lg border-2 border-stroke shadow-sm block">
-                        <CardHeader className="pt-1 pb-0 bg-black rounded-t-lg">
-                            <div className="w-full overflow-hidden flex h-30  rounded-lg items-center justify-center bg-black/60">
-                                <Image
-                                    src={"/images/cars/rav4.png"}
-                                    alt={`/images/cars/toyota.png image`}
-                                    className="w-50 h-auto block z-0"
-                                />
-                                <Dropdown backdrop="blur">
-                                    <DropdownTrigger>
-                                        <i className="fa-solid fa-ellipsis absolute top-2 justify-end end-3 text-white text-xl"></i>
-                                    </DropdownTrigger>
-                                    <DropdownMenu variant="faded" aria-label="Static Actions">
-                                        <DropdownItem key="new">Ver Detalles</DropdownItem>
-                                        <DropdownItem key="edit">Editar vehiculo</DropdownItem>
-                                        <DropdownItem key="delete" className="text-danger" color="danger">
-                                            Eliminar Vehiculo
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </div>
-                        </CardHeader>
-                        <Divider></Divider>
-                        <CardBody className="pt-1 pb-1">
-                            <div className="flex items-baseline space-x-1">
-                                <div>
-                                    <h4 className="text-md font-bold uppercase text-black">Toyota</h4>
-                                </div>
-                                <p>-</p>
-                                <div>
-                                    <h4 className="text-sm font-medium text-black/50">RAV4 2016</h4>
-                                </div>
-                                <p>-</p>
-                                <h4 className="text-sm font-medium text-black/50">HBG-556</h4>
-                            </div>
-                        </CardBody>
-                    </Card>
+            {isLoading ? (
+                <div>
+                    <Skeleton className="rounded-lg" >
+                        <Input
+                            label="Buscar"
+                            isClearable
+                            variant="bordered"
+                            color="primary"
+                            radius="lg"
+                            classNames={{
+                                label: "text-black/50 dark:text-white/90",
+                                input: [
+                                    "bg-transparent",
+                                    "text-black/90 dark:text-white/90",
+                                    "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                                ],
+                                innerWrapper: "bg-transparent",
+                                inputWrapper: [
+                                    "shadow-sm",
+                                    "bg-white",
+                                    "rounded-lg",
+                                    "dark:bg-default/60",
+                                    "backdrop-blur-xl",
+                                    "backdrop-saturate-200",
+                                    "!cursor-text",
+                                ],
+                            }}
+                            placeholder="Buscar vehículo..."
+                            startContent={
+                                <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
+                            }
+                        />
+                    </Skeleton>
+                    <Skeleton className="rounded-md h-8 mt-2">
+                        <Button size='sm' className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Añadir Vehiculo</Button>
+                    </Skeleton>
+                    <Skeleton className="w-20 h-5 my-2 rounded-md">
+                        <p className="text-sm text-default-500">Cargando</p>
+                    </Skeleton>
                 </div>
-            </div>
-            <div className="mb-3">
-                <div className="rounded-t-lg rounded-b-none mt-2">
-                    <Card className="rounded-lg border-2 border-stroke shadow-sm block">
-                        <CardHeader className="pt-1 pb-0 bg-black rounded-t-lg">
-                            <div className="w-full overflow-hidden flex h-30  rounded-lg items-center justify-center bg-black/60">
-                                <Image
-                                    src={"/images/cars/rav4.png"}
-                                    alt={`/images/cars/toyota.png image`}
-                                    className="w-50 h-auto block z-0"
-                                />
-                                <Dropdown backdrop="blur">
-                                    <DropdownTrigger>
-                                        <i className="fa-solid fa-ellipsis absolute top-2 justify-end end-3 text-white text-xl"></i>
-                                    </DropdownTrigger>
-                                    <DropdownMenu variant="faded" aria-label="Static Actions">
-                                        <DropdownItem key="new">Ver Detalles</DropdownItem>
-                                        <DropdownItem key="edit">Editar vehiculo</DropdownItem>
-                                        <DropdownItem key="delete" className="text-danger" color="danger">
-                                            Eliminar Vehiculo
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </div>
-                        </CardHeader>
-                        <Divider></Divider>
-                        <CardBody className="pt-1 pb-1">
-                            <div className="flex items-baseline space-x-1">
-                                <div>
-                                    <h4 className="text-md font-bold uppercase text-black">Toyota</h4>
-                                </div>
-                                <p>-</p>
-                                <div>
-                                    <h4 className="text-sm font-medium text-black/50">RAV4 2016</h4>
-                                </div>
-                                <p>-</p>
-                                <h4 className="text-sm font-medium text-black/50">HBG-556</h4>
-                            </div>
-                        </CardBody>
-                    </Card>
+            ) : (
+                <div>
+                    <Input
+                        label="Buscar"
+                        isClearable
+                        variant="bordered"
+                        color="primary"
+                        radius="lg"
+                        classNames={{
+                            label: "text-black/50 dark:text-white/90",
+                            input: [
+                                "bg-transparent",
+                                "text-black/90 dark:text-white/90",
+                                "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                            ],
+                            innerWrapper: "bg-transparent",
+                            inputWrapper: [
+                                "shadow-sm",
+                                "bg-white",
+                                "rounded-lg",
+                                "dark:bg-default/60",
+                                "backdrop-blur-xl",
+                                "backdrop-saturate-200",
+                                "!cursor-text",
+                            ],
+                        }}
+                        placeholder="Buscar vehículo..."
+                        startContent={
+                            <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
+                        }
+                    />
+                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Añadir Vehiculo</Button>
+                    <p className="pb-0 font-normal text-sm mt-2">{cars.length} vehiculos</p>
                 </div>
-            </div>
-            <div className="mb-3">
-                <div className="rounded-t-lg rounded-b-none mt-2">
-                    <Card className="rounded-lg border-2 border-stroke shadow-sm block">
-                        <CardHeader className="pt-1 pb-0 bg-black rounded-t-lg">
-                            <div className="w-full overflow-hidden flex h-30  rounded-lg items-center justify-center bg-black/60">
-                                <Image
-                                    src={"/images/cars/rav4.png"}
-                                    alt={`/images/cars/toyota.png image`}
-                                    className="w-50 h-auto block z-0"
-                                />
-                                <Dropdown backdrop="blur">
-                                    <DropdownTrigger>
-                                        <i className="fa-solid fa-ellipsis absolute top-2 justify-end end-3 text-white text-xl"></i>
-                                    </DropdownTrigger>
-                                    <DropdownMenu variant="faded" aria-label="Static Actions">
-                                        <DropdownItem key="new">Ver Detalles</DropdownItem>
-                                        <DropdownItem key="edit">Editar vehiculo</DropdownItem>
-                                        <DropdownItem key="delete" className="text-danger" color="danger">
-                                            Eliminar Vehiculo
-                                        </DropdownItem>
-                                    </DropdownMenu>
-                                </Dropdown>
-                            </div>
-                        </CardHeader>
-                        <Divider></Divider>
-                        <CardBody className="pt-1 pb-1">
-                            <div className="flex items-baseline space-x-1">
-                                <div>
-                                    <h4 className="text-md font-bold uppercase text-black">Toyota</h4>
+            )}
+            {isLoading ? (
+                <div className="">
+                    {Array(4).fill(null).map((_, index) => (
+                        <div key={index} className="mb-3">
+                            <Skeleton className="rounded-lg">
+                                <div className="rounded-t-lg rounded-b-none">
+                                    <Card className="rounded-lg border-2 border-stroke shadow-sm block">
+                                        <CardHeader className="pt-1 pb-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-t-lg">
+                                            <div className="w-full overflow-hidden flex h-30 rounded-lg items-center justify-center">
+                                                <Image
+                                                    src={"/images/cars/rav4.png"}
+                                                    alt={`Image of prueba`}
+                                                    className="w-50 h-auto block z-0"
+                                                />
+                                                <Dropdown backdrop="blur">
+                                                    <DropdownTrigger>
+                                                        <i className="fa-solid fa-ellipsis absolute top-2 justify-end end-3 text-white text-xl"></i>
+                                                    </DropdownTrigger>
+                                                    <DropdownMenu variant="faded" aria-label="Static Actions">
+                                                        <DropdownItem key="new">Ver Detalles</DropdownItem>
+                                                        <DropdownItem key="edit">Editar vehículo</DropdownItem>
+                                                        <DropdownItem key="delete" className="text-danger" color="danger">
+                                                            Eliminar Vehículo
+                                                        </DropdownItem>
+                                                    </DropdownMenu>
+                                                </Dropdown>
+                                            </div>
+                                        </CardHeader>
+                                        <Divider></Divider>
+                                        <CardBody className="pt-1 pb-1">
+                                            <div className="flex items-baseline space-x-1">
+                                                <div>
+                                                    <h4 className="text-md font-bold uppercase text-black">carga</h4>
+                                                </div>
+                                                <p>-</p>
+                                                <div>
+                                                    <h4 className="text-sm font-medium text-black/50 uppercase">carga</h4>
+                                                </div>
+                                                <p>-</p>
+                                                <h4 className="text-sm font-medium text-black/50">carga</h4>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
                                 </div>
-                                <p>-</p>
-                                <div>
-                                    <h4 className="text-sm font-medium text-black/50">RAV4 2016</h4>
-                                </div>
-                                <p>-</p>
-                                <h4 className="text-sm font-medium text-black/50">HBG-556</h4>
-                            </div>
-                        </CardBody>
-                    </Card>
+                            </Skeleton>
+                        </div>
+                    ))}
                 </div>
-            </div>
+            ) : (
+                <div>
+                    {cars.map((car, index) => (
+                        <VehicleCard
+                        key={index}
+                        brand_name={car.brand.name}
+                        model_name={car.model.name}
+                        license_plate={car.license_plate}
+                        linkUrl={`/user/cars/${car.id_car}`}>
+
+                        </VehicleCard>
+                        
+                    ))}
+                </div>
+            )}
+
         </DefaultLayout>
     );
 };

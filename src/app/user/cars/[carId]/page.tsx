@@ -176,12 +176,15 @@ const users = [
         status: "Active",
     },
 ];
-const Cars = () => {
+function CarDetails(
+    { params }: {
+        params: { carId: number};
+    }
+) {
+    const carId = params.carId;
     const [page, setPage] = React.useState(1);
     const rowsPerPage = 4;
-
     const pages = Math.ceil(users.length / rowsPerPage);
-
     const items = React.useMemo(() => {
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
@@ -199,7 +202,7 @@ const Cars = () => {
             <h1 className="text-black/90 text-md font-bold my-2">TOYOTA RAV4 2016</h1>
             <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
                 <CardHeader className="p-0">
-                    <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-black">
+                    <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
                         <Image
                             src={"/images/cars/rav4.png"}
                             alt={`/images/cars/toyota.png image`}
@@ -353,4 +356,4 @@ const Cars = () => {
     );
 };
 
-export default Cars;
+export default CarDetails;

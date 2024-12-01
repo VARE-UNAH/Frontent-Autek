@@ -60,7 +60,7 @@ const Profile = () => {
   }
   return (
     <DefaultLayout>
-      <Breadcrumbs size="lg" variant="bordered" className="pb-2">
+      <Breadcrumbs size="md" variant="bordered" className="pb-2">
         <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
         <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
       </Breadcrumbs>

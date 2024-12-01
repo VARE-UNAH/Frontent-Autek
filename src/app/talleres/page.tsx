@@ -31,6 +31,7 @@ const Talleres = () => {
                 <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
                 <BreadcrumbItem href="talleres">Talleres</BreadcrumbItem>
             </Breadcrumbs>
+            <h1 className="text-black/90 text-md font-bold pb-1">Talleres</h1>
             {isLoading ? (
                 <Skeleton className="rounded-lg">
                     <Input
