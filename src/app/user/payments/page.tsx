@@ -2,23 +2,29 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
-import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link } from "@nextui-org/react";
+import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link } from "@nextui-org/react";
 
 const cardData = [
     {
         bankName: "BANCO ATLANTIDA",
         cardNumber: "**** 6126",
-        cardType: "fa-cc-visa", // Tipo de tarjeta (ícono de FontAwesome)
+        cardType: "fa-cc-visa",
+        titular: "Hector Manuel Varela",
+        expDate: "09/29" // Tipo de tarjeta (ícono de FontAwesome)
     },
     {
         bankName: "BANCO FICOHSA",
         cardNumber: "**** 7843",
         cardType: "fa-cc-mastercard",
+        titular: "Hector Manuel Varela",
+        expDate: "09/29"
     },
     {
         bankName: "BANCO DAVIVIENDA",
         cardNumber: "**** 1290",
         cardType: "fa-cc-amex",
+        titular: "Hector Manuel Varela",
+        expDate: "09/29"
     },
 ];
 
@@ -42,14 +48,22 @@ const Cars = () => {
                     key={index}
                     className="w-full bg-gradient-to-r from-sky-600 to-sky-400 rounded-md shadow-sm mb-3"
                 >
-                    <CardHeader className="flex gap-3 justify-between h-24">
-                        <div className="flex flex-col">
-                            <p className="text-md font-bold text-white">{card.bankName}</p>
-                            <p className="text-md font-bold text-white">{card.cardNumber}</p>
+                    <CardHeader className="flex gap-3 justify-between h-30">
+                        <div className="flex flex-col self-start h-full">
+                            <p className="text-sm font-bold text-white">{card.bankName}</p>
+                            <p className="text-sm font-bold text-white">{card.cardNumber}</p>
+                            <div className="mt-auto">
+                                <p className="text-xs font-bold text-white">Vence el {card.expDate}</p>
+                                <p className="text-tiny font-bold text-white uppercase">{card.titular}</p>
+                            </div>
+
                         </div>
-                        <i
-                            className={`fa-brands ${card.cardType} text-white self-end text-2xl`}
-                        ></i>
+                        <div className="flex flex-col justify-between h-full">
+                            <Avatar showFallback src='https://images.unsplash.com/broken' className="bg-black/30 h-6 w-6 self-center" fallback={
+                                <i className="fa-solid fa-trash font-bold text-white"></i>
+                            } />
+                            <i className={`fa-brands ${card.cardType} text-white text-2xl`}></i>
+                        </div>
                     </CardHeader>
                 </Card>
             ))}
