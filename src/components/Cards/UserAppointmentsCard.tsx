@@ -25,41 +25,52 @@ const UserAppointmentsCard: React.FC<CardProps> = ({
     date
 }) => {
     return (
-        <Link href={linkUrl} className="block">
-            {/* Todo el contenedor es un enlace válido */}
-            <div className="mb-3">
-                <div className="rounded-t-lg rounded-b-none">
+        <div className="mb-3">
+            <div className="rounded-t-lg rounded-b-none">
                 <Card className="max-w-full rounded-md shadow-sm mb-2 border-2 border-stroke">
-                            <CardHeader className="flex rounded-md bg-zinc-100">
-                                <div className="flex justify-between items-center w-full">
-                                    <h2 className="text-black/90 text-xs font-medium uppercase">
-                                        {workshop_name}
-                                    </h2>
-                                    <p className="text-xs font-medium text-zinc-400">{date.toLocaleDateString()}</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="flex flex-col">
-                                    <p className="font-normal text-sm uppercase">Auto: {brand_name} - {model_name} - {license_plate}</p>
-                                    <p className="font-normal text-sm pb-2">Descripcion: {descripcion}</p>
+                    <CardHeader className="flex rounded-md bg-zinc-100">
+                        <div className="flex justify-between items-center w-full">
+                            <h2 className="text-black/90 text-xs font-medium uppercase">
+                                {workshop_name}
+                            </h2>
+                            <p className="text-xs font-medium text-zinc-400">{date.toLocaleDateString()}</p>
+                        </div>
+                    </CardHeader>
+                    <CardBody>
+                        <div className="flex flex-col">
+                            <p className="font-normal text-sm uppercase">Auto: {brand_name} - {model_name} - {license_plate}</p>
+                            <p className="font-normal text-sm pb-2">Descripcion: {descripcion}</p>
+                            <div className="flex justify-between items-center w-full">
+                                <Chip size="sm" color={
+                                    status === "Agendado"
+                                        ? "default"
+                                        : status === "En Proceso"
+                                            ? "primary"
+                                            : status === "Completado"
+                                                ? "success"
+                                                : status === "Cancelado"
+                                                    ? "danger"
+                                                    : status === "Solicitud enviada"
+                                                        ? "warning"
+                                                        : status === "Nuevo Presupuesto"
+                                                            ? "secondary"
+                                                            : "default" // Color por defecto para otros casos
+                                } className="rounded-md">{status}</Chip>
+                                <Link
+                                    className="text-sm font-medium items-center text-zinc-400"
+                                    href={linkUrl}
+                                >
                                     <div className="flex justify-between items-center w-full">
-                                        <Chip size="sm" color="warning" className="rounded-md">{status}</Chip>
-                                        <Link
-                                            className="text-sm font-medium items-center text-zinc-400"
-                                            href="https://github.com/nextui-org/nextui"
-                                        >
-                                            <div className="flex justify-between items-center w-full">
-                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                            </div>
-                                        </Link>
+                                        <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
+                                        <i className="fa-solid fa-angle-right text-center ps-1"></i>
                                     </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                </div>
+                                </Link>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
             </div>
-        </Link>
+        </div>
     );
 };
 

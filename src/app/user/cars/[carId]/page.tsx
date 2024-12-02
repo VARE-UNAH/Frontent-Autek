@@ -1,7 +1,10 @@
 'use client'
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import { Link, Image, BreadcrumbItem, Breadcrumbs, Card, CardHeader, Divider, CardBody, Accordion, AccordionItem, CardFooter, Button, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu, Table, TableHeader, TableBody, TableRow, TableCell, TableColumn, getKeyValue, Pagination } from "@nextui-org/react";
-import React from "react";
+import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
+import { getCarById } from "@/services/car/getService";
+import { Car } from "@/types/car";
+import { Link, Image, BreadcrumbItem, Breadcrumbs, Card, CardHeader, Divider, CardBody, Accordion, AccordionItem, CardFooter, Button, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu, Table, TableHeader, TableBody, TableRow, TableCell, TableColumn, getKeyValue, Pagination, Skeleton } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
 const defaultContent =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
@@ -178,11 +181,13 @@ const users = [
 ];
 function CarDetails(
     { params }: {
-        params: { carId: number};
+        params: { carId: number };
     }
 ) {
+    const [isLoading, setIsLoading] = useState(true);
     const carId = params.carId;
     const [page, setPage] = React.useState(1);
+    const [selectedCar, setSelectedCar] = useState<Car | null>(null);
     const rowsPerPage = 4;
     const pages = Math.ceil(users.length / rowsPerPage);
     const items = React.useMemo(() => {
@@ -192,58 +197,144 @@ function CarDetails(
         return users.slice(start, end);
     }, [page, users]);
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const carData = await getCarById(carId);
+            console.log(carData);
+            setSelectedCar(carData);
+        } catch (error) {
+            console.error('Error al cargar los vehículos:', error);
+        } finally {
+            setIsLoading(false);  // Asegúrate de que se ejecute solo una vez cuando termine la carga
+            console.log("Vehículos cargados");
+        }
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        fetchData(); // Llamar a la función para obtener los datos cuando el componente se monta
+    }, [carId]);
+
     return (
-        <DefaultLayout>
+        <DefaultLayoutBack>
             <Breadcrumbs size="md" variant="bordered" className="pb-2">
                 <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
-                <BreadcrumbItem href="/user/cars">Autos</BreadcrumbItem>
-                <BreadcrumbItem href="/user/car">Toyota Corolla 2017</BreadcrumbItem>
+                <BreadcrumbItem href="/user/cars">Mis Vehiculos</BreadcrumbItem>
+                {isLoading ? (
+                        <BreadcrumbItem href="/talleres">
+                            <Skeleton className="rounded-md w-20">
+                                Hola
+                            </Skeleton>
+                        </BreadcrumbItem>
+
+                    ) : (
+                <BreadcrumbItem href="/user/car" className="uppercase">{selectedCar?.brand.name} - {selectedCar?.license_plate}</BreadcrumbItem>
+                    )}
             </Breadcrumbs>
-            <h1 className="text-black/90 text-md font-bold my-2">TOYOTA RAV4 2016</h1>
-            <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
-                <CardHeader className="p-0">
-                    <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                        <Image
-                            src={"/images/cars/rav4.png"}
-                            alt={`/images/cars/toyota.png image`}
-                            className="w-50 h-auto block z-0"
-                        />
-                    </div>
-                </CardHeader>
-                <CardBody className="">
-                    <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-black/90 text-md font-bold my-2 w-40">
-                            Datos del Vehículo
-                        </h2>
-                        <Link
-                            isExternal
-                            className="text-slate-500 pe-2 underline"
-                            href="https://github.com/nextui-org/nextui"
-                        >
-                            Editar
-                        </Link>
-                    </div>
+            {isLoading ? (
+                <div>        
+                    <h1 className="text-black/90 text-md font-bold my-2 uppercase"><Skeleton className="w-40 rounded-lg">hola</Skeleton></h1>
+                    <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
+                        <CardHeader className="p-0">
+                            <Skeleton className="w-full">
+                            <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                                <Image
+                                    src={"/images/cars/rav4.png"}
+                                    alt={`/images/cars/toyota.png image`}
+                                    className="w-50 h-auto block z-0"
+                                />
+                            </div>
+                            </Skeleton>
+                        </CardHeader>
+                        <CardBody className="">
+                            <div className="flex items-center justify-between mb-2">
+                                <Skeleton className="h-6 rounded-lg my-2 w-40">
+                                <h2 className="text-black/90 text-md font-bold my-2 w-40">
+                                    Datos del Vehículo
+                                </h2>
+                                </Skeleton>
+                                <Link
+                                    isExternal
+                                    className="text-slate-500 pe-2 underline"
+                                    href="https://github.com/nextui-org/nextui"
+                                >
+                                    Editar
+                                </Link>
+                            </div>
 
-                    <Table removeWrapper aria-label="Example static collection table">
-                        <TableHeader>
-                            <TableColumn>MARCA</TableColumn>
-                            <TableColumn>MODELO</TableColumn>
-                            <TableColumn>AÑO</TableColumn>
-                            <TableColumn>PLACA</TableColumn>
-                        </TableHeader>
-                        <TableBody>
-                            <TableRow key="1">
-                                <TableCell>TOYOTA</TableCell>
-                                <TableCell>RAV4</TableCell>
-                                <TableCell>2016</TableCell>
-                                <TableCell>HBG996</TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                    
-                </CardBody>
+                            <Table removeWrapper aria-label="Example static collection table">
+                                <TableHeader>
+                                    <TableColumn>MARCA</TableColumn>
+                                    <TableColumn>MODELO</TableColumn>
+                                    <TableColumn>AÑO</TableColumn>
+                                    <TableColumn>PLACA</TableColumn>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow key="1">
+                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
 
-            </Card>
+                        </CardBody>
+
+                    </Card>
+                </div>
+            ) : (
+                <div>
+                    <h1 className="text-black/90 text-md font-bold my-2 uppercase">{selectedCar?.brand.name} {selectedCar?.model.name} {selectedCar?.year}</h1>
+                    <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
+                        <CardHeader className="p-0">
+                            <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                                <Image
+                                    src={"/images/cars/rav4.png"}
+                                    alt={`/images/cars/toyota.png image`}
+                                    className="w-50 h-auto block z-0"
+                                />
+                            </div>
+                        </CardHeader>
+                        <CardBody className="">
+                            <div className="flex items-center justify-between mb-2">
+                                <h2 className="text-black/90 text-md font-bold my-2 w-40">
+                                    Datos del Vehículo
+                                </h2>
+                                <Link
+                                    isExternal
+                                    className="text-slate-500 pe-2 underline"
+                                    href="https://github.com/nextui-org/nextui"
+                                >
+                                    Editar
+                                </Link>
+                            </div>
+
+                            <Table removeWrapper aria-label="Example static collection table">
+                                <TableHeader>
+                                    <TableColumn>MARCA</TableColumn>
+                                    <TableColumn>MODELO</TableColumn>
+                                    <TableColumn>AÑO</TableColumn>
+                                    <TableColumn>PLACA</TableColumn>
+                                </TableHeader>
+                                <TableBody>
+                                    <TableRow key="1">
+                                        <TableCell className="uppercase">{selectedCar?.brand.name}</TableCell>
+                                        <TableCell className="uppercase">{selectedCar?.model.name}</TableCell>
+                                        <TableCell className="uppercase">{selectedCar?.year}</TableCell>
+                                        <TableCell className="uppercase">{selectedCar?.license_plate}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+
+                        </CardBody>
+
+                    </Card>
+                </div>
+            )}
+
+
             <Card className="w-full rounded-lg mb-3 shadow-sm border-2 border-stroke">
                 <CardHeader className="pb-0">
                     <h2 className="text-black/90 text-md font-bold my-2 w-40">
@@ -352,7 +443,7 @@ function CarDetails(
                     </div>
                 </CardFooter>
             </Card>
-        </DefaultLayout>
+        </DefaultLayoutBack>
     );
 };
 

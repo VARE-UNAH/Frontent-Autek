@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner, Skeleton } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
-import getCars from '@/services/car/getService';
+import {getCars} from '@/services/car/getService';
 import Loader from '../common/Loader';
 
 type Car = {
@@ -127,7 +127,10 @@ const Cars = () => {
                                                 />
                                             </div>
                                         </div>
+                                        <Link
+                                        href={`/user/cars/${car.id_car}`} className='w-full'>
                                         <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
+                                        </Link>
                                     </li>
                                 </AccordionItem>
                             </Accordion>
@@ -151,7 +154,8 @@ const Cars = () => {
                 </div>) : (
                     <div className="w-full flex justify-center mb-2">
                         <Link
-                            href="/user/new-car"
+                            href="/user/cars/new-car"
+                            className='w-full'
                         >
                             <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
                                 Añadir Vehículo

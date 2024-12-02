@@ -21,8 +21,8 @@ const Home = () => {
 
     return (
         <DefaultLayout>
-            <h1 className="text-3xl font-bold text-black pb-2">Inicio</h1>
-            <Link href="/talleres">
+            <h1 className="text-xl font-bold text-black pb-2">Inicio</h1>
+            <Link href="/user/talleres">
                 <div
                     className="relative bg-cover bg-center p-2 rounded-lg mb-2 h-20 shadow-md"
                     style={{

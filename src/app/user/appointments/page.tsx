@@ -110,7 +110,10 @@ const Appointments = () => {
                             <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
                         }
                     />
+                    <Link
+                    href="user/talleres">
                     <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Nueva Cita</Button>
+                    </Link>
                     <p className="pb-0 font-normal text-sm mt-2">{appointments.length} citas</p>
                 </div>
             )}

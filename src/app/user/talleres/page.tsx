@@ -173,7 +173,7 @@ const Talleres = () => {
                                 taller_name={workShop.name}
                                 location={workShop.address.address}
                                 imageUrl={"/images/cover/excel.jpeg"}
-                                linkUrl={`/talleres/${workShop.id_workshop}`}
+                                linkUrl={`/user/talleres/${workShop.id_workshop}`}
                                 rating={4.3}
                             />
                         ))}

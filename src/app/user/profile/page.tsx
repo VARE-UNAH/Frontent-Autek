@@ -64,9 +64,9 @@ const Profile = () => {
         <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
         <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
       </Breadcrumbs>
-      <div className="mx-auto max-w-242.5">
+      <div className="mx-auto max-w-full">
 
-        <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="overflow-hidden rounded-lg border mb-2 shadow-sm border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65 ">
             <Image
               src={"/images/cover/cover-01.png"}
@@ -167,8 +167,8 @@ const Profile = () => {
               </h3>
               <p className="font-regular text-black text-sm">{userProfile.email}</p>
               <p className="font-regular text-sm">{userProfile.id}</p>
-              <div className="mx-auto mb-5.5 mt-4.5  dark:bg-[#37404F]">
-                <Link href="/profile-edit" passHref>
+              <div className="mx-auto mb-1 mt-4.5  dark:bg-[#37404F]">
+                <Link href="/user/profile/profile-edit" passHref>
                   <button
                     type="button"
                     className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition"
@@ -180,12 +180,13 @@ const Profile = () => {
 
               <div className="mx-auto max-w-180">
               </div>
-              <Vehiculos></Vehiculos>
+              
 
 
             </div>
           </div>
         </div>
+        <Vehiculos></Vehiculos>
       </div>
     </DefaultLayout>
   );

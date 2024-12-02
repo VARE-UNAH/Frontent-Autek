@@ -26,7 +26,7 @@ import {
 import { Select, SelectItem, CardFooter, Divider, Image } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import { DatePicker } from "@nextui-org/react";
-import getCars from "@/services/car/getService";
+import {getCars} from "@/services/car/getService";
 import { toast } from "sonner";
 import { createAppointment } from "@/services/appointments/appointmentsService";
 import TrLoader from "@/components/common/TrLoader";

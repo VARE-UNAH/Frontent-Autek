@@ -13,7 +13,7 @@ const Header = (props: {
       <NavbarContent className="relative flex items-center justify-center">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-primary text-xl font-medium hover:text-primary-dark"
+          className="absolute flex items-center gap-2 text-primary text-xl font-medium hover:text-primary-dark"
         >
           <i className="fa-solid fa-arrow-left"></i>
         </button>

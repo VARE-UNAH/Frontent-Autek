@@ -20,7 +20,7 @@ const Profile = () => {
     <DefaultLayoutBack>
       <Breadcrumbs size="md" variant="bordered" className="pb-2">
         <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
-        <BreadcrumbItem href="/profile">Perfil</BreadcrumbItem>
+        <BreadcrumbItem href="/user/profile">Perfil</BreadcrumbItem>
         <BreadcrumbItem href="/profile-edit">Editar</BreadcrumbItem>
       </Breadcrumbs>
       <div className="mx-auto max-w-242.5">
@@ -280,7 +280,7 @@ const Profile = () => {
                     variant="bordered"
                     color="primary"
                     classNames={{
-                      inputWrapper: "border rounded-lg h-14"
+                      inputWrapper: "border rounded-lg h-14 ps-6 "
 
                   }}
                   />

@@ -26,7 +26,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Ver Perfil",
-        route: "/profile",
+        route: "/user/profile",
       },
       //MENU DASHBOARD
       {
@@ -66,7 +66,7 @@ const menuGroups = [
           <i className="fa-solid fa-wrench"></i>
         ),
         label: "Talleres",
-        route: "/talleres",
+        route: "/user/talleres",
       },
       {
         icon: (
