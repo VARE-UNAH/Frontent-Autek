@@ -2,7 +2,7 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
-import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link } from "@nextui-org/react";
+import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 
 const cardData = [
     {
@@ -40,8 +40,31 @@ const cardDetails = [
 
 const Cars = () => {
     const latestCards = cardDetails.slice(-3);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     return (
         <DefaultLayout>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm" placement="center" backdrop="blur" className="rounded-lg">
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1 text-black">¿Quieres eliminar este medio de pago?</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    Tendras que volver a agregarlo para usarlo
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="default" variant="bordered" onPress={onClose} className=" border border-2 border-stroke py-4 px-4 rounded-md ">
+                                    No
+                                </Button>
+                                <Button color="danger" onPress={onClose}/*  onClick={handleCreateCar} */ className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition" >
+                                    Si, eliminarlo
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
             <h1 className="text-black/90 text-md font-bold mb-2">Tus medios de pago</h1>
             {cardData.map((card, index) => (
                 <Card
@@ -59,9 +82,11 @@ const Cars = () => {
 
                         </div>
                         <div className="flex flex-col justify-between h-full">
+                            <button onClick={onOpen}>
                             <Avatar showFallback src='https://images.unsplash.com/broken' className="bg-black/30 h-6 w-6 self-center" fallback={
                                 <i className="fa-solid fa-trash font-bold text-white"></i>
                             } />
+                            </button>
                             <i className={`fa-brands ${card.cardType} text-white text-2xl`}></i>
                         </div>
                     </CardHeader>

@@ -147,7 +147,7 @@ const menuGroups = [
 
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
+const AdminSidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const pathname = usePathname();
   const router = useRouter();
   const [pageName, setPageName] = useLocalStorage("selectedMenu", "dashboard");
@@ -245,4 +245,4 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;
