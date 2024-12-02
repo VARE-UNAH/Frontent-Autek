@@ -31,7 +31,6 @@ const DropdownUser = () => {
       } else {
         try {
           const userinfo = await fetchUserProfile();
-          setUserProfile(userinfo);
           localStorage.setItem("userProfile", JSON.stringify(userinfo));
         } catch (err) {
           console.error("Error al obtener el perfil del usuario:", err);

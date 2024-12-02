@@ -1,86 +1,196 @@
 'use client'
 import React, { useState } from "react";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
+import { Autocomplete, AutocompleteItem, Tooltip } from "@nextui-org/react";
 import { Input } from "@nextui-org/react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useEffect } from 'react';
 import { fetchCarBrands } from '@/services/car/brandsService';
 import { fetchCarModels } from '@/services/car/modelService';
+import { fetchCarColors } from '@/services/car/colorService';
 import { toast } from "sonner";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import TrLoader from "@/components/common/TrLoader";
+import { validateYear, validatePlate } from "@/validators/cars/carValidator"; // Importa los validadores
+import { createCar } from "@/services/car/createService";
 
 type Brand = {
-    key: string;
+    key: number;
     label: string;
 };
 
 type Model = {
-    key: string;
+    key: number;
+    label: string;
+};
+
+type Color = {
+    key: number;
     label: string;
 };
 
 const Newcar = () => {
-    const [isLoading, setIsLoading] = useState(false); 
+    const [isLoading, setIsLoading] = useState(false);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [models, setModels] = useState<Model[]>([]);
-    const [selectedBrand, setSelectedBrand] = useState<string | null>(null);
+    const [colors, setColors] = useState<Color[]>([]);
+    const [selectedBrand, setSelectedBrand] = useState<number | null>(null);
+    const [selectedModel, setSelectedModel] = useState<number | null>(null);
+    const [selectedColor, setSelectedColor] = useState<number | null>(null);
+    const [year, setYear] = useState<string>("");
+    const [plate, setPlate] = useState<string>("");
+    const [brandKey, setBrandKey] = useState<string | null>(null);
+    const [modelKey, setModelKey] = useState<string | null>(null);
+    const [colorKey, setColorKey] = useState<string | null>(null);
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     // Cargar marcas solo una vez
     useEffect(() => {
         const loadCarBrands = async () => {
+            setIsLoading(true);
             try {
                 const brandsData = await fetchCarBrands();
+                const colorsData = await fetchCarColors();
+                setColors(colorsData);
                 setBrands(brandsData);
             } catch (error) {
                 console.error("Error cargando marcas:", error);
             }
+            setIsLoading(false);
         };
 
         loadCarBrands();
     }, []); // La dependencia está vacía, se ejecuta solo una vez al montar el componente
 
-    const handleCreateCar = () => {
-        // Lógica para añadir el vehículo puede ir aquí, si es necesario
-      
-        // Mostrar notificación de éxito
-        toast.success("Vehículo añadido correctamente");
-      };
+    const validateForm = (): boolean => {
+        const yearError = validateYear(year);
+        const plateError = validatePlate(plate);
+
+        if (!selectedBrand) {
+            toast.error("Debe seleccionar una marca.");
+            return false;
+        }
+
+        if (!selectedModel) {
+            toast.error("Debe seleccionar un modelo.");
+            return false;
+        }
+
+        if (!selectedColor) {
+            toast.error("Debe seleccionar un color.");
+            return false;
+        }
+
+        if (yearError) {
+            toast.error(yearError);
+            return false;
+        }
+
+        if (plateError) {
+            toast.error(plateError);
+            return false;
+        }
+
+        return true;
+
+    };
+
+    const handleCreateCar = async () => {
+        if (!validateForm()) return;
+
+        setIsLoading(true);
+        try {
+            // Llama al servicio para crear el vehículo
+            await createCar({
+                brand_id: selectedBrand as number, // TypeScript sabe que no es null por validateForm
+                model_id: selectedModel as number,
+                color_id: selectedColor as number,
+                year: year,
+                license_plate: plate.toUpperCase(),
+            });
+
+            toast.success("Vehículo añadido correctamente");
+            // Resetear el formulario después de la creación
+            setYear("");
+            setPlate("");
+            setSelectedBrand(null);
+            setSelectedModel(null);
+            setSelectedColor(null);
+            setBrandKey(null)
+            setModelKey(null)
+            setColorKey(null)
+        } catch (error) {
+            console.error("Error creando vehículo:", error);
+            toast.error("Hubo un error al añadir el vehículo. Inténtalo de nuevo.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Cargar modelos cuando se seleccione una marca
     useEffect(() => {
         const loadCarModels = async () => {
             if (selectedBrand) {
                 try {
+                    setIsLoading(true);  // Mostrar cargando
                     const modelsData = await fetchCarModels(selectedBrand);
                     setModels(modelsData);
-                    console.log(modelsData.length)
-                    console.log(models)
-                    console.log(models.length)
+                    setIsLoading(false);  // Ocultar cargando
                 } catch (error) {
+                    setIsLoading(false);  // Ocultar cargando en caso de error
                     console.error("Error cargando modelos:", error);
                 }
             }
         };
 
-        loadCarModels();
-    }, [selectedBrand, models]); // Solo se ejecuta cuando `selectedBrand` cambia
+        // Solo cargar modelos si se selecciona una marca
+        if (selectedBrand) {
+            loadCarModels();
+        }
+    }, [selectedBrand]); // Dependencia solo en selectedBrand
 
-    const onSelectionChange = (key: React.Key | null) => {
-        if (typeof key === "string") {
-            setSelectedBrand(key);
-            console.log(key)
+    const handleBrandSelection = (value: React.Key | null) => {
+        const selectedValue = value ? value.toString() : null; // Convertir Key a string
+        setBrandKey(selectedValue);
+        if (selectedValue) {
+            const selectedId = parseInt(selectedValue, 10); // Convertir string a número
+            console.log("Marca seleccionada:", selectedId);
+            setSelectedBrand(selectedId); // Guardar el ID como número en el estado
         } else {
+            console.log("Selección no válida.");
             setSelectedBrand(null);
         }
     };
 
+    const handleModelSelection = (value: React.Key | null) => {
+        const selectedValue = value ? value.toString() : null; // Convertir Key a string
+        setModelKey(selectedValue);
+        if (selectedValue) {
+            const selectedId = parseInt(selectedValue, 10); // Convertir string a número
+            console.log("Modelo seleccionado:", selectedId);
+            setSelectedModel(selectedId); // Guardar el ID como número en el estado
+        } else {
+            console.log("Selección no válida.");
+            setSelectedModel(null);
+        }
+    };
+
+    const handleColorSelection = (value: React.Key | null) => {
+        const selectedValue = value ? value.toString() : null; // Convertir Key a string
+        setColorKey(selectedValue);
+        if (selectedValue) {
+            const selectedId = parseInt(selectedValue, 10); // Convertir string a número
+            console.log("Color seleccionado:", selectedId);
+            setSelectedColor(selectedId); // Guardar el ID como número en el estado
+        } else {
+            console.log("Selección no válida.");
+            setSelectedColor(null);
+        }
+    };
 
     return (
-        
+
         <DefaultLayout>
             {isLoading && <TrLoader />}
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
@@ -94,10 +204,10 @@ const Newcar = () => {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger"  onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
+                                <Button color="danger" onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
                                     Close
                                 </Button>
-                                <Button color="primary" onPress={onClose } onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
+                                <Button color="primary" onPress={onClose} onClick={handleCreateCar} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
                                     Action
                                 </Button>
                             </ModalFooter>
@@ -114,7 +224,9 @@ const Newcar = () => {
             <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
                     <div className="mt-4">
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={(event) => {
+                            event.preventDefault(); // Evita el comportamiento predeterminado // Llama a la lógica de creación
+                        }}>
                             <div className="mb-4">
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Marca del Vehículo
@@ -126,7 +238,8 @@ const Newcar = () => {
                                     variant="bordered"
                                     color="primary"
                                     isRequired
-                                    onSelectionChange={onSelectionChange}
+                                    onSelectionChange={handleBrandSelection}
+                                    selectedKey={brandKey}
                                     inputProps={{
                                         classNames: {
                                             input: 'ml-1',
@@ -154,6 +267,8 @@ const Newcar = () => {
                                     variant="bordered"
                                     isRequired
                                     color="primary"
+                                    selectedKey={modelKey}
+                                    onSelectionChange={handleModelSelection}
                                     inputProps={{
                                         classNames: {
                                             input: "ml-1",
@@ -173,7 +288,7 @@ const Newcar = () => {
                                         ))
                                     ) : (
                                         <AutocompleteItem key="no-models" isDisabled value="No hay modelos disponibles">
-                                            No hay modelos disponibles
+                                            No hay modelos disponibles o primero seleccione una marca
                                         </AutocompleteItem>
                                     )}
                                 </Autocomplete>
@@ -190,6 +305,8 @@ const Newcar = () => {
                                     variant="bordered"
                                     isRequired
                                     color="primary"
+                                    selectedKey={colorKey}
+                                    onSelectionChange={handleColorSelection}
                                     inputProps={{
                                         classNames: {
                                             input: "ml-1",
@@ -201,10 +318,10 @@ const Newcar = () => {
                                     classNames={{
                                     }}
                                 >
-                                    {models.length > 0 ? (
-                                        models.map((model) => (
-                                            <AutocompleteItem key={model.key} value={model.label}>
-                                                {model.label}
+                                    {colors.length > 0 ? (
+                                        colors.map((color) => (
+                                            <AutocompleteItem key={color.key} value={color.label}>
+                                                {color.label}
                                             </AutocompleteItem>
                                         ))
                                     ) : (
@@ -219,14 +336,19 @@ const Newcar = () => {
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Año
                                 </label>
+                                <Tooltip color="default" className="text-black" content="El año de tu vehiculo debe de estar en el rango de 1990 a 2025">
                                 <Input
                                     type="number"
-                                    placeholder="Ingresa el año de tu vehiculo"
+                                    placeholder="Ingresa el año de tu vehículo"
                                     isRequired
                                     variant="bordered"
                                     labelPlacement="outside"
                                     color="primary"
                                     size="lg"
+                                    value={year}
+                                    onValueChange={setYear}
+                                    min={1900}  // Año mínimo permitido
+                                    max={new Date().getFullYear()}  // Año máximo es el año actual
                                     classNames={{
                                         label: "text-gray2 text-md",
                                         input: [
@@ -236,10 +358,9 @@ const Newcar = () => {
                                             "placeholder:text-default-700/50 dark:placeholder:text-white/60",
                                         ],
                                         inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
-
                                     }}
-
                                 />
+                                </Tooltip>
 
                             </div>
 
@@ -247,31 +368,38 @@ const Newcar = () => {
                                 <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                     Número de Placa
                                 </label>
-                                <Input
-                                    type="string"
-                                    placeholder="Ingresa la placa de tu vehiculo"
-                                    isRequired
-                                    variant="bordered"
-                                    labelPlacement="outside"
-                                    color="primary"
-                                    size="lg"
-                                    classNames={{
-                                        label: "text-gray2 text-md",
-                                        input: [
-                                            "bg-transparent",
-                                            "text-black/90 dark:text-white/90",
-                                            "ps-2",
-                                            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
-                                        ],
-                                        inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
+                                <Tooltip color="default" className="text-black" content="El número de placa debe contener 6 digitos, los primeros 3 caracter, los ultimos 3 númericos">
+                                    <Input
+                                        type="string"
+                                        placeholder="Ingresa la placa de tu vehiculo"
+                                        isRequired
+                                        variant="bordered"
+                                        labelPlacement="outside"
+                                        color="primary"
+                                        size="lg"
+                                        value={plate}
+                                        onValueChange={setPlate}
+                                        classNames={{
+                                            label: "text-gray2 text-md",
+                                            input: [
+                                                "bg-transparent",
+                                                "text-black/90 dark:text-white/90",
+                                                "ps-2",
+                                                "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+                                            ],
+                                            inputWrapper: "shadow-none border border-1 border-stroke rounded-lg h-5",
 
-                                    }}
+                                        }}
 
-                                />
-
+                                    />
+                                </Tooltip>
                             </div>
 
-                            <Button onPress={onOpen} className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Añadir Vehículo</Button>
+                            <Button type="submit" onPress={() => {
+                                if (validateForm()) {
+                                    onOpen(); // Solo abre el modal si la validación es exitosa
+                                }
+                            }} className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Añadir Vehículo</Button>
                         </form>
                     </div>
                 </div>

@@ -1,11 +1,56 @@
 import Image from 'next/image';
-import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link } from "@nextui-org/react";
+import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner, Skeleton } from "@nextui-org/react";
+import { useEffect, useState } from 'react';
+import getCars from '@/services/car/getService';
+import Loader from '../common/Loader';
 
-const LatestCustomers = () => {
-    const customers = [
-        { name: "Toyota Corolla 2017", color: "Negro", plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024" },
-        { name: "Toyota Corolla 2017", color: "Negro", plate: "HBG9393", image: "/images/cars/toyota.png", next: "25/10/2024", last: "25/11/2024" },
-    ];
+type Car = {
+    id_car: number;
+    brand: {
+        id_brand: number;
+        name: string;
+    };
+    model: {
+        id_model: number;
+        name: string;
+    };
+    color: {
+        id_color: number;
+        name: string;
+    };
+    license_plate: string;
+    year: string;
+    user: {
+        id: string;
+        email: string;
+        first_name: string;
+        last_name: string;
+        date_of_birth: string;
+    };
+}
+
+
+const Cars = () => {
+    const [cars, setCars] = useState<Car[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const fetchCars = async () => {
+        try {
+            const carData = await getCars(); // Llamar al servicio para obtener los vehículos
+            setCars(carData); // Almacenar los datos de los vehículos en el estado
+        } catch (error) {
+            console.error('Error al cargar los vehículos:', error);
+        } finally {
+            setIsLoading(false);  // Asegúrate de que se ejecute solo una vez cuando termine la carga
+            console.log("Vehículos cargados");
+        }
+    };
+    useEffect(() => {
+        fetchCars(); // Llamar a la función para obtener los datos cuando el componente se monta
+    }, []);
+
+    const capitalizeFirstLetter = (str: string) => {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
     const mySvg = (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -16,71 +61,107 @@ const LatestCustomers = () => {
     return (
         <Card className="shadow-sm rounded-lg">
             <CardHeader className="flex gap-3">
-                <div className="flex flex-col">
-                    <p className="text-md font-bold">Tus Vehículos</p>
-                </div>
+                {isLoading ? (
+                    <div className="flex flex-col">
+                        {Array(1).fill(null).map((_, index) => (
+                            <div key={index} className="">
+                                <Skeleton className="rounded-lg border border-stroke">
+                                    <p className="text-md font-bold">Tus Vehículos</p>
+                                </Skeleton>
+                            </div>
+                        ))}
+                    </div>) : (
+                    <div className="flex flex-col">
+                        <p className="text-md font-bold">Tus Vehículos</p>
+                    </div>
+                )}
             </CardHeader>
             <Divider />
             <CardBody>
-                <ul role="list" className="mt-2">
-                    {customers.map((customer, index) => (
-                        <Accordion variant="splitted" key={index}>
-                            <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke" startContent={
-                                <Image
-                                    alt="logo"
-                                    src="/images/cars/toyota.png"
-                                    width={51}
-                                    height={38}
-                                    className="rounded-lg"
-                                />} key={index} aria-label={customer.name} title={customer.name}>
-                                <li key={index} className="pb-3 sm:pb-4 rounded-lg">
-                                    <div className="grid grid-cols-2 justify-between">
-                                        <div className="">
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Color:{customer.color}
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Placa:{customer.plate}
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Proxima Visita:{customer.next}
-                                            </p>
-                                            <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                Ultima Visita:{customer.last}
-                                            </p>
+                {isLoading ? (
+                    // Componente de carga mientras los datos se cargan
+                    <div className="mt-2">
+                        {Array(4).fill(null).map((_, index) => (
+                            <div key={index} className="">
+                                <Skeleton className="rounded-lg mx-2 mb-2 border border-stroke">
+                                    <div className="h-17 rounded-lg bg-white"></div>
+                                </Skeleton>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <ul role="list" className="mt-2">
+                        {cars.map((car, index) => (
+                            <Accordion variant="splitted" key={index}>
+                                <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke font-normal" startContent={
+                                    <Image
+                                        alt="logo"
+                                        src="/images/cars/toyota.png"
+                                        width={51}
+                                        height={38}
+                                        className="rounded-lg uppercase"
+                                    />} key={index} aria-label={car.brand.name} title={`${capitalizeFirstLetter(car.brand.name)} ${capitalizeFirstLetter(car.model.name)} ${car.year}`}>
+                                    <li key={index} className="pb-3 sm:pb-4 rounded-lg">
+                                        <div className="grid grid-cols-2 justify-between">
+                                            <div className="">
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Color:{car.color.name}
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Placa:{car.license_plate}
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Proxima Visita: pendiente implementacion
+                                                </p>
+                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
+                                                    Ultima Visita: pendiente implementacion
+                                                </p>
+                                            </div>
+                                            <div className="self-center justify-self-end">
+                                                <Image
+                                                    src={"/images/cars/toyota.png"}
+                                                    alt={`/images/cars/toyota.png image`}
+                                                    width={100}
+                                                    height={60}
+                                                    className="rounded-lg"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="self-center justify-self-end">
-                                            <Image
-                                                src={customer.image}
-                                                alt={`${customer.name} image`}
-                                                width={100}
-                                                height={60}
-                                                className="rounded-lg"
-                                            />
-                                        </div>
-                                    </div>
-                                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
-                                </li>
-                            </AccordionItem>
-                        </Accordion>
+                                        <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
+                                    </li>
+                                </AccordionItem>
+                            </Accordion>
 
-                    ))}
-                </ul>
+                        ))}
+                    </ul>
+                )}
             </CardBody>
             <Divider />
             <CardFooter>
-                <div className="w-full flex justify-center mb-2">
-                    <Link
-                        href="/user/new-car"
-                    >
-                        <Button color="primary" variant="bordered" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
-                            Añadir Vehículo
-                        </Button>
-                    </Link>
-                </div>
+                {isLoading ? (<div className="w-full flex justify-center mb-2">
+                    {Array(1).fill(null).map((_, index) => (
+                        <div key={index} className="">
+                            <Skeleton className="rounded-lg border border-stroke">
+                                <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
+                                    Añadir Vehículo
+                                </Button>
+                            </Skeleton>
+                        </div>
+                    ))}
+                </div>) : (
+                    <div className="w-full flex justify-center mb-2">
+                        <Link
+                            href="/user/new-car"
+                        >
+                            <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition' startContent={<i className="fa-solid fa-plus"></i>}>
+                                Añadir Vehículo
+                            </Button>
+                        </Link>
+                    </div>)}
+
             </CardFooter>
         </Card>
     );
 };
 
-export default LatestCustomers;
+export default Cars;

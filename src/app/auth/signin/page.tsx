@@ -1,12 +1,13 @@
 'use client'
 import React, { useState } from "react";
-import Image from 'next/image';
 import Link from "next/link";
 import LoginLayout from "@/components/Layouts/LoginLayout";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { fetchUserProfile } from "@/services/user/userService";
 import { toast } from "sonner";
 import TrLoader from "@/components/common/TrLoader";
+import { Button, Card, CardFooter, CardHeader, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, Image } from "@nextui-org/react";
+import { AutekLogo } from "@/assets/autekLogo/autekLogo";
 
 
 const SignIn = () => {
@@ -16,92 +17,115 @@ const SignIn = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false); // Estado para controlar la visibilidad del loader
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
-  setIsLoading(true); 
-  event.preventDefault(); 
-console.log(email,password)
+    setIsLoading(true);
+    event.preventDefault();
+    console.log(email, password)
 
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/auth/login/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to log in.");
-    }
-
-    const data = await response.json();
-
-    // Log the user data
-    console.log("Authenticated user:", data);
-
-    localStorage.setItem("userProfile", JSON.stringify(data))
-    localStorage.setItem("accessToken", JSON.stringify(data.access_token));
-
-    //const userProfile = await fetchUserProfile();
-    //localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-    router.push("/user/home"); // Redirect to dashboard on successful login
-  } catch (error) {
-    console.error("Login error:", error);
-
-    if (error instanceof Error) {
-      
-      if (error.message.includes("Failed")) {
-        setError("Login failed. Please try again.");
-        toast.error("Login failed. Please try again.");
-      } else {
-        toast.error(error.message); 
+      if (!response.ok) {
+        throw new Error("Failed to log in.");
       }
-    } else {
-      toast.error("An unknown error occurred.");
+
+      const data = await response.json();
+
+      // Log the user data
+      console.log("Authenticated user:", data);
+
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("refreshToken", data.refresh_token);
+      console.log("token login", localStorage.getItem("accessToken"));
+
+
+      const userProfile = await fetchUserProfile();
+      console.log(userProfile);
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      router.push("/user/home"); // Redirect to dashboard on successful login
+    } catch (error) {
+      console.error("Login error:", error);
+
+      if (error instanceof Error) {
+
+        if (error.message.includes("Failed")) {
+          setError("Login failed. Please try again.");
+          toast.error("Login failed. Please try again.");
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error("An unknown error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false); 
-  }
   };
 
 
   return (
     <LoginLayout>
       {isLoading && <TrLoader />} {/* Mostrar el loader solo cuando isLoading sea true */}
-      <nav className="bg-black border-gray-200 dark:bg-gray-900 w-full">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <Link href="/home" passHref>
-            <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
-
-              <svg className="w-5 h-5 text-white fill-current" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z"
-                />
+      <Image
+        removeWrapper
+        alt="Relaxing app background"
+        className="z-0 w-full h-15 object-cover rounded-none absolute"
+        src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+      />
+      <Navbar className="bg-black/40 backdrop-blur-md shadow-lg h-15">
+        <NavbarContent className="relative flex items-center justify-center">
+          <div className="absolute left-0">
+            <Link href="/home">
+              <svg
+                className="w-4 h-4 text-white fill-current"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <path d="M17.921,1.505a1.5,1.5,0,0,1-.44,1.06L9.809,10.237a2.5,2.5,0,0,0,0,3.536l7.662,7.662a1.5,1.5,0,0,1-2.121,2.121L7.688,15.9a5.506,5.506,0,0,1,0-7.779L15.36.444a1.5,1.5,0,0,1,2.561,1.061Z" />
               </svg>
-            </button>
-          </Link>
-          <a href="/home" className="flex items-center absolute left-1/2 transform -translate-x-1/2 space-x-3 rtl:space-x-reverse">
-            <Image src="/images/autek/autek_white.png" className="h-8" alt="Flowbite Logo" width={40} // Set your desired width here
-              height={32} />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">AUTEK</span>
-          </a>
-        </div>
-      </nav>
-      <div className="relative w-full h-55 shadow-black shadow-lg">
-        {/* Imagen de fondo */}
+            </Link>
+          </div>
+          <NavbarBrand className="flex items-center justify-center">
+            {/* <Image
+              src="/images/autek/autek_white.png"
+              alt="Autek Logo"
+              className="h-8"
+              width={30}
+              height={32}
+              layout="intrinsic"
+            /> */}
+            <Image
+              src="/images/autek/autek_white.png"
+              alt="Autek Logo"
+              width={30}
+              height={32}
+              style={{ height: 'auto', maxWidth: '100%' }}
+            />
+            <p className="font-bold text-inherit ps-1 text-white">AUTEK</p>
+          </NavbarBrand>
+        </NavbarContent>
+      </Navbar>
+
+      <Card className="w-full h-50 col-span-12 sm:col-span-7 rounded-none">
         <Image
-          src={'https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
-          alt="Fondo de mantenimiento de vehículo"
-          layout="fill"
-          objectFit="cover"
-          className="-z-10"
+          removeWrapper
+          alt="Relaxing app background"
+          className="z-0 w-full h-full object-cover rounded-none"
+          src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         />
-        {/* Superposición con texto */}
-        <div className="absolute inset-0 flex flex-col justify-end bg-black bg-opacity-50 px-6 pb-6 text-white">
-          <h1 className="text-xl font-bold">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
-          <p className="text-base">Programa citas, paga mantenimientos y más</p>
-        </div>
-      </div>
-      <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white  p-8 relative">
+        <CardFooter className="absolute flex flex-col bg-black/5 bottom-0 z-10 items-start backdrop-blur-sm" >
+          <h1 className="text-white/90 text-md font-bold">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
+          <p className="text-white/60 font-medium text-sm">Programa citas, paga mantenimientos y más</p>
+        </CardFooter>
+      </Card>
+      <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white  p-8 relative mx-auto lg:pt-2">
         <h1 className="text-title-lg font-bold text-black pb-2">Inicio de Sesión</h1>
         <p className="text-base text-black pb-5">
           Inicia sesión con tu cuenta de <span className="font-bold">AUTEK</span>

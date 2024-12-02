@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from "react";
-import Image from 'next/image';
 import Link from "next/link";
 import LoginLayout from "@/components/Layouts/LoginLayout";
 import Beneficios from '@/components/Grid';
 import Social from '@/components/Social';
 import Footer from "@/components/Footer";
+import { Navbar, Image, NavbarContent, NavbarBrand, Card, CardFooter } from "@nextui-org/react";
 
 const Home = () => {
     const items = [
@@ -16,31 +16,47 @@ const Home = () => {
     ];
     return (
         <LoginLayout>
-            <nav className="bg-black border-gray-200 items-center justify-center dark:bg-gray-900 h-15">
-                <div className="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-4">
-                    <a href="/home" className="flex items-center transform rtl:space-x-reverse">
-                        <Image src="/images/autek/autek_white.png" className="h-8" alt="Autek Logo" width={40} // Set your desired width here
-                            height={32} />
-                        <span className="self-center ps-2 text-2xl font-normal whitespace-nowrap text-white dark:text-white">AUTEK</span>
-                    </a>
-                </div>
-            </nav>
-            <div className="relative w-full h-55 shadow-black">
-                {/* Imagen de fondo */}
+            <Image
+                removeWrapper
+                alt="Relaxing app background"
+                className="z-0 w-full h-15 object-cover rounded-none absolute"
+                src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            />
+            <Navbar className="bg-black/40 backdrop-blur-md shadow-lg h-15">
+                <NavbarContent className="relative flex items-center justify-center">
+                    <NavbarBrand className="flex items-center justify-center">
+                        {/* <Image
+              src="/images/autek/autek_white.png"
+              alt="Autek Logo"
+              className="h-8"
+              width={30}
+              height={32}
+              layout="intrinsic"
+            /> */}
+                        <Image
+                            src="/images/autek/autek_white.png"
+                            alt="Autek Logo"
+                            width={30}
+                            height={32}
+                            style={{ height: 'auto', maxWidth: '100%' }}
+                        />
+                        <p className="font-bold text-inherit ps-1 text-white">AUTEK</p>
+                    </NavbarBrand>
+                </NavbarContent>
+            </Navbar>
+
+            <Card className="w-full h-50 col-span-12 sm:col-span-7 rounded-none">
                 <Image
-                    src={'https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'}
-                    alt="Fondo de mantenimiento de vehículo"
-                    layout="fill"
-                    objectFit="cover"
-                    className="-z-10"
-                    
+                    removeWrapper
+                    alt="Relaxing app background"
+                    className="z-0 w-full h-full object-cover rounded-none"
+                    src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                 />
-                {/* Superposición con texto */}
-                <div className="absolute inset-0 flex flex-col justify-end bg-black bg-opacity-50 px-6 pb-6 text-white">
-                    <h1 className="text-xl font-bold">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
-                    <p className="text-base">Programa citas, paga mantenimientos y más</p>
-                </div>
-            </div>
+                <CardFooter className="absolute flex flex-col bg-black/5 bottom-0 z-10 items-start backdrop-blur-sm" >
+                    <h1 className="text-white/90 text-md font-bold">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
+                    <p className="text-white/60 font-medium text-sm">Programa citas, paga mantenimientos y más</p>
+                </CardFooter>
+            </Card>
             <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white justify-center p-8 relative mx-auto">
                 <h1 className="text-title-lg font-bold text-black pb-2">Ingresa ahora</h1>
                 <p className="text-base text-black pb-3">
@@ -75,7 +91,7 @@ const Home = () => {
 
             </div>
             <Beneficios title="BENEFICIOS" items={items} />
-            
+
         </LoginLayout>
     );
 };

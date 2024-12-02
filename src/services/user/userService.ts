@@ -1,46 +1,57 @@
 import axios from 'axios';
 
-  interface UserProfile {
-      access_token: string;
-      email: string;
-      full_name: string;
-      refresh_token: string;
+interface UserProfile {
+  id: number;
+  first_name: string;
+  last_name: string,
+  email: string; 
 
 };
 
-  export const fetchUserProfile = async (): Promise<UserProfile> => {
-    try {      
-      const token = getAccessToken()
-      if (!token) {
-        throw new Error("No se encontró ningún token en localStorage.");
-      }
-      // Configure the request to fetch the user profile
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/profile`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error al obtener el perfil del usuario: ${response.status}`);
-      }
-  
-      const data: UserProfile = await response.json();
-  
-      // Validate that the profile data is not null or empty
-      if (!data || Object.keys(data).length === 0) {
-        throw new Error("El perfil del usuario está vacío o no es válido.");
-      }
-  
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error; // Rethrow the error for higher-level handling
+const checkServerConnection = async () => {
+  try {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/health`);
+    return response.status === 200; // Si el estado es 200, el servidor está funcionando
+  } catch (error) {
+    return false; // Si hay un error, el servidor no está disponible
+  }
+};
+
+export const fetchUserProfile = async (): Promise<UserProfile> => {
+  try {
+    // Obtain the token from localStorage
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      throw new Error("No se encontró ningún token en localStorage.");
     }
-  
-    // Verificar si el servidor está disponible antes de intentar la solicitud
+
+    // Configure the request to fetch the user profile
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/profile/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Error al obtener el perfil del usuario: ${response.status}`);
+    }
+
+    const data: UserProfile = await response.json();
+
+    // Validate that the profile data is not null or empty
+    if (!data || Object.keys(data).length === 0) {
+      throw new Error("El perfil del usuario está vacío o no es válido.");
+    }
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Rethrow the error for higher-level handling
+  }
+
+  // Verificar si el servidor está disponible antes de intentar la solicitud
   /* 
     try {
       // Realizar la solicitud GET para obtener el perfil del usuario
@@ -61,15 +72,4 @@ import axios from 'axios';
         throw new Error("Ocurrió un error inesperado. Inténtalo de nuevo.");
       }
     } */
-  };
-
-  export function getAccessToken(): string | null {
-    try {
-      const token = localStorage.getItem("accessToken");
-      return token ? JSON.parse(token) as string : null;
-    } catch (error) {
-      console.error("Failed to parse access token:", error);
-      return null;
-    }
-  }
-  
+};
