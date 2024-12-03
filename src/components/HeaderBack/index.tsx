@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { Navbar, NavbarBrand, NavbarContent, NavbarMenuToggle } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { ArrowBigLeft, MoveLeft } from "lucide-react";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -13,9 +14,10 @@ const Header = (props: {
       <NavbarContent className="relative flex items-center justify-center">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-primary text-xl font-medium hover:text-primary-dark"
+          className="absolute flex items-center gap-2 text-primary text-xl font-medium hover:text-primary-dark"
         >
-          <i className="fa-solid fa-arrow-left"></i>
+          <MoveLeft></MoveLeft>
+          
         </button>
         <NavbarBrand className="flex items-center justify-center">
           {/* <Image

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useSWR from 'swr';
 
 type Car = {
     id_car: number;
@@ -45,4 +46,22 @@ export const getCars = async (): Promise<Car[]> => {
   }
 };
 
-export default getCars;
+export const getCarById = async (carId: number): Promise<Car> => {
+  try {
+    const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/cars/show/${carId}/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
+      },
+    });
+
+    return response.data; // Retorna los datos de los vehículos
+  } catch (error) {
+    console.error('Error al obtener los vehículos:', error);
+    throw error; // Lanza el error para manejarlo en el componente o en otro lugar
+  }
+};

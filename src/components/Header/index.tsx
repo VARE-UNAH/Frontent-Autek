@@ -1,8 +1,8 @@
 import Link from "next/link";
 import DarkModeSwitcher from "./DarkModeSwitcher";
-import DropdownUser from "./DropdownUser";
 import Image from "next/image";
-import { Navbar, NavbarBrand, NavbarContent, NavbarMenuToggle } from "@nextui-org/react";
+import { Button, Navbar, NavbarBrand, NavbarContent, NavbarMenuToggle } from "@nextui-org/react";
+import { Menu } from "lucide-react";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -11,13 +11,10 @@ const Header = (props: {
   return (
     <Navbar className="bg-white backdrop-blur-md shadow-md h-15">
             <NavbarContent className="relative flex items-center justify-center">
-                <NavbarMenuToggle
-                onClick={(e) => {
+                <Menu className="absolute left-0 text-primary cursor-pointer lg:hidden xl:hidden" onClick={(e) => {
                   e.stopPropagation();
                   props.setSidebarOpen(!props.sidebarOpen);
-                }}
-                    className="absolute left-0 text-primary"
-                />
+                }}></Menu>
                 <NavbarBrand className="flex items-center justify-center">
                     {/* <Image
               src="/images/autek/autek_white.png"

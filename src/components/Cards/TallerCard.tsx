@@ -24,7 +24,7 @@ const TallerCard: React.FC<CardProps> = ({
             {/* Todo el contenedor es un enlace válido */}
             <div className="mb-3">
                 <div className="rounded-t-lg rounded-b-none">
-                    <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
+                    <div style={{ width: "100%", height: "160px", overflow: "hidden" }}>
                         <Image
                             src={imageUrl} // Asegúrate de que `imageUrl` sea dinámico
                             alt="profile cover"
@@ -37,7 +37,7 @@ const TallerCard: React.FC<CardProps> = ({
                 <Card className="py-4 rounded-t-none rounded-b-lg shadow-none">
                     <CardHeader className="pb-0 pt-0 px-4 flex-col items-start">
                         <div className="flex justify-between items-center w-full">
-                            <h4 className="font-bold text-lg">{taller_name}</h4>
+                            <h4 className="font-bold text-md">{taller_name}</h4>
                             <div className="text-sm font-medium items-center text-zinc-400">
                                 <div className="flex justify-between items-center w-full">
                                     <i className="fa-solid fa-star text-orange-500"></i>

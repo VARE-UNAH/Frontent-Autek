@@ -13,6 +13,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDi
 import TrLoader from "@/components/common/TrLoader";
 import { validateYear, validatePlate } from "@/validators/cars/carValidator"; // Importa los validadores
 import { createCar } from "@/services/car/createService";
+import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
 
 type Brand = {
     key: number;
@@ -191,7 +192,7 @@ const Newcar = () => {
 
     return (
 
-        <DefaultLayout>
+        <DefaultLayoutBack>
             {isLoading && <TrLoader />}
             <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
                 <ModalContent>
@@ -215,13 +216,13 @@ const Newcar = () => {
                     )}
                 </ModalContent>
             </Modal>
-            <Breadcrumbs size="lg" variant="bordered">
+            <Breadcrumbs size="md" variant="bordered">
                 <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
-                <BreadcrumbItem href="/profile">Profile</BreadcrumbItem>
-                <BreadcrumbItem href="/user/new-car">New Car</BreadcrumbItem>
+                <BreadcrumbItem href="/user/profile">Profile</BreadcrumbItem>
+                <BreadcrumbItem href="/user/cars/new-car">New Car</BreadcrumbItem>
             </Breadcrumbs>
-            <h1 className="text-3xl font-bold pt-2 text-black pb-2">Añadir Vehículo Nuevo</h1>
-            <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <h1 className="text-xl font-bold pt-2 text-black pb-2">Añadir Vehículo Nuevo</h1>
+            <div className="overflow-hidden rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
                 <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
                     <div className="mt-4">
                         <form className="space-y-6" onSubmit={(event) => {
@@ -404,7 +405,7 @@ const Newcar = () => {
                     </div>
                 </div>
             </div>
-        </DefaultLayout>
+        </DefaultLayoutBack>
     );
 };
 

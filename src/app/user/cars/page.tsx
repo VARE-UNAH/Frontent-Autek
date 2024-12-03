@@ -5,8 +5,9 @@ import Vehiculos from "@/components/Vehiculos"
 import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Link, Skeleton, Slider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { Car } from "@/types/car";
-import getCars from "@/services/car/getService";
+import { getCars } from "@/services/car/getService";
 import VehicleCard from "@/components/Cards/VehicleCard";
+import { VerticalDotsIcon } from "@/components/svg/VerticalDotsIcon";
 
 
 const Cars = () => {
@@ -108,7 +109,11 @@ const Cars = () => {
                             <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
                         }
                     />
-                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Añadir Vehiculo</Button>
+                    <Link
+                        className=""
+                        href="/user/cars/new-car">
+                        <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Añadir Vehiculo</Button>
+                    </Link>
                     <p className="pb-0 font-normal text-sm mt-2">{cars.length} vehiculos</p>
                 </div>
             )}
@@ -164,14 +169,14 @@ const Cars = () => {
                 <div>
                     {cars.map((car, index) => (
                         <VehicleCard
-                        key={index}
-                        brand_name={car.brand.name}
-                        model_name={car.model.name}
-                        license_plate={car.license_plate}
-                        linkUrl={`/user/cars/${car.id_car}`}>
+                            key={index}
+                            brand_name={car.brand.name}
+                            model_name={car.model.name}
+                            license_plate={car.license_plate}
+                            linkUrl={`/user/cars/${car.id_car}`}>
 
                         </VehicleCard>
-                        
+
                     ))}
                 </div>
             )}
