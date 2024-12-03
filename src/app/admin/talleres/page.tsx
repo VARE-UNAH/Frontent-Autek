@@ -8,7 +8,38 @@ import { toast } from "sonner";
 import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import AdminDefaultLayout from "@/components/Layouts/AdminLayout";
-import Grid from "@/components/Dashboard/AdminGrid";
+import TallerCardContainer from "@/components/Dashboard/TallerCardContainer";
+
+const sampleCards = [
+    {
+        taller_name: 'Taller A',
+        location: 'El pedregal',
+        imageUrl: '/images/taller-a.jpg',
+        linkUrl: '/taller-a',
+        rating: 4.5,
+    },
+    {
+        taller_name: 'Taller B',
+        location: 'Kennedy',
+        imageUrl: '/images/taller-b.jpg',
+        linkUrl: '/taller-b',
+        rating: 4.2,
+    },
+    {
+        taller_name: 'Taller C',
+        location: 'Valimos',
+        imageUrl: '/images/taller-c.jpg',
+        linkUrl: '/taller-c',
+        rating: 4.8,
+    },
+    {
+        taller_name: 'Taller D',
+        location: 'Tuani',
+        imageUrl: '/images/taller-d.jpg',
+        linkUrl: '/taller-d',
+        rating: 4.6,
+    },
+];
 
 const Home = () => {
 
@@ -25,8 +56,8 @@ const Home = () => {
 
     return (
         <AdminDefaultLayout>
-            <h1 className="text-3xl font-bold text-black pb-2">Administración</h1>
-            <Grid></Grid>
+            <h1 className="text-3xl font-bold text-black pb-2">Talleres</h1>
+            <TallerCardContainer cards={sampleCards}></TallerCardContainer>
              
         </AdminDefaultLayout>
     );
