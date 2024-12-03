@@ -254,7 +254,7 @@ function TallerDetails({ params }: {
 
     return (
         <DefaultLayoutBack>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur" placement="center">
                 <ModalContent>
                     {(onClose) => (
                         <>
