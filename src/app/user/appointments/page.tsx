@@ -2,17 +2,27 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
-import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Link, Skeleton, Slider } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Link, Select, SelectItem, Skeleton, Slider } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import VehicleCard from "@/components/Cards/VehicleCard";
 import { getAppointments } from "@/services/appointments/appointmentsService";
 import { Appointment } from "@/types/appointment";
 import UserAppointmentsCard from "@/components/Cards/UserAppointmentsCard";
-
+type AppointmentStatus = 'Agendado' | 'En Proceso' | 'Completado' | 'Cancelado' | 'Solicitud enviada' | 'Nuevo Presupuesto';
 
 const Appointments = () => {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('')
+    const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'Todas'>('Todas')
+
+    const filteredAppointments = appointments.filter(appointment =>
+        (appointment.workshops.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            appointment.car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            appointment.car.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            appointment.car.license_plate.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (statusFilter === 'Todas' || appointment.appointment_status?.name === statusFilter)
+    )
     //Funcion obtener appintments usuario
     const fetchAppointmentsUser = async () => {
         try {
@@ -87,6 +97,8 @@ const Appointments = () => {
                         variant="bordered"
                         color="primary"
                         radius="lg"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         classNames={{
                             label: "text-black/50 dark:text-white/90",
                             input: [
@@ -110,11 +122,28 @@ const Appointments = () => {
                             <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
                         }
                     />
+                    <Select
+                        placeholder="Filtar por Estado"
+                        className="mb-2 rounded-lg mt-2 bg-white"
+                        size="md"
+                        color="primary"
+                        variant="bordered"
+                        radius="sm"
+                        onChange={(e) => setStatusFilter(e.target.value as AppointmentStatus | 'Todas')}
+                    >
+                        <SelectItem key="Todas" value="Todas">Todas</SelectItem>
+                        <SelectItem key="Solicitud enviada" value="Solicitud enviada">Solicitud enviada</SelectItem>
+                        <SelectItem key="Agendado" value="Agendado">Agendado</SelectItem>
+                        <SelectItem key="En Proceso" value="En Proceso">En Proceso</SelectItem>
+                        <SelectItem key="Completado" value="Completado">Completado</SelectItem>
+                        <SelectItem key="Cancelado" value="Cancelado">Cancelado</SelectItem>
+                    </Select>
                     <Link
-                    href="user/talleres">
-                    <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Nueva Cita</Button>
+                        className="w-auto"
+                        href="user/talleres">
+                        <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" endContent={<i className="fa-solid fa-car"></i>}>Nueva Cita</Button>
                     </Link>
-                    <p className="pb-0 font-normal text-sm mt-2">{appointments.length} citas</p>
+                    <p className="pb-0 font-normal text-sm mt-2 mb-1">{filteredAppointments.length} citas</p>
                 </div>
             )}
             {isLoading ? (
@@ -167,20 +196,20 @@ const Appointments = () => {
                 </div>
             ) : (
                 <div>
-                    {appointments.map((appointment, index) => (
+                    {filteredAppointments.map((appointment, index) => (
                         <UserAppointmentsCard
-                        key={index}
-                        brand_name={appointment.car.brand}
-                        model_name={appointment.car.model}
-                        workshop_name={appointment.workshops.name}
-                        license_plate={appointment.car.license_plate}
-                        linkUrl={`/user/cars/${appointment.id_appointment}`}
-                        descripcion={appointment.description}
-                        status={appointment.appointment_status?.name ?? "Pendiente"}
-                        date={new Date(appointment.date)}
+                            key={index}
+                            brand_name={appointment.car.brand}
+                            model_name={appointment.car.model}
+                            workshop_name={appointment.workshops.name}
+                            license_plate={appointment.car.license_plate}
+                            linkUrl={`/user/appointments/${appointment.id_appointment}`}
+                            descripcion={appointment.description}
+                            status={appointment.appointment_status?.name ?? "Pendiente"}
+                            date={new Date(appointment.date)}
                         >
                         </UserAppointmentsCard>
-                        
+
 
                     ))}
                 </div>

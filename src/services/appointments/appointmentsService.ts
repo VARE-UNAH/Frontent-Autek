@@ -26,7 +26,7 @@ export const createAppointment = async (data: {
 
     const parsedUser = JSON.parse(user);
 
-    const user_id= parsedUser.id;
+    const user_id = parsedUser.id;
 
     const requestData = {
         ...data,
@@ -61,20 +61,40 @@ export const createAppointment = async (data: {
 
 export const getAppointments = async (): Promise<Appointment[]> => {
     try {
-      const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-  
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/show/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
-        },
-      });
-  
-      return response.data; // Retorna los datos de los vehículos
+        const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
+        if (!accessToken) {
+            throw new Error('No access token found');
+        }
+
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/show/`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
+            },
+        });
+
+        return response.data; // Retorna los datos de los vehículos
     } catch (error) {
-      console.error('Error al obtener los vehículos:', error);
-      throw error; // Lanza el error para manejarlo en el componente o en otro lugar
+        console.error('Error al obtener los vehículos:', error);
+        throw error; // Lanza el error para manejarlo en el componente o en otro lugar
     }
-  };
+};
+
+export const getAppointmentById = async (appointmentId: number): Promise<Appointment> => {
+    try {
+        const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
+        if (!accessToken) {
+            throw new Error('No access token found');
+        }
+
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/show/${appointmentId}/`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
+            },
+        });
+
+        return response.data; // Retorna los datos de los vehículos
+    } catch (error) {
+        console.error('Error al obtener el appointment:', error);
+        throw error; // Lanza el error para manejarlo en el componente o en otro lugar
+    }
+};
