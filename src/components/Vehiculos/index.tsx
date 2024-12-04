@@ -109,7 +109,7 @@ const Cars = () => {
                                             <p className="flex items-center text-gray-600"><RectangleHorizontal className="w-4 h-4 mr-2" /> {car.license_plate}</p>
                                             <div className="flex justify-between items-center">
                                                 <p className="flex items-center text-gray-600">
-                                                    <SprayCan className="w-4 h-4 mr-2" /> Rojo
+                                                    <SprayCan className="w-4 h-4 mr-2" /> {car.color.name}
                                                 </p>
                                             </div>
                                         </div>
