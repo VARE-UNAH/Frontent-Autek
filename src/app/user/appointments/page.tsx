@@ -48,7 +48,7 @@ const Appointments = () => {
                 <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
                 <BreadcrumbItem href="/user/appointments">Tus Citas</BreadcrumbItem>
             </Breadcrumbs>
-            <h1 className="text-black/90 text-md font-bold pb-1">Mi historial de citas</h1>
+            <h1 className="text-black/90 text-lg font-bold pb-1">Mi historial de citas</h1>
             {isLoading ? (
                 <div>
                     <Skeleton className="rounded-lg" >

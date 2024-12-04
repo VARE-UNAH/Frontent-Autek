@@ -10,6 +10,7 @@ export type Appointment = {
         brand: string;
         model: string;
         license_plate: string;
+        year: string;
     };
     workshops: {
         id: number;

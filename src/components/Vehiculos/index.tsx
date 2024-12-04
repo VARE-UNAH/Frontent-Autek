@@ -1,8 +1,10 @@
 import Image from 'next/image';
-import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Link, Spinner, Skeleton } from "@nextui-org/react";
+import { Button, Accordion, AccordionItem, Card, CardHeader, CardBody, CardFooter, Divider, Spinner, Skeleton, ScrollShadow } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
-import {getCars} from '@/services/car/getService';
+import Link from 'next/link'; // Importa Link de next/link
+import { getCars } from '@/services/car/getService';
 import Loader from '../common/Loader';
+import { CarFront, RectangleHorizontal, SprayCan } from 'lucide-react';
 
 type Car = {
     id_car: number;
@@ -59,8 +61,90 @@ const Cars = () => {
     );
 
     return (
-        <Card className="shadow-sm rounded-lg">
-            <CardHeader className="flex gap-3">
+        <Card className="w-full rounded-lg">
+            <CardBody className="pb-2">
+                <ScrollShadow className="max-h-90">
+                    <div className="space-y-2">
+                        {isLoading ? (
+                            <div className='space-y-2'>
+                                {Array.from({ length: 2 }).map((_, index) => (
+                                    <div key={index} className="space-y-2">
+                                        <Skeleton className='rounded-lg'>
+                                            <div
+                                                className="p-4 border border-stroke rounded-lg bg-gray-50"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <span className="flex items-center text-lg font-semibold">
+                                                        <CarFront className="w-4 h-4 mr-2" /> load
+                                                    </span>
+                                                </div>
+                                                <Divider></Divider>
+                                                <div className="mt-1">
+                                                    <p className="flex items-center text-gray-600"><RectangleHorizontal className="w-4 h-4 mr-2" /> load</p>
+                                                    <div className="flex justify-between items-center">
+                                                        <p className="flex items-center text-gray-600">
+                                                            <SprayCan className="w-4 h-4 mr-2" /> Rojo
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Skeleton>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            cars.map((car) => (
+                                <div
+                                    key={car.id_car}
+                                    className="p-4 border border-stroke rounded-lg bg-gray-50"
+                                >
+                                    <Link href={`/user/cars/${car.id_car}`}>
+                                        <div className="flex items-center gap-2">
+                                            <span className="flex items-center text-lg font-semibold">
+                                                <CarFront className="w-4 h-4 mr-2" /> {capitalizeFirstLetter(car.brand.name)} {capitalizeFirstLetter(car.model.name)} {car.year}
+                                            </span>
+                                        </div>
+                                        <Divider></Divider>
+                                        <div className="mt-1">
+                                            <p className="flex items-center text-gray-600"><RectangleHorizontal className="w-4 h-4 mr-2" /> {car.license_plate}</p>
+                                            <div className="flex justify-between items-center">
+                                                <p className="flex items-center text-gray-600">
+                                                    <SprayCan className="w-4 h-4 mr-2" /> Rojo
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </ScrollShadow>
+            </CardBody>
+            <Divider></Divider>
+            <CardFooter className="pt-2 flex">
+                {isLoading ? (
+                    <Skeleton className='rounded-lg w-full'>
+                        <Link
+                            className='w-full'
+                            href="/user/cars/new-car">
+                            <Button radius="sm" size="sm" className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white self-end">Añadir Vehiculo</Button>
+                        </Link>
+                    </Skeleton>
+                ) : (
+                    <Link
+                        className='w-full'
+                        href="/user/cars/new-car">
+                        <Button radius="sm" size="sm" className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white self-end">Añadir Vehiculo</Button>
+                    </Link>
+                )}
+            </CardFooter>
+        </Card>
+
+    );
+};
+
+{/* <Card className="shadow-sm rounded-lg">
+            <CardHeader className="flex gap-3 pb-0">
                 {isLoading ? (
                     <div className="flex flex-col">
                         {Array(1).fill(null).map((_, index) => (
@@ -76,8 +160,7 @@ const Cars = () => {
                     </div>
                 )}
             </CardHeader>
-            <Divider />
-            <CardBody>
+            <CardBody className='pt-1 ps-1 pe-1'>
                 {isLoading ? (
                     // Componente de carga mientras los datos se cargan
                     <div className="mt-2">
@@ -93,43 +176,34 @@ const Cars = () => {
                     <ul role="list" className="mt-2">
                         {cars.map((car, index) => (
                             <Accordion variant="splitted" key={index}>
-                                <AccordionItem className="mb-2 rounded-lg shadow-sm border border-stroke font-normal" startContent={
-                                    <Image
-                                        alt="logo"
-                                        src="/images/cars/toyota.png"
-                                        width={51}
-                                        height={38}
-                                        className="rounded-lg uppercase"
-                                    />} key={index} aria-label={car.brand.name} title={`${capitalizeFirstLetter(car.brand.name)} ${capitalizeFirstLetter(car.model.name)} ${car.year}`}>
-                                    <li key={index} className="pb-3 sm:pb-4 rounded-lg">
+                                <AccordionItem className="mb-2 pb-0 rounded-lg shadow-sm border border-stroke font-normal" title={
+                                    <div className="flex items-center space-x-2 pb-0 mt-0">
+                                        <Image
+                                            src={`/images/cars/${car.brand.name.toLowerCase()}.png`}
+                                            alt={`${car.brand.name} logo`}
+                                            width={40}
+                                            height={40}
+                                            className="rounded-lg object-cover"
+                                        />
+                                        <span className="font-medium text-sm">
+                                            {`${capitalizeFirstLetter(car.brand.name)} ${capitalizeFirstLetter(car.model.name)} ${car.year}`}
+                                        </span>
+                                    </div>
+                                }>
+                                    <li key={index} className="pb-1 pt-0 sm:pb-4 rounded-lg">
                                         <div className="grid grid-cols-2 justify-between">
                                             <div className="">
-                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                    Color:{car.color.name}
+                                                <p className="text-sm text-start truncate dark:text-gray-400">
+                                                    Color: {car.color.name}
                                                 </p>
-                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                    Placa:{car.license_plate}
+                                                <p className="text-sm text-start truncate dark:text-gray-400">
+                                                    Placa: {car.license_plate}
                                                 </p>
-                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                    Proxima Visita: pendiente implementacion
-                                                </p>
-                                                <p className="text-sm text-start text-gray-500 truncate dark:text-gray-400">
-                                                    Ultima Visita: pendiente implementacion
-                                                </p>
-                                            </div>
-                                            <div className="self-center justify-self-end">
-                                                <Image
-                                                    src={"/images/cars/toyota.png"}
-                                                    alt={`/images/cars/toyota.png image`}
-                                                    width={100}
-                                                    height={60}
-                                                    className="rounded-lg"
-                                                />
                                             </div>
                                         </div>
                                         <Link
-                                        href={`/user/cars/${car.id_car}`} className='w-full'>
-                                        <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
+                                            href={`/user/cars/${car.id_car}`} className='w-full'>
+                                            <Button size='sm' className="w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">Ver Detalles</Button>
                                         </Link>
                                     </li>
                                 </AccordionItem>
@@ -164,8 +238,6 @@ const Cars = () => {
                     </div>)}
 
             </CardFooter>
-        </Card>
-    );
-};
+        </Card> */}
 
 export default Cars;

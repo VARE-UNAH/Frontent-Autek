@@ -42,7 +42,7 @@ const Profile = () => {
   }, [isValidated]);
 
   // Muestra el Loader mientras se valida el token o se carga el perfil
-  if (!isValidated || isLoadingProfile ) {
+  if (!isValidated || isLoadingProfile) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader />
@@ -180,11 +180,14 @@ const Profile = () => {
 
               <div className="mx-auto max-w-180">
               </div>
-              
+
 
 
             </div>
           </div>
+        </div>
+        <div className="flex justify-between items-center mb-1 pt-0 mt-4">
+          <h2 className="text-lg font-semibold text-gray-700">Mis Vehiculos</h2>
         </div>
         <Vehiculos></Vehiculos>
       </div>
