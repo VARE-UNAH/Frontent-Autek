@@ -13,20 +13,21 @@ interface BeneficiosProps {
 
 const Beneficios: React.FC<BeneficiosProps> = ({ title, items }) => {
     return (
-        <div className="max-w-full w-full bg-whiten rounded-b-lg p-8 relative">
-            <h1 className="text-title-lg text-center font-bold text-slate-500 pb-2">{title}</h1>
-            <div className="grid grid-cols-2 gap-4 place-items-center justify-center pt-8">
+        <section className="bg-gray-100 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-12">{title}</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {items.map((item, index) => (
                     <div key={index} className="flex flex-col items-center">
-                        <i className={`fa-solid ${item.icon} text-5xl text-slate-500`}></i>
-                        <h1 className="text-xl text-center font-bold text-slate-500 pt-2">{item.title}</h1>
-                        <p className="text-xs text-center text-slate-500 pb-3">{item.description}</p>
+                        <i className={`fa-solid ${item.icon} text-4xl text-blue-600 mb-4`}></i>
+                        <h1 className="text-xl font-semibold text-gray-800 mb-2">{item.title}</h1>
+                        <p className="text-gray-600 text-center">{item.description}</p>
                     </div>
                 ))}
             </div>
             
         </div>
-        
+        </section>
     );
 };
 

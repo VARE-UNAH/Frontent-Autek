@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import LoginLayout from "@/components/Layouts/LoginLayout";
 import Beneficios from '@/components/Grid';
-import Social from '@/components/Social';
+import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react'
 import Footer from "@/components/Footer";
 import { Navbar, Image, NavbarContent, NavbarBrand, Card, CardFooter } from "@nextui-org/react";
 
@@ -45,51 +45,79 @@ const Home = () => {
                 </NavbarContent>
             </Navbar>
 
-            <Card className="w-full h-50 col-span-12 sm:col-span-7 rounded-none">
+            <Card className="w-full h-[50vh] rounded-none relative overflow-hidden rounded-none">
                 <Image
                     removeWrapper
                     alt="Relaxing app background"
                     className="z-0 w-full h-full object-cover rounded-none"
                     src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                 />
-                <CardFooter className="absolute flex flex-col bg-black/5 bottom-0 z-10 items-start backdrop-blur-sm" >
-                    <h1 className="text-white/90 text-md font-bold">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
-                    <p className="text-white/60 font-medium text-sm">Programa citas, paga mantenimientos y más</p>
+                <CardFooter className="absolute inset-x-0 bottom-0 bg-black/40 backdrop-blur-sm rounded-none">
+                    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <h1 className="text-white/90 text-xl sm:text-2xl md:text-3xl font-bold mb-2">MONITOREA EN TIEMPO REAL EL MANTENIMIENTO DE TU VEHÍCULO</h1>
+                        <p className="text-white/60 font-medium text-sm sm:text-base">Programa citas, paga mantenimientos y más</p>
+                    </div>
                 </CardFooter>
             </Card>
-            <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white justify-center p-8 relative mx-auto">
-                <h1 className="text-title-lg font-bold text-black pb-2">Ingresa ahora</h1>
-                <p className="text-base text-black pb-3">
-                    Ingresa para poder ayudarte en todo lo que necesites en <span className="font-bold">AUTEK</span>
-                </p>
-                <Link href="/auth/signin" passHref>
-                    <button
-                        type="button"
-                        className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
-                    >
+
+            <div className="bg-gray-50  py-6 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center mb-6 text-black">
                         Ingresa ahora
-                    </button>
-                </Link>
-                <p className="mt-4 text-center text-sm text-gray-600">
-                    ¿No tienes cuenta?{' '}
-                    <a href="/auth/signup" className="text-blue-600 hover:underline">
-                        Regístrate
-                    </a>
-                </p>
-                {/* Iconos redes sociales */}
-                <Social />
-                {/* Contactanos */}
-                <div>
-                    <p className="mt-4 text-center text-sm text-gray-600">
-                        Para empresas{' '}
-                        <a href="/auth/signup" className="text-blue-600 hover:underline">
-                            Contactanos
-                        </a>
+                    </h2>
+                    <p className="text-sm sm:text-base text-gray-600 text-center mb-8">
+                        Ingresa para poder ayudarte en todo lo que necesites en{' '}
+                        <span className="font-bold text-blue-600">AUTEK</span>
                     </p>
+                    <Link href="/auth/signin" passHref>
+                        <button
+                            type="button"
+                            className="w-full py-3 px-4 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                        >
+                            Ingresa ahora
+                        </button>
+                    </Link>
+                    <div className="mt-8 relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-2 bg-white text-gray-500">O continúa con</span>
+                        </div>
+                    </div>
+                    <div className="mt-6 grid grid-cols-4 gap-3">
+                        {[
+                            { Icon: Facebook, color: "text-blue-600" },
+                            { Icon: Twitter, color: "text-blue-400" },
+                            { Icon: Instagram, color: "text-pink-600" },
+                            { Icon: Linkedin, color: "text-blue-800" },
+                        ].map(({ Icon, color }, index) => (
+                            <a
+                                key={index}
+                                href="#"
+                                className="flex justify-center items-center p-2 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 transition"
+                            >
+                                <Icon className={`h-5 w-5 ${color}`} />
+                            </a>
+                        ))}
+                    </div>
+                    <div className="mt-8 text-center space-y-2">
+                        <p className="text-sm text-gray-600">
+                            ¿No tienes cuenta?{' '}
+                            <a href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500 transition">
+                                Regístrate
+                            </a>
+                        </p>
+                        <p className="text-sm text-gray-600">
+                            Para empresas{' '}
+                            <a href="/contact" className="font-medium text-blue-600 hover:text-blue-500 transition">
+                                Contáctanos
+                            </a>
+                        </p>
+                    </div>
                 </div>
-
-
             </div>
+
             <Beneficios title="BENEFICIOS" items={items} />
 
         </LoginLayout>

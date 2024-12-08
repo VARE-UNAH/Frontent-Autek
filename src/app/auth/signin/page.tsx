@@ -125,7 +125,8 @@ const SignIn = () => {
           <p className="text-white/60 font-medium text-sm">Programa citas, paga mantenimientos y más</p>
         </CardFooter>
       </Card>
-      <div className="max-w-full md:max-w-lg lg:max-w-xl w-full bg-white  p-8 relative mx-auto lg:pt-2">
+      <div className="bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md mx-auto bg-white p-8 rounded-xl shadow-md">
         <h1 className="text-title-lg font-bold text-black pb-2">Inicio de Sesión</h1>
         <p className="text-base text-black pb-5">
           Inicia sesión con tu cuenta de <span className="font-bold">AUTEK</span>
@@ -215,6 +216,7 @@ const SignIn = () => {
             Regístrate
           </a>
         </p>
+      </div>
       </div>
     </LoginLayout>
   );
