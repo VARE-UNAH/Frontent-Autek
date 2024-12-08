@@ -1,82 +1,94 @@
-/* import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-
-export const useValidateToken = () => {
-    const router = useRouter();
-
-    useEffect(() => {
-        const validateToken = async () => {
-            const token = localStorage.getItem('accessToken');
-
-            if (token) {
-            } else {
-                // No hay token, limpiar y redirigir
-                localStorage.removeItem("user");
-                localStorage.removeItem("accessToken");
-                localStorage.removeItem("userProfile");
-                router.push('/auth/signin'); // Redirige si no hay usuario
-            }
-        };
-
-        validateToken();
-    }, [router]);
-}; */
+"use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 
 export const useValidateToken = () => {
     const router = useRouter();
-    const [isValidated, setIsValidated] = useState(false); // Estado de validación
+    const pathname = usePathname();
+    const [isValidated, setIsValidated] = useState(false);
+    const [userRole, setUserRole] = useState<string | null>(null);
 
-    /**
-     * Limpia el almacenamiento local y redirige al inicio de sesión.
-     */
-    const clearLocalStorageAndRedirect = (router: any) => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("userProfile");
-        router.push("/auth/signin");
-    };
+    const VALID_ROLES = new Set(["Admin", "Cliente"]);
 
-    /**
-     * Verifica si el token es válido.
-     */
+    const clearLocalStorageAndRedirect = useCallback((path: string = "/auth/signin") => {
+        ["user", "accessToken", "userProfile", "role"].forEach((key) =>
+            localStorage.removeItem(key)
+        );
+        router.push(path);
+    }, [router]);
+
     const isTokenValid = (token: string): boolean => {
         try {
             const [, payload] = token.split(".");
             if (!payload) return false;
 
-            const { exp } = JSON.parse(atob(payload)); // Decodifica el payload
-            const now = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
-            return exp > now; // Valida que el token no haya expirado
+            const { exp } = JSON.parse(atob(payload));
+            const now = Math.floor(Date.now() / 1000);
+            return exp > now;
         } catch {
-            return false; // Si ocurre un error, el token es inválido
+            return false;
         }
     };
 
-    /**
-     * Valida el token del almacenamiento local.
-     */
-    const validateToken = useCallback(() => {
+    const validateTokenAndRole = useCallback(() => {
         const token = localStorage.getItem("accessToken");
+        const role = localStorage.getItem("role");
 
         if (!token || !isTokenValid(token)) {
             console.warn("Token no válido o ausente");
-            clearLocalStorageAndRedirect(router);
-        } else {
-            console.log("Token válido");
-            setIsValidated(true); // Marca como validado
+            clearLocalStorageAndRedirect();
+            return;
         }
-    }, [router]);
+
+        if (!role || !VALID_ROLES.has(role)) {
+            console.warn("Rol no válido o ausente");
+            clearLocalStorageAndRedirect();
+            return;
+        }
+
+        console.log("Token y rol válidos");
+        setIsValidated(true);
+        setUserRole(role);
+    }, [clearLocalStorageAndRedirect]);
+
+    const handleRouteAccess = useCallback(() => {
+        if (!isValidated || !userRole) {
+            return;
+        }
+
+        const routeRoleMap: Record<string, string[]> = {
+            "/admin": ["Admin"],
+            "/user": ["Cliente", "Admin"],
+        };
+
+        let isAuthorized = true;
+
+        for (const [prefix, roles] of Object.entries(routeRoleMap)) {
+            if (pathname.startsWith(prefix) && !roles.includes(userRole)) {
+                isAuthorized = false;
+                break;
+            }
+        }
+
+        if (!isAuthorized) {
+            console.warn("Usuario no autorizado para esta ruta");
+            router.push("/unauthorized");
+        }
+    }, [isValidated, userRole, pathname, router]);
 
     useEffect(() => {
-        validateToken();
-    }, [validateToken]);
+        validateTokenAndRole();
+    }, [validateTokenAndRole]);
 
-    return isValidated; // Retorna el estado de validación
+    useEffect(() => {
+        handleRouteAccess();
+    }, [handleRouteAccess]);
+
+    return { isValidated, userRole };
 };
+
 
 export const logoutUser = async () => {
     const token = localStorage.getItem("accessToken");
@@ -111,6 +123,33 @@ export const logoutUser = async () => {
         return false;
     }
 };
+
+export async function signIn(email: string, password: string) {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/auth/login/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to log in.");
+      }
+  
+      const data = await response.json();
+  
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("refreshToken", data.refresh_token);
+      localStorage.setItem("role", data.role);
+  
+      return { success: true, role: data.role };
+    } catch (error) {
+      console.error("Login error:", error);
+      return { success: false };
+    }
+  }
 
 
 
