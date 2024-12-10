@@ -5,6 +5,7 @@ import AdminDefaultLayout from "@/components/Layouts/AdminLayout";
 import TallerCardContainer from "@/components/Dashboard/TallerCardContainer";
 import Loader from "@/components/common/Loader";
 import { toast } from "sonner";
+import { useValidateToken } from "@/services/user/authService";
 
 
 export interface Address {
@@ -25,6 +26,8 @@ interface Workshop {
 const Home = () => {
   const [workshops, setWorkshops] = useState<Workshop[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+
 
   useEffect(() => {
     const fetchWorkshops = async () => {

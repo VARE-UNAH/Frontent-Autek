@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import AdminDefaultLayout from "@/components/Layouts/AdminLayout";
 import Loader from "@/components/common/Loader";
 import { toast } from "sonner";
+import { useValidateToken } from "@/services/user/authService";
 
 interface AppointmentDetails {
   id_appointment: number;
@@ -39,6 +40,15 @@ const AppointmentDetailsPage = () => {
   const citaId = params.citaId as string;
   const [appointmentDetails, setAppointmentDetails] = useState<AppointmentDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  useValidateToken();
+    const isValidated = useValidateToken(); // Hook personalizado
+
+    if (!isValidated) {
+        // Mientras se valida, muestra un indicador de carga
+        return <div className="flex items-center justify-center h-screen">
+            <Loader /> {/* Muestra el componente Loader mientras valida */}
+        </div>
+    }
 
   useEffect(() => {
     const fetchAppointmentDetails = async () => {

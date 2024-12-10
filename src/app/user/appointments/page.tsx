@@ -8,6 +8,8 @@ import VehicleCard from "@/components/Cards/VehicleCard";
 import { getAppointments } from "@/services/appointments/appointmentsService";
 import { Appointment } from "@/types/appointment";
 import UserAppointmentsCard from "@/components/Cards/UserAppointmentsCard";
+import { useValidateToken } from "@/services/user/authService";
+import { Loader } from "lucide-react";
 type AppointmentStatus = 'Agendado' | 'En Proceso' | 'Completado' | 'Cancelado' | 'Solicitud enviada' | 'Nuevo Presupuesto';
 
 const Appointments = () => {
@@ -15,6 +17,17 @@ const Appointments = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'Todas'>('Todas')
+
+    useValidateToken();
+    const isValidated = useValidateToken(); // Hook personalizado
+
+    if (!isValidated) {
+        // Mientras se valida, muestra un indicador de carga
+        return <div className="flex items-center justify-center h-screen">
+            <Loader /> {/* Muestra el componente Loader mientras valida */}
+        </div>
+    }
+
 
     const filteredAppointments = appointments.filter(appointment =>
         (appointment.workshops.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -42,6 +55,7 @@ const Appointments = () => {
     const capitalizeFirstLetter = (str: string) => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
+    
     return (
         <DefaultLayout>
             <Breadcrumbs size="md" variant="bordered" className="pb-1">

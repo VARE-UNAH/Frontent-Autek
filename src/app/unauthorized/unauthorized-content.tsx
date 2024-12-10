@@ -21,7 +21,7 @@ export default function UnauthorizedContent() {
         transition={{ duration: 0.5, times: [0, 0.2, 0.5, 0.8, 1] }}
         className="mb-6"
       >
-        <LockIcon className="w-24 h-24 mx-auto text-purple-500" />
+        <LockIcon className="w-24 h-24 mx-auto text-primary" />
       </motion.div>
       <h1 className="text-3xl font-bold mb-4 text-gray-800">¡Ups! Acceso no autorizado</h1>
       <p className="text-gray-600 mb-6">
@@ -33,12 +33,18 @@ export default function UnauthorizedContent() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-lg font-semibold text-purple-600 mb-6">
+          <p className="text-lg font-semibold text-primary mb-6">
             ¡Al menos descubriste nuestra divertida página de error! <SmileIcon className="inline-block ml-2" />
           </p>
           <Button
-            onClick={() => window.history.back()}
-            className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200"
+            onClick={() => {
+              if (window.history.length > 2) {
+                window.history.go(-2); // Va dos pasos atrás
+              } else {
+                window.location.href = "/auth/signin"; // Redirige a auth/signin si no hay historial previo suficiente
+              }
+            }}
+            className="bg-primary hover:bg-blue-900 text-white font-bold py-2 px-4 rounded-full transition-colors duration-200"
           >
             Volver atrás
           </Button>

@@ -10,15 +10,7 @@ import { useState } from "react";
 import { Wrench } from "lucide-react";
 
 const Home = () => {
-    useValidateToken();
-    const isValidated = useValidateToken(); // Hook personalizado
-
-    if (!isValidated) {
-        // Mientras se valida, muestra un indicador de carga
-        return <div className="flex items-center justify-center h-screen">
-            <Loader /> {/* Muestra el componente Loader mientras valida */}
-        </div>
-    }
+    
 
     return (
         <DefaultLayout>

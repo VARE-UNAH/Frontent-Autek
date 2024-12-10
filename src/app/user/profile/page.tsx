@@ -18,7 +18,7 @@ interface UserProfile {
 };
 
 const Profile = () => {
-  const isValidated = useValidateToken();
+  const isValidated = useValidateToken().isValidated;
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 

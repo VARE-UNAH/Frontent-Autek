@@ -7,6 +7,7 @@ import Footermenu from "../FooterMenu";
 import  Footer  from "../Footer";
 import Navbarr from "../Navbarr";
 import HeaderBack from "../HeaderBack";
+import AdminSidebar from "../Sidebar/AdminSidebar";
 import { useAuth } from "@/context/AuthContext";
 import Loader from "../common/Loader";
 export default function DefaultLayout({
@@ -30,7 +31,7 @@ export default function DefaultLayout({
       <div className="flex min-h-screen flex-col">
         {/* <!-- ===== Sidebar Start ===== --> */}
         {/* <Navbarr></Navbarr> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
@@ -59,5 +60,6 @@ export default function DefaultLayout({
       <Footermenu></Footermenu>
       {/* <!-- ===== Page Wrapper End ===== --> */}
     </>
-  )};
+  )}
+  ;
 }

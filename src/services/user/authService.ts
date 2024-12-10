@@ -5,89 +5,107 @@ import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 
 export const useValidateToken = () => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const [isValidated, setIsValidated] = useState(false);
-    const [userRole, setUserRole] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isValidated, setIsValidated] = useState(false); // Estado de validación
+  const [isLoading, setIsLoading] = useState(true); // Estado de carga
+  const [userRole, setUserRole] = useState<string | null>(null);
 
-    const VALID_ROLES = new Set(["Admin", "Cliente"]);
+  const VALID_ROLES = new Set(["Admin", "Cliente"]);
 
-    const clearLocalStorageAndRedirect = useCallback((path: string = "/auth/signin") => {
-        ["user", "accessToken", "userProfile", "role"].forEach((key) =>
-            localStorage.removeItem(key)
-        );
-        router.push(path);
-    }, [router]);
+  const clearLocalStorageAndRedirect = useCallback(
+    (path: string = "/auth/signin") => {
+      ["user", "accessToken", "userProfile", "role"].forEach((key) =>
+        localStorage.removeItem(key)
+      );
+      localStorage.removeItem("isValidated"); // Borramos la cache de validación
+      router.push(path);
+    },
+    [router]
+  );
 
-    const isTokenValid = (token: string): boolean => {
-        try {
-            const [, payload] = token.split(".");
-            if (!payload) return false;
+  const isTokenValid = (token: string): boolean => {
+    try {
+      const [, payload] = token.split(".");
+      if (!payload) return false;
 
-            const { exp } = JSON.parse(atob(payload));
-            const now = Math.floor(Date.now() / 1000);
-            return exp > now;
-        } catch {
-            return false;
-        }
+      const { exp } = JSON.parse(atob(payload));
+      const now = Math.floor(Date.now() / 1000);
+      return exp > now;
+    } catch {
+      return false;
+    }
+  };
+
+  const validateTokenAndRole = useCallback(() => {
+    const token = localStorage.getItem("accessToken");
+    const role = localStorage.getItem("role");
+
+    // Verificar si ya está almacenada la validación en la cache
+    if (localStorage.getItem("isValidated") === "true") {
+      setIsValidated(true);
+      setIsLoading(false);
+      setUserRole(role);
+      return;
+    }
+
+    if (!token || !isTokenValid(token)) {
+      console.warn("Token no válido o ausente");
+      clearLocalStorageAndRedirect();
+      setIsLoading(false);
+      return;
+    }
+
+    if (!role || !VALID_ROLES.has(role)) {
+      console.warn("Rol no válido o ausente");
+      clearLocalStorageAndRedirect();
+      setIsLoading(false);
+      return;
+    }
+
+    console.log("Token y rol válidos");
+    setIsValidated(true);
+    setUserRole(role);
+    localStorage.setItem("isValidated", "true"); // Guardamos que ya está validado
+    setIsLoading(false); // Finaliza carga
+  }, [clearLocalStorageAndRedirect]);
+
+  const handleRouteAccess = useCallback(() => {
+    if (!isValidated || !userRole) return;
+
+    const routeRoleMap: Record<string, string[]> = {
+      "/admin": ["Admin"],
+      "/user": ["Cliente"],
     };
 
-    const validateTokenAndRole = useCallback(() => {
-        const token = localStorage.getItem("accessToken");
-        const role = localStorage.getItem("role");
+    let isAuthorized = true;
 
-        if (!token || !isTokenValid(token)) {
-            console.warn("Token no válido o ausente");
-            clearLocalStorageAndRedirect();
-            return;
-        }
+    for (const [prefix, roles] of Object.entries(routeRoleMap)) {
+      if (pathname.startsWith(prefix) && !roles.includes(userRole)) {
+        isAuthorized = false;
+        break;
+      }
+    }
 
-        if (!role || !VALID_ROLES.has(role)) {
-            console.warn("Rol no válido o ausente");
-            clearLocalStorageAndRedirect();
-            return;
-        }
+    if (!isAuthorized) {
+      console.warn("Usuario no autorizado para esta ruta");
+      router.push("/unauthorized");
+    }
+  }, [isValidated, userRole, pathname, router]);
 
-        console.log("Token y rol válidos");
-        setIsValidated(true);
-        setUserRole(role);
-    }, [clearLocalStorageAndRedirect]);
+  useEffect(() => {
+    validateTokenAndRole();
+  }, [validateTokenAndRole]);
 
-    const handleRouteAccess = useCallback(() => {
-        if (!isValidated || !userRole) {
-            return;
-        }
+  useEffect(() => {
+    handleRouteAccess();
+  }, [handleRouteAccess]);
 
-        const routeRoleMap: Record<string, string[]> = {
-            "/admin": ["Admin"],
-            "/user": ["Cliente", "Admin"],
-        };
-
-        let isAuthorized = true;
-
-        for (const [prefix, roles] of Object.entries(routeRoleMap)) {
-            if (pathname.startsWith(prefix) && !roles.includes(userRole)) {
-                isAuthorized = false;
-                break;
-            }
-        }
-
-        if (!isAuthorized) {
-            console.warn("Usuario no autorizado para esta ruta");
-            router.push("/unauthorized");
-        }
-    }, [isValidated, userRole, pathname, router]);
-
-    useEffect(() => {
-        validateTokenAndRole();
-    }, [validateTokenAndRole]);
-
-    useEffect(() => {
-        handleRouteAccess();
-    }, [handleRouteAccess]);
-
-    return { isValidated, userRole };
+  return { isValidated, userRole };
 };
+
+
+
 
 
 export const logoutUser = async () => {

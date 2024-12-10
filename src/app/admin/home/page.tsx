@@ -11,18 +11,7 @@ import AdminDefaultLayout from "@/components/Layouts/AdminLayout";
 import Grid from "@/components/Dashboard/AdminGrid";
 
 const Home = () => {
-
-    /* useValidateToken();
-    const isValidated = useValidateToken(); // Hook personalizado
-
-    if (!isValidated) {
-        // Mientras se valida, muestra un indicador de carga
-        return <div className="flex items-center justify-center h-screen">
-            <Loader /> {/* Muestra el componente Loader mientras valida }
-        </div>
-    } 
-    */
-
+  
     return (
         <AdminDefaultLayout>
             <h1 className="text-3xl font-bold text-black pb-2">Administración</h1>
@@ -30,6 +19,8 @@ const Home = () => {
              
         </AdminDefaultLayout>
     );
+
+    
 };
 
 export default Home;
