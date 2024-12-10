@@ -215,13 +215,15 @@ export default function AppointmentDetails(
                                             <Skeleton className='rounded-md me-1'>
                                                 Status:
                                             </Skeleton>
+                                            <Skeleton className='rounded-md ms-1'>
                                             <Chip
                                                 size="sm"
                                                 color="default"
                                                 className="rounded-md ms-1"
                                             >
-                                                {selectedAppointment?.appointment_status.name}
+                                                Load
                                             </Chip>
+                                            </Skeleton>
                                         </div>
                                     </div>
                                 ) : (
@@ -239,24 +241,24 @@ export default function AppointmentDetails(
                                             Status:
                                             <Chip
                                                 size="sm"
-                                                color={
-                                                    selectedAppointment?.appointment_status.name === "Agendado"
+                                                color={selectedAppointment?.appointment_status?.name ? (
+                                                    selectedAppointment.appointment_status.name === "Agendado"
                                                         ? "default"
-                                                        : selectedAppointment?.appointment_status.name === "En Proceso"
+                                                        : selectedAppointment.appointment_status.name === "En Proceso"
                                                             ? "primary"
-                                                            : selectedAppointment?.appointment_status.name === "Completado"
+                                                            : selectedAppointment.appointment_status.name === "Completado"
                                                                 ? "success"
-                                                                : selectedAppointment?.appointment_status.name === "Cancelado"
+                                                                : selectedAppointment.appointment_status.name === "Cancelado"
                                                                     ? "danger"
-                                                                    : selectedAppointment?.appointment_status.name === "Solicitud enviada"
+                                                                    : selectedAppointment.appointment_status.name === "Solicitud enviada"
                                                                         ? "warning"
-                                                                        : selectedAppointment?.appointment_status.name === "Nuevo Presupuesto"
+                                                                        : selectedAppointment.appointment_status.name === "Nuevo Presupuesto"
                                                                             ? "secondary"
                                                                             : "default" // Color por defecto para otros casos
-                                                }
+                                                ) : "default"} // Utiliza un color por defecto si el estado es nulo o indefinido
                                                 className="rounded-md ms-1"
                                             >
-                                                {selectedAppointment?.appointment_status.name}
+                                                {selectedAppointment?.appointment_status?.name ? selectedAppointment.appointment_status.name : "Status no disponible"}
                                             </Chip>
                                         </div>
                                     </div>

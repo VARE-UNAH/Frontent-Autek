@@ -18,17 +18,6 @@ const Appointments = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'Todas'>('Todas')
 
-    useValidateToken();
-    const isValidated = useValidateToken(); // Hook personalizado
-
-    if (!isValidated) {
-        // Mientras se valida, muestra un indicador de carga
-        return <div className="flex items-center justify-center h-screen">
-            <Loader /> {/* Muestra el componente Loader mientras valida */}
-        </div>
-    }
-
-
     const filteredAppointments = appointments.filter(appointment =>
         (appointment.workshops.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             appointment.car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
