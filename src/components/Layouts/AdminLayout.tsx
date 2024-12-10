@@ -9,6 +9,7 @@ import Navbarr from "../Navbarr";
 import HeaderBack from "../HeaderBack";
 import AdminSidebar from "../Sidebar/AdminSidebar";
 
+
 export default function AdminDefaultLayout({
   children,
 }: {

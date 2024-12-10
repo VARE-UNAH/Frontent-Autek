@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React from 'react';
 import Image from 'next/image';
 import { Card, CardHeader } from '@nextui-org/react';
@@ -17,37 +17,38 @@ const TallerCard: React.FC<CardProps> = ({
     location,
     imageUrl,
     linkUrl,
-    rating
+    rating,
 }) => {
     return (
         <Link href={linkUrl} className="block">
-            {/* Todo el contenedor es un enlace válido */}
-            <div className="mb-3">
-                <div className="rounded-t-lg rounded-b-none">
-                    <div style={{ width: "100%", height: "160px", overflow: "hidden" }}>
-                        <Image
-                            src={imageUrl} // Asegúrate de que `imageUrl` sea dinámico
-                            alt="profile cover"
-                            className="w-full h-full rounded-b-none rounded-t-lg object-cover object-center shadow-none"
-                            width={970}
-                            height={120}
-                        />
-                    </div>
+            <div className="mb-3 max-w-xs mx-auto sm:max-w-sm">
+                {/* Image Section */}
+                <div className="rounded-t-lg overflow-hidden">
+                    <Image
+                        src={imageUrl}
+                        alt={`${taller_name} cover`}
+                        className="w-full h-[160px] sm:h-[200px] object-cover"
+                        width={970}
+                        height={160}
+                    />
                 </div>
-                <Card className="py-4 rounded-t-none rounded-b-lg shadow-none">
-                    <CardHeader className="pb-0 pt-0 px-4 flex-col items-start">
+
+                {/* Card Content */}
+                <Card className="py-4 rounded-t-none rounded-b-lg shadow-md">
+                    <CardHeader className="pb-0 pt-0 px-4 flex flex-col items-start">
+                        {/* Header */}
                         <div className="flex justify-between items-center w-full">
-                            <h4 className="font-bold text-md">{taller_name}</h4>
-                            <div className="text-sm font-medium items-center text-zinc-400">
-                                <div className="flex justify-between items-center w-full">
-                                    <i className="fa-solid fa-star text-orange-500"></i>
-                                    <p className="text-sm font-medium text-black ps-1 pb-0.5">{rating}</p>
-                                </div>
+                            <h4 className="font-bold text-base sm:text-lg">{taller_name}</h4>
+                            <div className="flex items-center text-sm font-medium text-zinc-400">
+                                <i className="fa-solid fa-star text-orange-500"></i>
+                                <p className="text-sm font-medium text-black ps-1 pb-0.5">{rating}</p>
                             </div>
                         </div>
-                        <div className="flex items-center w-full pt-2 pb-1">
-                            <i className="fa-solid text-default-500 fa-location-dot pe-1"></i>
-                            <p className="text-sm text-default-500 ">{location}</p>
+
+                        {/* Location */}
+                        <div className="flex items-center w-full pt-2 pb-1 text-sm text-gray-500">
+                            <i className="fa-solid fa-location-dot pe-1 text-default-500"></i>
+                            <p className="truncate">{location}</p>
                         </div>
                     </CardHeader>
                 </Card>
