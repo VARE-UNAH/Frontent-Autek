@@ -1,66 +1,78 @@
 'use client'
-import Link from "next/link";
-import Vehiculos from "@/components/Vehiculos";
-import ProgressVehicle from "@/components/ProgressVehicle";
-import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import { useValidateToken } from "@/services/user/authService";
-import { toast } from "sonner";
-import Loader from "@/components/common/Loader";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import AdminDefaultLayout from "@/components/Layouts/AdminLayout";
 import TallerCardContainer from "@/components/Dashboard/TallerCardContainer";
+import Loader from "@/components/common/Loader";
+import { toast } from "sonner";
 
-const sampleCards = [
-    {
-        taller_name: 'Taller A',
-        location: 'El pedregal',
-        imageUrl: '/images/taller-a.jpg',
-        linkUrl: '/taller-a',
-        rating: 4.5,
-    },
-    {
-        taller_name: 'Taller B',
-        location: 'Kennedy',
-        imageUrl: '/images/taller-b.jpg',
-        linkUrl: '/taller-b',
-        rating: 4.2,
-    },
-    {
-        taller_name: 'Taller C',
-        location: 'Valimos',
-        imageUrl: '/images/taller-c.jpg',
-        linkUrl: '/taller-c',
-        rating: 4.8,
-    },
-    {
-        taller_name: 'Taller D',
-        location: 'Tuani',
-        imageUrl: '/images/taller-d.jpg',
-        linkUrl: '/taller-d',
-        rating: 4.6,
-    },
-];
+
+export interface Address {
+    id: number;
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+}
+interface Workshop {
+  id: number;
+  name: string;
+  phone: number;
+  address: Address;
+  rating: number;
+}
 
 const Home = () => {
+  const [workshops, setWorkshops] = useState<Workshop[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-    /* useValidateToken();
-    const isValidated = useValidateToken(); // Hook personalizado
+  useEffect(() => {
+    const fetchWorkshops = async () => {
+        try {
+          const token = localStorage.getItem('accessToken'); // Retrieve the token from localStorage
+          if (!token) {
+            throw new Error('No hay token');
+          }
+      
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/workshop/show/all`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`, // Add the bearer token to the Authorization header
+              'Content-Type': 'application/json', // Set the content type
+            },
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to fetch workshops');
+          }
+      
+          const data = await response.json();
+          setWorkshops(data);
+        } catch (error) {
+          console.error('Error fetching workshops:', error);
+          toast.error('Failed to load workshops. Please try again later.');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
 
-    if (!isValidated) {
-        // Mientras se valida, muestra un indicador de carga
-        return <div className="flex items-center justify-center h-screen">
-            <Loader /> {/* Muestra el componente Loader mientras valida }
+    fetchWorkshops();
+  }, []);
+
+  return (
+    <AdminDefaultLayout>
+      <h1 className="text-3xl font-bold text-black pb-2">Talleres</h1>
+      {isLoading ? (
+        <div className="flex items-center justify-center h-64">
+          <Loader />
         </div>
-    } 
-    */
-
-    return (
-        <AdminDefaultLayout>
-            <h1 className="text-3xl font-bold text-black pb-2">Talleres</h1>
-            <TallerCardContainer cards={sampleCards}></TallerCardContainer>
-             
-        </AdminDefaultLayout>
-    );
+      ) : (
+        <TallerCardContainer cards={workshops} />
+      )}
+    </AdminDefaultLayout>
+  );
 };
 
 export default Home;
+

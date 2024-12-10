@@ -3,22 +3,6 @@ import Link from "next/link";
 import Vehiculos from "@/components/Vehiculos";
 import ProgressVehicle from "@/components/ProgressVehicle";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-<<<<<<< HEAD
-import { fetchUserProfile } from "@/services/user/userService";
-
-
-
-const Home = () => {
-    const userProfile = fetchUserProfile();
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
-
-    const items = [
-        { icon: 'fa-calendar-days', title: 'Citas', description: 'Programación de citas según tu conveniencia y disponibilidad' },
-        { icon: 'fa-dollar-sign', title: 'Presupuestos', description: 'Aprobación de presupuestos en línea para el mantenimiento de tu auto' },
-        { icon: 'fa-clock', title: 'Seguimiento', description: 'Seguimiento en tiempo real del progreso de tu vehículo' },
-        { icon: 'fa-credit-card', title: 'Pagos en línea', description: 'Paga de forma segura las facturas de tu mantenimiento' },
-    ];
-=======
 import { useValidateToken } from "@/services/user/authService";
 import { toast } from "sonner";
 import Loader from "@/components/common/Loader";
@@ -34,7 +18,6 @@ const Home = () => {
             <Loader /> {/* Muestra el componente Loader mientras valida */}
         </div>
     }
->>>>>>> branch-hector
 
     return (
         <DefaultLayout>

@@ -1,13 +1,12 @@
 'use client';
 import React from 'react';
 import TallerCard from '../Cards/TallerCard';
+import { Address } from '@/app/admin/talleres/page';
 
 type TallerCardContainerProps = {
     cards: {
-        taller_name: string;
-        location: string;
-        imageUrl: string;
-        linkUrl: string;
+        name: string;
+        address: Address;
         rating: number;
     }[];
 };
@@ -18,10 +17,10 @@ const TallerCardContainer: React.FC<TallerCardContainerProps> = ({ cards }) => {
             {cards.map((card, index) => (
                 <TallerCard
                     key={index}
-                    taller_name={card.taller_name}
-                    location={card.location}
-                    imageUrl={card.imageUrl}
-                    linkUrl={card.linkUrl}
+                    taller_name={card.name}
+                    location={card.address.address}
+                    imageUrl={"https://cdn.aarp.net/content/dam/aarp/auto/2020/09/1140-auto-shop-esp.jpg"}
+                    linkUrl={"1"}
                     rating={card.rating}
                 />
             ))}
