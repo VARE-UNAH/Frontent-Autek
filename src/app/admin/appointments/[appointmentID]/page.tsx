@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Card, CardBody, CardHeader, Image, Divider, Breadcrumbs, BreadcrumbItem, Chip, Skeleton, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react"
-import { CalendarDays, Clock, MapPin, PenToolIcon as Tool, User, House, HouseIcon, User2Icon, PlusCircle } from 'lucide-react'
+import { CalendarDays, Clock, MapPin, PenToolIcon as Tool, User, House, HouseIcon, User2Icon, PlusCircle, FileClock } from 'lucide-react'
 import DefaultLayoutBack from '@/components/Layouts/DefaultLayoutBack'
 import { Appointment } from '@/types/appointment'
 import { WorkShop } from '@/types/workshop'
@@ -244,8 +244,8 @@ export default function AppointmentDetails(
                         <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>
                         <Card className='rounded-lg'>
                             <CardBody>
-                                <Button className='w-full mt-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mb-2' endContent={<PlusCircle></PlusCircle>}>
-                                    A
+                                <Button className='w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mb-2' startContent={<FileClock></FileClock>}>
+                                    Añadir Historial de Servicios
                                 </Button>
                                 <ScrollShadow className={`w-full ${appointmentData.history.length > 2 ? 'h-80' : 'h-auto'}`}>
                                     <div className="space-y-4">
