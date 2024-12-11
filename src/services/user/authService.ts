@@ -158,11 +158,8 @@ export async function signIn(email: string, password: string) {
   
       const data = await response.json();
   
-      localStorage.setItem("accessToken", data.access_token);
-      localStorage.setItem("refreshToken", data.refresh_token);
-      localStorage.setItem("role", data.role);
   
-      return { success: true, role: data.role };
+      return { success: true, role: data.role, data };
     } catch (error) {
       console.error("Login error:", error);
       return { success: false };

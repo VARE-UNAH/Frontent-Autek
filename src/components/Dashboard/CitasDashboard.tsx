@@ -7,6 +7,7 @@ import { formatDate } from '../../types/utils';
 import { Eye, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusUpdateModal } from '../Dashboard/StatusUpdateModal';
+import Loader from '../common/Loader';
 
 export function AppointmentsDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -64,7 +65,7 @@ export function AppointmentsDashboard() {
   };
   
 
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <Loader></Loader>;
   if (error) return <div>Error: {error}</div>;
 
   return (

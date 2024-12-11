@@ -8,7 +8,7 @@ import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Button } from "@nextui-org/react";
-import { CalendarDays, CarFront, CircleX, UsersRound, Warehouse } from "lucide-react";
+import { CalendarDays, CarFront, CircleX, LayoutDashboard, UsersRound, Warehouse } from "lucide-react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -19,6 +19,13 @@ const menuGroups = [
   {
     name: "MENU",
     menuItems: [
+      {
+        icon: (
+          <LayoutDashboard></LayoutDashboard>
+        ),
+        label: "Inicio",
+        route: "/admin/home",
+      },
       {
         icon: (
           <UsersRound></UsersRound>
@@ -37,8 +44,8 @@ const menuGroups = [
         icon: (
           <Warehouse/>
         ),
-        label: "Talleres",
-        route: "/admin/talleres",
+        label: "Mi Taller",
+        route: "/admin/my-workshop",
       },
       {
         icon: (

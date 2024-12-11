@@ -26,7 +26,7 @@ import {
 import { Select, SelectItem, CardFooter, Divider, Image } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/react";
 import { DatePicker } from "@nextui-org/react";
-import {getCars} from "@/services/car/getService";
+import { getCars } from "@/services/car/getService";
 import { toast } from "sonner";
 import { createAppointment } from "@/services/appointments/appointmentsService";
 import TrLoader from "@/components/common/TrLoader";
@@ -34,6 +34,7 @@ import { fetchWorkShopData } from "@/services/workshops/workshopsService";
 import { useValidateToken } from "@/services/user/authService";
 import Loader from "@/components/common/Loader";
 import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
+import ProtectedLayout from "@/components/Layouts/ProtectedLayout";
 
 type Car = {
     id_car: number;
@@ -253,112 +254,145 @@ function TallerDetails({ params }: {
     }
 
     return (
-        <DefaultLayoutBack>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur" placement="center">
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1 text-black">Confirmar nuevo vehículo</ModalHeader>
-                            <ModalBody>
-                                <p>
-                                    Esta seguro que desea realizar esta cita?
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="danger" onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
-                                    Cancelar
-                                </Button>
-                                <Button color="primary" onPress={onClose} onClick={handleCreateAppointment} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
-                                    Confirmar
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
+        <ProtectedLayout>
+            <DefaultLayoutBack>
+                <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur" placement="center">
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalHeader className="flex flex-col gap-1 text-black">Confirmar nuevo vehículo</ModalHeader>
+                                <ModalBody>
+                                    <p>
+                                        Esta seguro que desea realizar esta cita?
+                                    </p>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="danger" onPress={onClose} className="bg-gradient-to-r from-red to-#f87171 text-white py-4 px-4 rounded-md hover:bg-red transition">
+                                        Cancelar
+                                    </Button>
+                                    <Button color="primary" onPress={onClose} onClick={handleCreateAppointment} className="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition" >
+                                        Confirmar
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
 
-            <div>
-                <Breadcrumbs size="md" variant="bordered" className="pb-2">
-                    <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
-                    <BreadcrumbItem href="/talleres">Talleres</BreadcrumbItem>
-                    {isLoading ? (
-                        <BreadcrumbItem href="/talleres">
-                            <Skeleton className="rounded-md w-20">
-                                Hola
+                <div>
+                    <Breadcrumbs size="md" variant="bordered" className="pb-2">
+                        <BreadcrumbItem href="/user/home">Home</BreadcrumbItem>
+                        <BreadcrumbItem href="/talleres">Talleres</BreadcrumbItem>
+                        {isLoading ? (
+                            <BreadcrumbItem href="/talleres">
+                                <Skeleton className="rounded-md w-20">
+                                    Hola
+                                </Skeleton>
+                            </BreadcrumbItem>
+
+                        ) : (
+                            <BreadcrumbItem href="/talleres">{selectedWorkShop?.name}</BreadcrumbItem>
+                        )}
+                    </Breadcrumbs>
+                </div>
+                <div className="border border-stroke shadow-sm rounded-2xl bg-white">
+                    <Card className="col-span-12 sm:col-span-4 rounded-b-none border-none shadow-none">
+                        {isLoading ? (
+                            <Skeleton>
+                                <CardHeader className="absolute z-10 flex-col !items-start shadow-none bg-black/40 backdrop-blur-sm">
+                                    <h4 className="text-white font-bold text-xl">{selectedWorkShop?.name}</h4>
+                                </CardHeader>
+                                <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
+                                    <Image
+                                        removeWrapper
+                                        alt="Card background"
+                                        className="z-0 w-full object-cover rounded-b-none"
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover", // Asegura que la imagen se ajuste correctamente
+                                        }}
+                                        src="/images/cover/excel.jpeg"
+                                    />
+                                </div>
                             </Skeleton>
-                        </BreadcrumbItem>
 
-                    ) : (
-                            <BreadcrumbItem href="/talleres">{selectedWorkShop?.name}</BreadcrumbItem>   
-                    )}
-                </Breadcrumbs>
-            </div>
-            <div className="border border-stroke shadow-sm rounded-2xl bg-white">
-                <Card className="col-span-12 sm:col-span-4 rounded-b-none border-none shadow-none">
-                    {isLoading ? (
-                        <Skeleton>
-                            <CardHeader className="absolute z-10 flex-col !items-start shadow-none bg-black/40 backdrop-blur-sm">
-                                <h4 className="text-white font-bold text-xl">{selectedWorkShop?.name}</h4>
-                            </CardHeader>
-                            <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
-                                <Image
-                                    removeWrapper
-                                    alt="Card background"
-                                    className="z-0 w-full object-cover rounded-b-none"
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover", // Asegura que la imagen se ajuste correctamente
-                                    }}
-                                    src="/images/cover/excel.jpeg"
-                                />
+                        ) : (
+                            <div>
+                                <CardHeader className="absolute z-10 flex-col !items-start shadow-none bg-black/40 backdrop-blur-sm">
+                                    <h4 className="text-white font-bold text-xl">{selectedWorkShop?.name}</h4>
+                                </CardHeader>
+                                <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
+                                    <Image
+                                        removeWrapper
+                                        alt="Card background"
+                                        className="z-0 w-full object-cover rounded-b-none"
+                                        style={{
+                                            width: "100%",
+                                            height: "100%",
+                                            objectFit: "cover", // Asegura que la imagen se ajuste correctamente
+                                        }}
+                                        src="/images/cover/excel.jpeg"
+                                    />
+                                </div>
                             </div>
-                        </Skeleton>
-
-                    ) : (
-                        <div>
-                            <CardHeader className="absolute z-10 flex-col !items-start shadow-none bg-black/40 backdrop-blur-sm">
-                                <h4 className="text-white font-bold text-xl">{selectedWorkShop?.name}</h4>
-                            </CardHeader>
-                            <div style={{ width: "100%", height: "200px", overflow: "hidden" }}>
-                                <Image
-                                    removeWrapper
-                                    alt="Card background"
-                                    className="z-0 w-full object-cover rounded-b-none"
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover", // Asegura que la imagen se ajuste correctamente
-                                    }}
-                                    src="/images/cover/excel.jpeg"
-                                />
-                            </div>
-                        </div>
-                    )}
+                        )}
 
 
-                </Card>
-                <div className="flex flex-col w-full">
-                    <Card className="max-w-full rounded-t-none">
-                        <CardBody className="overflow-hidden">
-                            <Tabs
-                                fullWidth
-                                size="lg"
-                                aria-label="Tabs form"
-                                selectedKey={selected}
-                                onSelectionChange={(key) => setSelected(key as string)}
-                            >
-                                <Tab key="Detalle" title="Detalle">
-                                    <form className="flex flex-col gap-4">
-                                        <div className="">
-                                            {isLoading ? (
-                                                <div className="">
-                                                    <Skeleton className="rounded-md w-40 h-7 mb-2.5">
+                    </Card>
+                    <div className="flex flex-col w-full">
+                        <Card className="max-w-full rounded-t-none">
+                            <CardBody className="overflow-hidden">
+                                <Tabs
+                                    fullWidth
+                                    size="lg"
+                                    aria-label="Tabs form"
+                                    selectedKey={selected}
+                                    onSelectionChange={(key) => setSelected(key as string)}
+                                >
+                                    <Tab key="Detalle" title="Detalle">
+                                        <form className="flex flex-col gap-4">
+                                            <div className="">
+                                                {isLoading ? (
+                                                    <div className="">
+                                                        <Skeleton className="rounded-md w-40 h-7 mb-2.5">
+                                                            <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                                                Selecciona el Vehículo
+                                                            </label>
+                                                        </Skeleton>
+                                                        <Skeleton className="rounded-lg">
+                                                            <Select
+                                                                isRequired
+                                                                label="Vehiculo"
+                                                                placeholder="Selecciona tu Vehiculo"
+                                                                className="bg-white shadow-none"
+                                                                selectionMode="single"
+                                                                items={cars}
+                                                                variant="bordered"
+                                                                color="primary"
+                                                                selectedKeys={selectedCarKey}
+                                                                onSelectionChange={handleCarSelection}
+                                                                classNames={{
+                                                                    trigger: "shadow-none border border-1 rounded-lg",
+                                                                }}
+                                                            >
+                                                                {cars.map((car) => (
+                                                                    <SelectItem key={car.id_car} textValue={car.brand.name && car.model.name}>
+                                                                        <div className="flex gap-2 items-center">
+                                                                            <div className="flex flex-col">
+                                                                                <span className="text-small">{car.brand.name} {car.model.name} {car.year}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </Select>
+                                                        </Skeleton>
+                                                    </div>
+                                                ) : (
+                                                    <div className="">
                                                         <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
                                                             Selecciona el Vehículo
                                                         </label>
-                                                    </Skeleton>
-                                                    <Skeleton className="rounded-lg">
                                                         <Select
                                                             isRequired
                                                             label="Vehiculo"
@@ -384,188 +418,157 @@ function TallerDetails({ params }: {
                                                                 </SelectItem>
                                                             ))}
                                                         </Select>
-                                                    </Skeleton>
-                                                </div>
-                                            ) : (
-                                                <div className="">
-                                                    <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                                        Selecciona el Vehículo
-                                                    </label>
-                                                    <Select
-                                                        isRequired
-                                                        label="Vehiculo"
-                                                        placeholder="Selecciona tu Vehiculo"
-                                                        className="bg-white shadow-none"
-                                                        selectionMode="single"
-                                                        items={cars}
-                                                        variant="bordered"
-                                                        color="primary"
-                                                        selectedKeys={selectedCarKey}
-                                                        onSelectionChange={handleCarSelection}
-                                                        classNames={{
-                                                            trigger: "shadow-none border border-1 rounded-lg",
-                                                        }}
-                                                    >
-                                                        {cars.map((car) => (
-                                                            <SelectItem key={car.id_car} textValue={car.brand.name && car.model.name}>
-                                                                <div className="flex gap-2 items-center">
-                                                                    <div className="flex flex-col">
-                                                                        <span className="text-small">{car.brand.name} {car.model.name} {car.year}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </SelectItem>
-                                                        ))}
-                                                    </Select>
-                                                </div>
+                                                    </div>
+                                                )}
+
+                                            </div>
+                                            {isSelected && (
+                                                <Card className="max-w-full shadow-none border-stroke rounded-lg">
+                                                    <CardHeader className="flex gap-3">
+                                                        <Image
+                                                            src="/images/cars/toyota.png"
+                                                            width={64}
+                                                            height={48}
+                                                            className="rounded-lg"
+                                                            alt="un carro"
+                                                        />
+                                                        <div className="flex flex-col">
+                                                            <p className="text-md text-black uppercase font-bold">{selectedCar?.brand.name}</p>
+                                                            <p className="text-small text-default-500">{selectedCar?.model.name} {selectedCar?.year}</p>
+                                                        </div>
+                                                    </CardHeader>
+                                                    <Divider />
+                                                    <CardBody>
+                                                        <div>
+                                                            <p className="text-sm">Color: {selectedCar?.color.name}</p>
+                                                            <p className="text-sm">Placa: {selectedCar?.license_plate}</p>
+                                                        </div>
+                                                    </CardBody>
+                                                </Card>
                                             )}
 
-                                        </div>
-                                        {isSelected && (
-                                            <Card className="max-w-full shadow-none border-stroke rounded-lg">
-                                                <CardHeader className="flex gap-3">
-                                                    <Image
-                                                        src="/images/cars/toyota.png"
-                                                        width={64}
-                                                        height={48}
-                                                        className="rounded-lg"
-                                                        alt="un carro"
-                                                    />
-                                                    <div className="flex flex-col">
-                                                        <p className="text-md text-black uppercase font-bold">{selectedCar?.brand.name}</p>
-                                                        <p className="text-small text-default-500">{selectedCar?.model.name} {selectedCar?.year}</p>
+                                            <div className="">
+                                                {isLoading ? (
+                                                    <div className="">
+                                                        <Skeleton className="rounded-md w-40 h-7 mb-2.5">
+                                                            <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                                                Selecciona el Vehículo
+                                                            </label>
+                                                        </Skeleton>
+                                                        <Skeleton className="rounded-lg h-22">
+                                                            <Textarea
+                                                                variant="bordered"
+                                                                color="primary"
+                                                                placeholder="Enter your description"
+                                                                description="Ingrese los detalles de su visita al taller."
+                                                                className="col-span-12 md:col-span-6"
+                                                                classNames={{
+                                                                    inputWrapper: "border rounded-lg"
+                                                                }}
+                                                            />
+                                                        </Skeleton>
                                                     </div>
-                                                </CardHeader>
-                                                <Divider />
-                                                <CardBody>
-                                                    <div>
-                                                        <p className="text-sm">Color: {selectedCar?.color.name}</p>
-                                                        <p className="text-sm">Placa: {selectedCar?.license_plate}</p>
-                                                    </div>
-                                                </CardBody>
-                                            </Card>
-                                        )}
-
-                                        <div className="">
-                                            {isLoading ? (
-                                                <div className="">
-                                                    <Skeleton className="rounded-md w-40 h-7 mb-2.5">
+                                                ) : (
+                                                    <div className="">
                                                         <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                                            Selecciona el Vehículo
+                                                            Detalles de la Cita
                                                         </label>
-                                                    </Skeleton>
-                                                    <Skeleton className="rounded-lg h-22">
                                                         <Textarea
                                                             variant="bordered"
                                                             color="primary"
                                                             placeholder="Enter your description"
                                                             description="Ingrese los detalles de su visita al taller."
                                                             className="col-span-12 md:col-span-6"
+                                                            value={detalleCita}
+                                                            onValueChange={setDetalleCita}
                                                             classNames={{
                                                                 inputWrapper: "border rounded-lg"
                                                             }}
                                                         />
-                                                    </Skeleton>
-                                                </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {isLoading ? (
+                                                <Skeleton className="rounded-lg">
+                                                    <Button fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
+                                                        Siguiente
+                                                    </Button>
+                                                </Skeleton>
                                             ) : (
-                                                <div className="">
-                                                    <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                                        Detalles de la Cita
-                                                    </label>
-                                                    <Textarea
-                                                        variant="bordered"
-                                                        color="primary"
-                                                        placeholder="Enter your description"
-                                                        description="Ingrese los detalles de su visita al taller."
-                                                        className="col-span-12 md:col-span-6"
-                                                        value={detalleCita}
-                                                        onValueChange={setDetalleCita}
-                                                        classNames={{
-                                                            inputWrapper: "border rounded-lg"
-                                                        }}
-                                                    />
+                                                <div className="flex gap-2 justify-end">
+                                                    <Button onClick={handleSelectedTab} fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
+                                                        Siguiente
+                                                    </Button>
                                                 </div>
                                             )}
-                                        </div>
-                                        {isLoading ? (
-                                            <Skeleton className="rounded-lg">
-                                                <Button fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
-                                                    Siguiente
-                                                </Button>
-                                            </Skeleton>
-                                        ) : (
-                                            <div className="flex gap-2 justify-end">
-                                                <Button onClick={handleSelectedTab} fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
-                                                    Siguiente
+                                        </form>
+                                    </Tab>
+                                    <Tab key="Fecha y Ubicación" title="Fecha" isDisabled={!isValidteFirst}>
+                                        <form className="flex flex-col gap-4 h-[300px]">
+                                            <div className="">
+                                                <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                                    Selecciona la fecha de tu visita
+                                                </label>
+                                                <DatePicker color="primary" label={"Fecha de la Cita"} variant="bordered"
+                                                    minValue={today(getLocalTimeZone())}
+                                                    value={selectedDate} // El valor debe ser de tipo DateValue o null
+                                                    onChange={(date) => setSelectedDate(date)} // DateValue o null según lo que devuelva el componente
+                                                    classNames={{
+                                                        inputWrapper: "border rounded-lg"
+
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="">
+                                                <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
+                                                    Selecciona la hora
+                                                </label>
+                                                <Select
+                                                    variant="bordered"
+                                                    color="primary"
+                                                    label="Hora de tu cita"
+                                                    placeholder="Selecciona la hora de tu cita"
+                                                    selectionMode="single"
+                                                    className="max-w-xs"
+                                                    selectedKeys={selectedHourKey}
+                                                    onSelectionChange={handleHourSelection}
+                                                    items={hours}
+                                                >
+
+                                                    {hours.map((hour) => (
+                                                        <SelectItem key={hour.value} textValue={hour.value}>
+                                                            <div className="flex gap-2 items-center">
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-small">{hour.value}</span>
+                                                                </div>
+                                                            </div>
+                                                        </SelectItem>
+                                                    ))}
+                                                </Select>
+
+                                            </div>
+                                            <div className="flex">
+                                                <Button onPress={() => {
+                                                    if (validateForm()) {
+                                                        onOpen(); // Solo abre el modal si la validación es exitosa
+                                                    }
+                                                }} fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
+                                                    Hacer Cita
                                                 </Button>
                                             </div>
-                                        )}
-                                    </form>
-                                </Tab>
-                                <Tab key="Fecha y Ubicación" title="Fecha" isDisabled={!isValidteFirst}>
-                                    <form className="flex flex-col gap-4 h-[300px]">
-                                        <div className="">
-                                            <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                                Selecciona la fecha de tu visita
-                                            </label>
-                                            <DatePicker color="primary" label={"Fecha de la Cita"} variant="bordered"
-                                                minValue={today(getLocalTimeZone())}
-                                                value={selectedDate} // El valor debe ser de tipo DateValue o null
-                                                onChange={(date) => setSelectedDate(date)} // DateValue o null según lo que devuelva el componente
-                                                classNames={{
-                                                    inputWrapper: "border rounded-lg"
+                                        </form>
+                                    </Tab>
 
-                                                }}
-                                            />
-                                        </div>
-                                        <div className="">
-                                            <label className="mb-2.5 block font-bold text-start text-black dark:text-white">
-                                                Selecciona la hora
-                                            </label>
-                                            <Select
-                                                variant="bordered"
-                                                color="primary"
-                                                label="Hora de tu cita"
-                                                placeholder="Selecciona la hora de tu cita"
-                                                selectionMode="single"
-                                                className="max-w-xs"
-                                                selectedKeys={selectedHourKey}
-                                                onSelectionChange={handleHourSelection}
-                                                items={hours}
-                                            >
-
-                                                {hours.map((hour) => (
-                                                    <SelectItem key={hour.value} textValue={hour.value}>
-                                                        <div className="flex gap-2 items-center">
-                                                            <div className="flex flex-col">
-                                                                <span className="text-small">{hour.value}</span>
-                                                            </div>
-                                                        </div>
-                                                    </SelectItem>
-                                                ))}
-                                            </Select>
-
-                                        </div>
-                                        <div className="flex">
-                                            <Button onPress={() => {
-                                                if (validateForm()) {
-                                                    onOpen(); // Solo abre el modal si la validación es exitosa
-                                                }
-                                            }} fullWidth color="primary" className="w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition">
-                                                Hacer Cita
-                                            </Button>
-                                        </div>
-                                    </form>
-                                </Tab>
-
-                            </Tabs>
-                        </CardBody>
-                    </Card>
+                                </Tabs>
+                            </CardBody>
+                        </Card>
+                    </div>
                 </div>
-            </div>
 
 
 
-        </DefaultLayoutBack>
+            </DefaultLayoutBack>
+        </ProtectedLayout>
     );
 };
 

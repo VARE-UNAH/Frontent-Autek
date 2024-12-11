@@ -1,6 +1,7 @@
 'use client'
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
+import ProtectedLayout from "@/components/Layouts/ProtectedLayout";
 import { getCarById } from "@/services/car/getService";
 import { Car } from "@/types/car";
 import { Link, Image, BreadcrumbItem, Breadcrumbs, Card, CardHeader, Divider, CardBody, Accordion, AccordionItem, CardFooter, Button, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu, Table, TableHeader, TableBody, TableRow, TableCell, TableColumn, getKeyValue, Pagination, Skeleton } from "@nextui-org/react";
@@ -217,11 +218,12 @@ function CarDetails(
     }, [carId]);
 
     return (
-        <DefaultLayoutBack>
-            <Breadcrumbs size="md" variant="bordered" className="pb-2">
-                <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
-                <BreadcrumbItem href="/user/cars">Mis Vehiculos</BreadcrumbItem>
-                {isLoading ? (
+        <ProtectedLayout>
+            <DefaultLayoutBack>
+                <Breadcrumbs size="md" variant="bordered" className="pb-2">
+                    <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
+                    <BreadcrumbItem href="/user/cars">Mis Vehiculos</BreadcrumbItem>
+                    {isLoading ? (
                         <BreadcrumbItem href="/talleres">
                             <Skeleton className="rounded-md w-20">
                                 Hola
@@ -229,221 +231,222 @@ function CarDetails(
                         </BreadcrumbItem>
 
                     ) : (
-                <BreadcrumbItem href="/user/car" className="uppercase">{selectedCar?.brand.name} - {selectedCar?.license_plate}</BreadcrumbItem>
+                        <BreadcrumbItem href="/user/car" className="uppercase">{selectedCar?.brand.name} - {selectedCar?.license_plate}</BreadcrumbItem>
                     )}
-            </Breadcrumbs>
-            {isLoading ? (
-                <div>        
-                    <h1 className="text-black/90 text-md font-bold my-2 uppercase"><Skeleton className="w-40 rounded-lg">hola</Skeleton></h1>
-                    <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
-                        <CardHeader className="p-0">
-                            <Skeleton className="w-full">
-                            <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                                <Image
-                                    src={"/images/cars/rav4.png"}
-                                    alt={`/images/cars/toyota.png image`}
-                                    className="w-50 h-auto block z-0"
-                                />
-                            </div>
-                            </Skeleton>
-                        </CardHeader>
-                        <CardBody className="">
-                            <div className="flex items-center justify-between mb-2">
-                                <Skeleton className="h-6 rounded-lg my-2 w-40">
-                                <h2 className="text-black/90 text-md font-bold my-2 w-40">
-                                    Datos del Vehículo
-                                </h2>
+                </Breadcrumbs>
+                {isLoading ? (
+                    <div>
+                        <h1 className="text-black/90 text-md font-bold my-2 uppercase"><Skeleton className="w-40 rounded-lg">hola</Skeleton></h1>
+                        <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
+                            <CardHeader className="p-0">
+                                <Skeleton className="w-full">
+                                    <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                                        <Image
+                                            src={"/images/cars/rav4.png"}
+                                            alt={`/images/cars/toyota.png image`}
+                                            className="w-50 h-auto block z-0"
+                                        />
+                                    </div>
                                 </Skeleton>
-                                <Link
-                                    isExternal
-                                    className="text-slate-500 pe-2 underline"
-                                    href="https://github.com/nextui-org/nextui"
-                                >
-                                    Editar
-                                </Link>
-                            </div>
-
-                            <Table removeWrapper aria-label="Example static collection table">
-                                <TableHeader>
-                                    <TableColumn>MARCA</TableColumn>
-                                    <TableColumn>MODELO</TableColumn>
-                                    <TableColumn>AÑO</TableColumn>
-                                    <TableColumn>PLACA</TableColumn>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow key="1">
-                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
-                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
-                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
-                                        <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-
-                        </CardBody>
-
-                    </Card>
-                </div>
-            ) : (
-                <div>
-                    <h1 className="text-black/90 text-md font-bold my-2 uppercase">{selectedCar?.brand.name} {selectedCar?.model.name} {selectedCar?.year}</h1>
-                    <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
-                        <CardHeader className="p-0">
-                            <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                                <Image
-                                    src={"/images/cars/rav4.png"}
-                                    alt={`/images/cars/toyota.png image`}
-                                    className="w-50 h-auto block z-0"
-                                />
-                            </div>
-                        </CardHeader>
-                        <CardBody className="">
-                            <div className="flex items-center justify-between mb-2">
-                                <h2 className="text-black/90 text-md font-bold my-2 w-40">
-                                    Datos del Vehículo
-                                </h2>
-                                <Link
-                                    isExternal
-                                    className="text-slate-500 pe-2 underline"
-                                    href="https://github.com/nextui-org/nextui"
-                                >
-                                    Editar
-                                </Link>
-                            </div>
-
-                            <Table removeWrapper aria-label="Example static collection table">
-                                <TableHeader>
-                                    <TableColumn>MARCA</TableColumn>
-                                    <TableColumn>MODELO</TableColumn>
-                                    <TableColumn>AÑO</TableColumn>
-                                    <TableColumn>PLACA</TableColumn>
-                                </TableHeader>
-                                <TableBody>
-                                    <TableRow key="1">
-                                        <TableCell className="uppercase">{selectedCar?.brand.name}</TableCell>
-                                        <TableCell className="uppercase">{selectedCar?.model.name}</TableCell>
-                                        <TableCell className="uppercase">{selectedCar?.year}</TableCell>
-                                        <TableCell className="uppercase">{selectedCar?.license_plate}</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
-
-                        </CardBody>
-
-                    </Card>
-                </div>
-            )}
-
-
-            <Card className="w-full rounded-lg mb-3 shadow-sm border-2 border-stroke">
-                <CardHeader className="pb-0">
-                    <h2 className="text-black/90 text-md font-bold my-2 w-40">
-                        Historial de Visitas
-                    </h2>
-                </CardHeader>
-                <CardBody className="mb-0">
-                    <Card className="max-w-full rounded-md shadow-none border-none">
-                        <CardHeader className="flex rounded-md bg-zinc-100">
-                            <div className="flex justify-between items-center w-full">
-                                <h2 className="text-black/90 text-xs font-medium">
-                                    CAMBIO DE ACEITE
-                                </h2>
-                                <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                            </div>
-                        </CardHeader>
-                        <CardBody>
-                            <div className="flex flex-col">
-                                <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                <div className="flex justify-between items-center w-full">
-                                    <p className="font-normal text-sm">Costo: L. 1,000</p>
+                            </CardHeader>
+                            <CardBody className="">
+                                <div className="flex items-center justify-between mb-2">
+                                    <Skeleton className="h-6 rounded-lg my-2 w-40">
+                                        <h2 className="text-black/90 text-md font-bold my-2 w-40">
+                                            Datos del Vehículo
+                                        </h2>
+                                    </Skeleton>
                                     <Link
-                                        className="text-sm font-medium items-center text-zinc-400"
+                                        isExternal
+                                        className="text-slate-500 pe-2 underline"
                                         href="https://github.com/nextui-org/nextui"
                                     >
-                                        <div className="flex justify-between items-center w-full">
-                                            <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                            <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                        </div>
+                                        Editar
                                     </Link>
                                 </div>
-                            </div>
-                        </CardBody>
-                    </Card>
-                    <Divider className="mt-0 mb-2" />
-                    <Card className="max-w-full rounded-md shadow-none border-none">
-                        <CardHeader className="flex rounded-md bg-zinc-100">
-                            <div className="flex justify-between items-center w-full">
-                                <h2 className="text-black/90 text-xs font-medium">
-                                    CAMBIO DE ACEITE
-                                </h2>
-                                <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                            </div>
-                        </CardHeader>
-                        <CardBody>
-                            <div className="flex flex-col">
-                                <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                <div className="flex justify-between items-center w-full">
-                                    <p className="font-normal text-sm">Costo: L. 1,000</p>
-                                    <Link
-                                        className="text-sm font-medium items-center text-zinc-400"
-                                        href="https://github.com/nextui-org/nextui"
-                                    >
-                                        <div className="flex justify-between items-center w-full">
-                                            <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                            <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                        </div>
-                                    </Link>
-                                </div>
-                            </div>
-                        </CardBody>
-                    </Card>
-                    <Divider className="mt-0 mb-2" />
-                    <Card className="max-w-full rounded-md shadow-none border-none">
-                        <CardHeader className="flex rounded-md bg-zinc-100">
-                            <div className="flex justify-between items-center w-full">
-                                <h2 className="text-black/90 text-xs font-medium">
-                                    CAMBIO DE ACEITE
-                                </h2>
-                                <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                            </div>
-                        </CardHeader>
-                        <CardBody>
-                            <div className="flex flex-col">
-                                <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                <div className="flex justify-between items-center w-full">
-                                    <p className="font-normal text-sm">Costo: L. 1,000</p>
-                                    <Link
-                                        className="text-sm font-medium items-center text-zinc-400"
-                                        href="https://github.com/nextui-org/nextui"
-                                    >
-                                        <div className="flex justify-between items-center w-full">
-                                            <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                            <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                        </div>
-                                    </Link>
-                                </div>
-                            </div>
-                        </CardBody>
-                    </Card>
-                    <Divider className="mt-0" />
-                </CardBody>
-                <CardFooter className="pt-0 mt-0">
-                    <div className="w-full flex justify-center mb-2">
-                        <Link
-                            className="w-full"
-                            href="/user/new-car"
-                        >
-                            <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mt-2' >
-                                Ver Todas
-                            </Button>
-                        </Link>
+
+                                <Table removeWrapper aria-label="Example static collection table">
+                                    <TableHeader>
+                                        <TableColumn>MARCA</TableColumn>
+                                        <TableColumn>MODELO</TableColumn>
+                                        <TableColumn>AÑO</TableColumn>
+                                        <TableColumn>PLACA</TableColumn>
+                                    </TableHeader>
+                                    <TableBody>
+                                        <TableRow key="1">
+                                            <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                            <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                            <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                            <TableCell className="uppercase"><Skeleton className="rounded-lg">hola</Skeleton></TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+
+                            </CardBody>
+
+                        </Card>
                     </div>
-                </CardFooter>
-            </Card>
-        </DefaultLayoutBack>
+                ) : (
+                    <div>
+                        <h1 className="text-black/90 text-md font-bold my-2 uppercase">{selectedCar?.brand.name} {selectedCar?.model.name} {selectedCar?.year}</h1>
+                        <Card className="w-full col-span-12 sm:col-span-7 rounded-lg mb-3 shadow-sm border-2 border-stroke">
+                            <CardHeader className="p-0">
+                                <div className="w-full overflow-hidden flex h-40 rounded-b-none items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                                    <Image
+                                        src={"/images/cars/rav4.png"}
+                                        alt={`/images/cars/toyota.png image`}
+                                        className="w-50 h-auto block z-0"
+                                    />
+                                </div>
+                            </CardHeader>
+                            <CardBody className="">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h2 className="text-black/90 text-md font-bold my-2 w-40">
+                                        Datos del Vehículo
+                                    </h2>
+                                    <Link
+                                        isExternal
+                                        className="text-slate-500 pe-2 underline"
+                                        href="https://github.com/nextui-org/nextui"
+                                    >
+                                        Editar
+                                    </Link>
+                                </div>
+
+                                <Table removeWrapper aria-label="Example static collection table">
+                                    <TableHeader>
+                                        <TableColumn>MARCA</TableColumn>
+                                        <TableColumn>MODELO</TableColumn>
+                                        <TableColumn>AÑO</TableColumn>
+                                        <TableColumn>PLACA</TableColumn>
+                                    </TableHeader>
+                                    <TableBody>
+                                        <TableRow key="1">
+                                            <TableCell className="uppercase">{selectedCar?.brand.name}</TableCell>
+                                            <TableCell className="uppercase">{selectedCar?.model.name}</TableCell>
+                                            <TableCell className="uppercase">{selectedCar?.year}</TableCell>
+                                            <TableCell className="uppercase">{selectedCar?.license_plate}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+
+                            </CardBody>
+
+                        </Card>
+                    </div>
+                )}
+
+
+                <Card className="w-full rounded-lg mb-3 shadow-sm border-2 border-stroke">
+                    <CardHeader className="pb-0">
+                        <h2 className="text-black/90 text-md font-bold my-2 w-40">
+                            Historial de Visitas
+                        </h2>
+                    </CardHeader>
+                    <CardBody className="mb-0">
+                        <Card className="max-w-full rounded-md shadow-none border-none">
+                            <CardHeader className="flex rounded-md bg-zinc-100">
+                                <div className="flex justify-between items-center w-full">
+                                    <h2 className="text-black/90 text-xs font-medium">
+                                        CAMBIO DE ACEITE
+                                    </h2>
+                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
+                                </div>
+                            </CardHeader>
+                            <CardBody>
+                                <div className="flex flex-col">
+                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
+                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
+                                    <div className="flex justify-between items-center w-full">
+                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
+                                        <Link
+                                            className="text-sm font-medium items-center text-zinc-400"
+                                            href="https://github.com/nextui-org/nextui"
+                                        >
+                                            <div className="flex justify-between items-center w-full">
+                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
+                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                        <Divider className="mt-0 mb-2" />
+                        <Card className="max-w-full rounded-md shadow-none border-none">
+                            <CardHeader className="flex rounded-md bg-zinc-100">
+                                <div className="flex justify-between items-center w-full">
+                                    <h2 className="text-black/90 text-xs font-medium">
+                                        CAMBIO DE ACEITE
+                                    </h2>
+                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
+                                </div>
+                            </CardHeader>
+                            <CardBody>
+                                <div className="flex flex-col">
+                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
+                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
+                                    <div className="flex justify-between items-center w-full">
+                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
+                                        <Link
+                                            className="text-sm font-medium items-center text-zinc-400"
+                                            href="https://github.com/nextui-org/nextui"
+                                        >
+                                            <div className="flex justify-between items-center w-full">
+                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
+                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                        <Divider className="mt-0 mb-2" />
+                        <Card className="max-w-full rounded-md shadow-none border-none">
+                            <CardHeader className="flex rounded-md bg-zinc-100">
+                                <div className="flex justify-between items-center w-full">
+                                    <h2 className="text-black/90 text-xs font-medium">
+                                        CAMBIO DE ACEITE
+                                    </h2>
+                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
+                                </div>
+                            </CardHeader>
+                            <CardBody>
+                                <div className="flex flex-col">
+                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
+                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
+                                    <div className="flex justify-between items-center w-full">
+                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
+                                        <Link
+                                            className="text-sm font-medium items-center text-zinc-400"
+                                            href="https://github.com/nextui-org/nextui"
+                                        >
+                                            <div className="flex justify-between items-center w-full">
+                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
+                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </CardBody>
+                        </Card>
+                        <Divider className="mt-0" />
+                    </CardBody>
+                    <CardFooter className="pt-0 mt-0">
+                        <div className="w-full flex justify-center mb-2">
+                            <Link
+                                className="w-full"
+                                href="/user/new-car"
+                            >
+                                <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mt-2' >
+                                    Ver Todas
+                                </Button>
+                            </Link>
+                        </div>
+                    </CardFooter>
+                </Card>
+            </DefaultLayoutBack>
+        </ProtectedLayout>
     );
 };
 

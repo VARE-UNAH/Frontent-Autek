@@ -8,14 +8,16 @@ import { toast } from "sonner";
 import Loader from "@/components/common/Loader";
 import { useState } from "react";
 import { Wrench } from "lucide-react";
+import ProtectedLayout from "@/components/Layouts/ProtectedLayout";
 
 const Home = () => {
-    
 
-    return (
-        <DefaultLayout>
-            <h2 className="text-xl font-semibold text-gray-700 mb-1">Inicio</h2>
-            <Link href="/user/talleres" className="w-full">
+
+  return (
+    <ProtectedLayout>
+      <DefaultLayout>
+        <h2 className="text-xl font-semibold text-gray-700 mb-1">Inicio</h2>
+        <Link href="/user/talleres" className="w-full">
           <div
             className="relative bg-cover bg-center p-2 rounded-lg mb-4 h-20 shadow-md w-full"
             style={{
@@ -33,16 +35,17 @@ const Home = () => {
 
           </div>
         </Link>
-            <div className="flex justify-between items-center mb-1 pt-0 mt-4">
-              <h2 className="text-lg font-semibold text-gray-700">Mis Citas Activas</h2>
-            </div>
-            <ProgressVehicle />
-            <div className="flex justify-between items-center mb-1 pt-0 mt-4">
-              <h2 className="text-lg font-semibold text-gray-700">Mis Vehículos</h2>
-            </div>
-            <Vehiculos /> 
-        </DefaultLayout>
-    );
+        <div className="flex justify-between items-center mb-1 pt-0 mt-4">
+          <h2 className="text-lg font-semibold text-gray-700">Mis Citas Activas</h2>
+        </div>
+        <ProgressVehicle />
+        <div className="flex justify-between items-center mb-1 pt-0 mt-4">
+          <h2 className="text-lg font-semibold text-gray-700">Mis Vehículos</h2>
+        </div>
+        <Vehiculos />
+      </DefaultLayout>
+    </ProtectedLayout>
+  );
 };
 
 export default Home;
