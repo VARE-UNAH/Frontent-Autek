@@ -10,6 +10,12 @@ import Loader from "@/components/common/Loader";
 const Talleres = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [workShops, setWorkShops] = useState<WorkShop[]>([]);
+    const [searchTerm, setSearchTerm] = useState('')
+    const [statusFilter, setStatusFilter] = useState<WorkShop | 'Todas'>('Todas')
+
+    const filteredWorkshop = workShops.filter(workshop =>
+        (workshop.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
     useEffect(() => {
         const loadWorkShops = async () => {
             setIsLoading(true);
@@ -71,6 +77,8 @@ const Talleres = () => {
                     variant="bordered"
                     color="primary"
                     radius="lg"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     classNames={{
                         label: "text-black/50 dark:text-white/90",
                         input: [
@@ -167,7 +175,7 @@ const Talleres = () => {
                 <ul>
                     <p className="text-sm text-default-500 pt-2 pb-2">{workShops.length} Talleres</p>
                     <li>
-                        {workShops.map((workShop, index) => (
+                        {filteredWorkshop.map((workShop, index) => (
                             <TallerCard
                                 key={index}
                                 taller_name={workShop.name}

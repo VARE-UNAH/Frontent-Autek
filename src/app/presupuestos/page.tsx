@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Card, CardBody, CardHeader, CardFooter, Divider, Accordion, AccordionItem, Chip, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Textarea } from "@nextui-org/react"
+import ImageUploader from '@/components/ImageUpload/Index'
 
 interface Presupuesto {
   id: number
@@ -62,6 +63,7 @@ export default function PresupuestosCitaMobile({
         </CardHeader>
         <Divider />
         <CardBody>
+          <ImageUploader appointmentId={"1"} serviceId={"2"} ></ImageUploader>
           {presupuestosOrdenados.length > 0 ? (
             <Accordion>
               {presupuestosOrdenados.map((presupuesto) => (

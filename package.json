@@ -6,7 +6,9 @@
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:postgres": "dotenv -e .env.production -- npx prisma migrate deploy",
+    "studio": "dotenv -e .env.production npx prisma studio"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -14,6 +16,7 @@
     "@next/env": "^15.0.3",
     "@next/font": "^14.2.15",
     "@nextui-org/react": "^2.4.8",
+    "@prisma/client": "^6.0.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
@@ -30,6 +33,7 @@
     "jsvectormap": "^1.6.0",
     "lucide-react": "^0.462.0",
     "next": "^14.2.4",
+    "next-cloudinary": "^6.16.0",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18",
@@ -52,6 +56,7 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "prisma": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

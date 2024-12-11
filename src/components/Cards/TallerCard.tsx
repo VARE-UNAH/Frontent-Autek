@@ -21,7 +21,7 @@ const TallerCard: React.FC<CardProps> = ({
 }) => {
     return (
         <Link href={linkUrl} className="block">
-            <div className="mb-3 max-w-xs mx-auto sm:max-w-sm">
+            <div className="mb-3 w-full mx-auto">
                 {/* Image Section */}
                 <div className="rounded-t-lg overflow-hidden">
                     <Image
