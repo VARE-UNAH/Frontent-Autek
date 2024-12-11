@@ -13,6 +13,14 @@ import { VerticalDotsIcon } from "@/components/svg/VerticalDotsIcon";
 const Cars = () => {
     const [cars, setCars] = useState<Car[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('')
+
+    const filteredCars = cars.filter(car =>
+        (car.brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        car.model.name.toLowerCase().includes(searchTerm.toLowerCase())||
+        car.license_plate.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+
     const fetchCars = async () => {
         try {
             const carData = await getCars(); // Llamar al servicio para obtener los vehículos
@@ -81,11 +89,13 @@ const Cars = () => {
             ) : (
                 <div>
                     <Input
-                        label="Buscar"
+                        label="Buscar por placa, modelo, marca"
                         isClearable
                         variant="bordered"
                         color="primary"
                         radius="lg"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         classNames={{
                             label: "text-black/50 dark:text-white/90",
                             input: [
@@ -167,7 +177,7 @@ const Cars = () => {
                 </div>
             ) : (
                 <div>
-                    {cars.map((car, index) => (
+                    {filteredCars.map((car, index) => (
                         <VehicleCard
                             key={index}
                             brand_name={car.brand.name}

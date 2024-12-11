@@ -11,7 +11,6 @@ const Talleres = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [workShops, setWorkShops] = useState<WorkShop[]>([]);
     const [searchTerm, setSearchTerm] = useState('')
-    const [statusFilter, setStatusFilter] = useState<WorkShop | 'Todas'>('Todas')
 
     const filteredWorkshop = workShops.filter(workshop =>
         (workshop.name.toLowerCase().includes(searchTerm.toLowerCase()))
