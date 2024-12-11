@@ -8,6 +8,7 @@ import { Appointment } from '@/types/appointment'
 import { WorkShop } from '@/types/workshop'
 import { getAppointmentById } from '@/services/appointments/appointmentsService'
 import { fetchWorkShopData } from '@/services/workshops/workshopsService'
+import PresupuestosCitaMobile from '@/components/Cards/Presupuestos'
 
 // Mock data for the appointment
 const appointmentData = {
@@ -216,13 +217,13 @@ export default function AppointmentDetails(
                                                 Status:
                                             </Skeleton>
                                             <Skeleton className='rounded-md ms-1'>
-                                            <Chip
-                                                size="sm"
-                                                color="default"
-                                                className="rounded-md ms-1"
-                                            >
-                                                Load
-                                            </Chip>
+                                                <Chip
+                                                    size="sm"
+                                                    color="default"
+                                                    className="rounded-md ms-1"
+                                                >
+                                                    Load
+                                                </Chip>
                                             </Skeleton>
                                         </div>
                                     </div>
@@ -273,7 +274,10 @@ export default function AppointmentDetails(
                         </CardBody>
                     </Card>
                 </section>
-
+                <section>
+                    <h2 className="text-xl font-semibold mb-2">Presupuestos</h2>
+                    <PresupuestosCitaMobile></PresupuestosCitaMobile>
+                </section>
                 <section>
                     <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>
                     <Card className='rounded-lg'>
