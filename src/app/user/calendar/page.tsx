@@ -1,13 +1,16 @@
 'use client'
 import Calendar from "@/components/Calender";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import ProtectedLayout from "@/components/Layouts/ProtectedLayout";
 import { useValidateToken } from "@/services/user/authService";
 
 const CalendarPage = () => {
   return (
-    <DefaultLayout>
-      <Calendar />
-    </DefaultLayout>
+    <ProtectedLayout>
+      <DefaultLayout>
+        <Calendar />
+      </DefaultLayout>
+    </ProtectedLayout>
   );
 };
 

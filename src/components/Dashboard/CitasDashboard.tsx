@@ -95,7 +95,7 @@ export function AppointmentsDashboard() {
             </p>
           </div>
           <div className="flex space-x-2">
-            <Link href={`/admin/citas/${appointment.id_appointment}`}>
+            <Link href={`/admin/appointments/${appointment.id_appointment}`}>
               <Button variant="outline" size="sm">
                 <Eye className="h-4 w-4" />
                 <span className="sr-only">View</span>
