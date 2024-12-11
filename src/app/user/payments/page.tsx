@@ -2,7 +2,8 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Vehiculos from "@/components/Vehiculos"
-import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import { Avatar, BreadcrumbItem, Breadcrumbs, Button, Card, CardBody, CardFooter, CardHeader, Divider, Image, Input, Link, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from "@nextui-org/react";
+import { CreditCard } from "lucide-react";
 
 const cardData = [
     {
@@ -40,10 +41,20 @@ const cardDetails = [
 
 const Cars = () => {
     const latestCards = cardDetails.slice(-3);
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+    const {
+        isOpen: isDeleteModalOpen,
+        onOpen: onOpenDeleteModal,
+        onOpenChange: onDeleteModalChange,
+    } = useDisclosure();
+    const {
+        isOpen: isAddModalOpen,
+        onOpen: onOpenAddModal,
+        onOpenChange: onAddModalChange,
+    } = useDisclosure();
     return (
         <DefaultLayout>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm" placement="center" backdrop="blur" className="rounded-lg">
+            <Modal isOpen={isDeleteModalOpen}
+                onOpenChange={onDeleteModalChange} size="sm" placement="center" backdrop="blur" className="rounded-lg">
                 <ModalContent>
                     {(onClose) => (
                         <>
@@ -82,16 +93,56 @@ const Cars = () => {
 
                         </div>
                         <div className="flex flex-col justify-between h-full">
-                            <button onClick={onOpen}>
-                            <Avatar showFallback src='https://images.unsplash.com/broken' className="bg-black/30 h-6 w-6 self-center" fallback={
-                                <i className="fa-solid fa-trash font-bold text-white"></i>
-                            } />
+                            <button onClick={onOpenDeleteModal}>
+                                <Avatar showFallback src='https://images.unsplash.com/broken' className="bg-black/30 h-6 w-6 self-center" fallback={
+                                    <i className="fa-solid fa-trash font-bold text-white"></i>
+                                } />
                             </button>
                             <i className={`fa-brands ${card.cardType} text-white text-2xl`}></i>
                         </div>
                     </CardHeader>
                 </Card>
             ))}
+            <Button variant="bordered" color="primary" className="w-full flex items-center justify-center rounded-lg" onClick={onOpenAddModal}>
+                <CreditCard className="w-12 h-12 text-primary" />
+                <span>Agregar nuevo método de pago</span>
+            </Button>
+            <Modal isOpen={isAddModalOpen}
+                onOpenChange={onAddModalChange}>
+                <ModalContent>
+                    <form>
+                        <ModalHeader>Agregar nuevo método de pago</ModalHeader>
+                        <ModalBody>
+                            <Input
+                                label="Banco"
+                                placeholder="Nombre del banco"
+                            />
+                            <Input
+                                label="Número de tarjeta"
+                                placeholder="**** **** **** ****"
+                            />
+                            <Select
+                                label="Tipo de tarjeta"
+                            >
+                                <SelectItem key="visa" value="visa">Visa</SelectItem>
+                                <SelectItem key="mastercard" value="mastercard">Mastercard</SelectItem>
+                                <SelectItem key="amex" value="amex">American Express</SelectItem>
+                            </Select>
+                            <Input
+                                label="Titular"
+                                placeholder="Nombre del titular"
+                            />
+                            <Input
+                                label="Fecha de vencimiento"
+                                placeholder="MM/YY"
+                            />
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" type="submit">Agregar tarjeta</Button>
+                        </ModalFooter>
+                    </form>
+                </ModalContent>
+            </Modal>
             <h1 className="text-black/90 text-md font-bold mb-2">Movimientos</h1>
             <Card className="w-full rounded-lg mb-3 shadow-sm border-2 border-stroke">
                 <CardBody className="mb-0">

@@ -45,10 +45,10 @@ const UserAppointmentsCard: React.FC<CardProps> = ({
                             <div className="flex justify-between items-center w-full">
                                 <Chip size="sm" color={
                                     status === "Agendado"
-                                        ? "default"
+                                        ? "primary" 
                                         : status === "En Proceso"
-                                            ? "primary"
-                                            : status === "Completado"
+                                            ? "secondary"
+                                            : status === "Completado" 
                                                 ? "success"
                                                 : status === "Cancelado"
                                                     ? "danger"
