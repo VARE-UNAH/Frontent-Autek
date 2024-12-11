@@ -67,7 +67,7 @@ export const getCarById = async (carId: number): Promise<Car> => {
   }
 };
 
-export const getAppointmentsByCarId = async (carId: number): Promise<Appointment> => {
+export const getAppointmentsByCarId = async (carId: number): Promise<Appointment[]> => {
   try {
     const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
     if (!accessToken) {

@@ -8,7 +8,7 @@ import { Appointment } from '@/types/appointment'
 import { WorkShop } from '@/types/workshop'
 import { getAppointmentById } from '@/services/appointments/appointmentsService'
 import { fetchWorkShopData } from '@/services/workshops/workshopsService'
-import {PresupuestosCitaMobile} from '@/components/Cards/Presupuestos'
+import { PresupuestosCitaMobile } from '@/components/Cards/Presupuestos'
 import ProtectedLayout from '@/components/Layouts/ProtectedLayout'
 
 // Mock data for the appointment
@@ -284,44 +284,48 @@ export default function AppointmentDetails(
                         <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>
                         <Card className='rounded-lg'>
                             <CardBody>
-                                <ScrollShadow className={`w-full ${appointmentData.history.length > 2 ? 'h-80' : 'h-auto'}`}>
+                                <ScrollShadow className={`w-full ${selectedAppointment?.images && selectedAppointment.images.length > 2 ? 'h-80' : 'h-auto'}`}>
                                     <div className="space-y-4">
-                                        {selectedAppointment?.images
-                                            ?.sort((a, b) => {
-                                                const dateA = a.created_at ? new Date(a.created_at) : new Date(0); // Si es null, lo tratamos como una fecha mínima
-                                                const dateB = b.created_at ? new Date(b.created_at) : new Date(0); // Lo mismo para b
-                                                return dateB.getTime() - dateA.getTime(); // Ordena de más reciente a más antiguo
-                                            })
-                                            .map((item) => (
-                                                <div key={item.id_image} className="flex items-start space-x-4">
-                                                    <Image
-                                                        alt={`Service step ${item.id_image}`}
-                                                        className="object-cover rounded-xl"
-                                                        src={item.url}
-                                                        width={100}
-                                                        height={100}
-                                                        onClick={() => {
-                                                            setSelectedHistoryItem(item);
-                                                            onOpen();
-                                                        }}
-                                                    />
-                                                    <div>
-                                                        <p className="font-semibold uppercase">
-                                                            {item.created_at
-                                                                ? new Date(item.created_at).toLocaleString('es-ES', {
-                                                                    year: 'numeric',
-                                                                    month: '2-digit',
-                                                                    day: '2-digit',
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                    hour12: true, // Para formato de 24 horas
-                                                                })
-                                                                : 'Fecha no disponible'}
-                                                        </p>
-                                                        <p className="text-gray-600">{item.description}</p>
+                                        {selectedAppointment?.images && selectedAppointment.images.length < 1 ? (
+                                            <p className="text-center text-gray-500">El historial aún está vacío.</p>
+                                        ) : (
+                                            selectedAppointment?.images
+                                                ?.sort((a, b) => {
+                                                    const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+                                                    const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+                                                    return dateB.getTime() - dateA.getTime();
+                                                })
+                                                .map((item) => (
+                                                    <div key={item.id_image} className="flex items-start space-x-4">
+                                                        <Image
+                                                            alt={`Service step ${item.id_image}`}
+                                                            className="object-cover rounded-xl"
+                                                            src={item.url}
+                                                            width={100}
+                                                            height={100}
+                                                            onClick={() => {
+                                                                setSelectedHistoryItem(item);
+                                                                onOpen();
+                                                            }}
+                                                        />
+                                                        <div>
+                                                            <p className="font-semibold uppercase">
+                                                                {item.created_at
+                                                                    ? new Date(item.created_at).toLocaleString('es-ES', {
+                                                                        year: 'numeric',
+                                                                        month: '2-digit',
+                                                                        day: '2-digit',
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit',
+                                                                        hour12: true,
+                                                                    })
+                                                                    : 'Fecha no disponible'}
+                                                            </p>
+                                                            <p className="text-gray-600">{item.description}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))
+                                        )}
                                     </div>
                                 </ScrollShadow>
                             </CardBody>

@@ -2,7 +2,8 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import DefaultLayoutBack from "@/components/Layouts/DefaultLayoutBack";
 import ProtectedLayout from "@/components/Layouts/ProtectedLayout";
-import { getCarById } from "@/services/car/getService";
+import { getAppointmentsByCarId, getCarById } from "@/services/car/getService";
+import { Appointment } from "@/types/appointment";
 import { Car } from "@/types/car";
 import { Link, Image, BreadcrumbItem, Breadcrumbs, Card, CardHeader, Divider, CardBody, Accordion, AccordionItem, CardFooter, Button, Dropdown, DropdownTrigger, DropdownItem, DropdownMenu, Table, TableHeader, TableBody, TableRow, TableCell, TableColumn, getKeyValue, Pagination, Skeleton } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
@@ -189,6 +190,7 @@ function CarDetails(
     const carId = params.carId;
     const [page, setPage] = React.useState(1);
     const [selectedCar, setSelectedCar] = useState<Car | null>(null);
+    const [appointments, setAppointments] = useState<Appointment[]>([]);
     const rowsPerPage = 4;
     const pages = Math.ceil(users.length / rowsPerPage);
     const items = React.useMemo(() => {
@@ -202,8 +204,10 @@ function CarDetails(
         setIsLoading(true);
         try {
             const carData = await getCarById(carId);
+            const appointmentData = await getAppointmentsByCarId(carId);
             console.log(carData);
             setSelectedCar(carData);
+            setAppointments(appointmentData)
         } catch (error) {
             console.error('Error al cargar los vehículos:', error);
         } finally {
@@ -340,109 +344,59 @@ function CarDetails(
                 <Card className="w-full rounded-lg mb-3 shadow-sm border-2 border-stroke">
                     <CardHeader className="pb-0">
                         <h2 className="text-black/90 text-md font-bold my-2 w-40">
-                            Historial de Visitas
+                            Historial de Citas
                         </h2>
                     </CardHeader>
                     <CardBody className="mb-0">
-                        <Card className="max-w-full rounded-md shadow-none border-none">
-                            <CardHeader className="flex rounded-md bg-zinc-100">
-                                <div className="flex justify-between items-center w-full">
-                                    <h2 className="text-black/90 text-xs font-medium">
-                                        CAMBIO DE ACEITE
-                                    </h2>
-                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="flex flex-col">
-                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                    <div className="flex justify-between items-center w-full">
-                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
-                                        <Link
-                                            className="text-sm font-medium items-center text-zinc-400"
-                                            href="https://github.com/nextui-org/nextui"
-                                        >
+                        {appointments.map((appointment) => (
+                            <React.Fragment key={appointment.id_appointment}>
+                                <Card className="max-w-full rounded-md shadow-none border-none">
+                                    <CardHeader className="flex rounded-md bg-zinc-100">
+                                        <div className="flex justify-between items-center w-full">
+                                            <h2 className="text-black/90 text-xs font-medium">
+                                                {appointment.description}
+                                            </h2>
+                                            <p className="text-xs font-medium text-zinc-400">{appointment.date}</p>
+                                        </div>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <div className="flex flex-col">
+                                            <p className="font-normal text-sm">Taller: {appointment.workshops.name}</p>
+                                            <p className="font-normal text-sm">Estado: {appointment.appointment_status?.name || 'N/A'}</p>
                                             <div className="flex justify-between items-center w-full">
-                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
+                                                <p className="font-normal text-sm">Ciudad: {appointment.workshops.city}</p>
+                                                <Link
+                                                    className="text-sm font-medium items-center text-zinc-400"
+                                                    href={`/appointment/${appointment.id_appointment}`}
+                                                >
+                                                    <div className="flex justify-between items-center w-full">
+                                                        <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
+                                                        <i className="fa-solid fa-angle-right text-center ps-1"></i>
+                                                    </div>
+                                                </Link>
                                             </div>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                        <Divider className="mt-0 mb-2" />
-                        <Card className="max-w-full rounded-md shadow-none border-none">
-                            <CardHeader className="flex rounded-md bg-zinc-100">
-                                <div className="flex justify-between items-center w-full">
-                                    <h2 className="text-black/90 text-xs font-medium">
-                                        CAMBIO DE ACEITE
-                                    </h2>
-                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="flex flex-col">
-                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                    <div className="flex justify-between items-center w-full">
-                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
-                                        <Link
-                                            className="text-sm font-medium items-center text-zinc-400"
-                                            href="https://github.com/nextui-org/nextui"
-                                        >
-                                            <div className="flex justify-between items-center w-full">
-                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                        <Divider className="mt-0 mb-2" />
-                        <Card className="max-w-full rounded-md shadow-none border-none">
-                            <CardHeader className="flex rounded-md bg-zinc-100">
-                                <div className="flex justify-between items-center w-full">
-                                    <h2 className="text-black/90 text-xs font-medium">
-                                        CAMBIO DE ACEITE
-                                    </h2>
-                                    <p className="text-xs font-medium text-zinc-400">23/10/2024</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <div className="flex flex-col">
-                                    <p className="font-normal text-sm">Mecanico: Jeremy Figueroa</p>
-                                    <p className="font-normal text-sm">Kilometraje: 75,000 KM</p>
-                                    <div className="flex justify-between items-center w-full">
-                                        <p className="font-normal text-sm">Costo: L. 1,000</p>
-                                        <Link
-                                            className="text-sm font-medium items-center text-zinc-400"
-                                            href="https://github.com/nextui-org/nextui"
-                                        >
-                                            <div className="flex justify-between items-center w-full">
-                                                <p className="text-sm font-medium text-zinc-400 pb-0.5">Ver Detalles</p>
-                                                <i className="fa-solid fa-angle-right text-center ps-1"></i>
-                                            </div>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                        <Divider className="mt-0" />
+                                        </div>
+                                    </CardBody>
+                                </Card>
+                                <Divider className="mt-0 mb-2" />
+                            </React.Fragment>
+                        ))}
                     </CardBody>
                     <CardFooter className="pt-0 mt-0">
-                        <div className="w-full flex justify-center mb-2">
-                            <Link
-                                className="w-full"
-                                href="/user/new-car"
-                            >
-                                <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mt-2' >
-                                    Ver Todas
-                                </Button>
-                            </Link>
-                        </div>
+                        {appointments.length === 0 ? (
+                            <p className="text-center w-full">No hay citas registradas.</p>
+                        ) : (
+                            <div className="w-full flex justify-center mb-2">
+                                <Link
+                                    className="w-full"
+                                    href={`/user/appointments/${carId}`}
+                                >
+                                    <Button color="primary" className='w-full h-10 bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mt-2'>
+                                        Ver Todas
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
                     </CardFooter>
                 </Card>
             </DefaultLayoutBack>
