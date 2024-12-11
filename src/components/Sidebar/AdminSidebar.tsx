@@ -52,7 +52,7 @@ const menuGroups = [
           <CalendarDays/>
         ),
         label: "Citas",
-        route: "/admin/citas",
+        route: "/admin/appointments",
       },
     ],
   }

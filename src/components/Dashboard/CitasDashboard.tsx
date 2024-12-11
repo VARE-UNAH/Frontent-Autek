@@ -8,6 +8,7 @@ import { Eye, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { StatusUpdateModal } from '../Dashboard/StatusUpdateModal';
 import Loader from '../common/Loader';
+import { toast } from 'sonner';
 
 export function AppointmentsDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -36,7 +37,7 @@ export function AppointmentsDashboard() {
     fetchAppointments();
   }, []);
 
-  const handleStatusUpdate = async (appointmentId: number, newStatus: string) => {
+  const handleStatusUpdate = async (appointmentId: number, newStatus: number) => {
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token from local storage
   
@@ -52,12 +53,15 @@ export function AppointmentsDashboard() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ appointment_status: 1}),
+          body: JSON.stringify({ appointment_status: newStatus}),
         }
       );
   
       if (!response.ok) {
         throw new Error('Failed to update appointment status');
+      }else{
+        toast.success("Estado Actualizado Correctamente");
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error updating appointment status:', error);

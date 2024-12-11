@@ -49,7 +49,7 @@ const Grid: React.FC = () => {
     { color: "#4CAF50", icon: icons.wrench, link: "/admin/talleres", title: "Talleres" },
     { color: "#FF5722", icon: icons.dealership, link: "/admin/presupuesto", title: "Presupuesto" },
     { color: "#2196F3", icon: icons.client, link: "/admin/clientes", title: "Clientes" },
-    { color: "#FFC107", icon: icons.cog, link: "/admin/citas", title: "Citas" },
+    { color: "#FFC107", icon: icons.cog, link: "/admin/appointments", title: "Citas" },
   ];
 
   return (

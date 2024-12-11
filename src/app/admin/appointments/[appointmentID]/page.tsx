@@ -1,16 +1,19 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Card, CardBody, CardHeader, Image, Divider, Breadcrumbs, BreadcrumbItem, Chip, Skeleton, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react"
+import { Card, CardBody, CardHeader, Image, Divider, Breadcrumbs, BreadcrumbItem, Chip, Skeleton, ScrollShadow, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react"
 import { CalendarDays, Clock, MapPin, PenToolIcon as Tool, User, House, HouseIcon, User2Icon, PlusCircle, FileClock } from 'lucide-react'
 import DefaultLayoutBack from '@/components/Layouts/DefaultLayoutBack'
 import { Appointment } from '@/types/appointment'
 import { WorkShop } from '@/types/workshop'
 import { getAppointmentById } from '@/services/appointments/appointmentsService'
 import { fetchWorkShopData } from '@/services/workshops/workshopsService'
-import PresupuestosCitaMobile from '@/components/Cards/Presupuestos'
+import { PresupuestosCitaMobileAdmin } from '@/components/Cards/Presupuestos'
 import ProtectedLayout from '@/components/Layouts/ProtectedLayout'
 import AdminLayoutBack from '@/components/Layouts/AdminLayoutBack'
+import ImageUploader from '@/components/ImageUpload/Index'
+import { addAppointmentImage } from '@/services/appointments/WorkServiceHistory'
+import { toast } from 'sonner'
 
 // Mock data for the appointment
 const appointmentData = {
@@ -42,11 +45,11 @@ const appointmentData = {
 }
 
 type HistoryItem = {
-    id: number;
-    date: string; // Fecha en formato string, puedes usar un tipo de fecha si es necesario
-    time: string; // Hora en formato string
+    id_image: number;
+    id_appointment: number;
+    url: string;
     description: string;
-    image: string; // URL de la imagen
+    created_at: string | null; // 'created_at' can be a string or null
 };
 
 export default function AppointmentDetails(
@@ -63,6 +66,38 @@ export default function AppointmentDetails(
     const rowsPerPage = 4;
     const [isOpen, setIsOpen] = useState(false);
     const [selectedHistoryItem, setSelectedHistoryItem] = useState<HistoryItem | null>(null);
+    const [description, setDescription] = useState("")
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+
+    const handleImageUpload = (url: string) => {
+        setUploadedImageUrl(url);
+        console.log('URL de la imagen subida:', url);
+    };
+
+    const handleSubmit = () => {
+        // Aquí puedes manejar la lógica para enviar la descripción
+        console.log("Descripción enviada:", description)
+        onClose()
+    }
+
+    const handleSubmitWork = async () => {
+        const result = await addAppointmentImage(Number(appointmentId), uploadedImageUrl as string, description);
+
+        // Si el resultado contiene un error, mostramos el toast.error
+        if (result.error) {
+            toast.error(result.error); // Mostrar el error con toast
+        } else {
+            toast.success('Imagen agregada a la cita con éxito.');
+            console.log('Resultado:', result); // Puedes manejar el resultado aquí si es necesario
+            onAddModalChange()
+            fetchData();
+        }
+    };
+    const {
+        isOpen: isAddModalOpen,
+        onOpen: onOpenAddModal,
+        onOpenChange: onAddModalChange,
+    } = useDisclosure();
 
     const onOpen = () => {
         setIsOpen(true);
@@ -238,36 +273,57 @@ export default function AppointmentDetails(
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Presupuestos</h2>
-                        <PresupuestosCitaMobile></PresupuestosCitaMobile>
+                        <PresupuestosCitaMobileAdmin></PresupuestosCitaMobileAdmin>
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>
                         <Card className='rounded-lg'>
                             <CardBody>
-                                <Button className='w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mb-2' startContent={<FileClock></FileClock>}>
+                                <Button className='w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-4 px-4 rounded-md hover:bg-blue-700 transition mb-2' startContent={<FileClock></FileClock>} onClick={onOpenAddModal}>
                                     Añadir Historial de Servicios
                                 </Button>
-                                <ScrollShadow className={`w-full ${appointmentData.history.length > 2 ? 'h-80' : 'h-auto'}`}>
+                                <ScrollShadow className={`w-full ${selectedAppointment?.images && selectedAppointment.images.length > 2 ? 'h-80' : 'h-auto'}`}>
                                     <div className="space-y-4">
-                                        {appointmentData.history.map((item) => (
-                                            <div key={item.id} className="flex items-start space-x-4">
-                                                <Image
-                                                    alt={`Service step ${item.id}`}
-                                                    className="object-cover rounded-xl"
-                                                    src="/images/cars/R.jpg"
-                                                    width={100}
-                                                    height={100}
-                                                    onClick={() => {
-                                                        setSelectedHistoryItem(item);
-                                                        onOpen();
-                                                    }}
-                                                />
-                                                <div>
-                                                    <p className="font-semibold">{item.date} - {item.time}</p>
-                                                    <p className="text-gray-600">{item.description}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        {selectedAppointment?.images && selectedAppointment.images.length < 1 ? (
+                                            <p className="text-center text-gray-500">El historial aún está vacío.</p>
+                                        ) : (
+                                            selectedAppointment?.images
+                                                ?.sort((a, b) => {
+                                                    const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+                                                    const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+                                                    return dateB.getTime() - dateA.getTime();
+                                                })
+                                                .map((item) => (
+                                                    <div key={item.id_image} className="flex items-start space-x-4">
+                                                        <Image
+                                                            alt={`Service step ${item.id_image}`}
+                                                            className="object-cover rounded-xl"
+                                                            src={item.url}
+                                                            width={100}
+                                                            height={100}
+                                                            onClick={() => {
+                                                                setSelectedHistoryItem(item);
+                                                                onOpen();
+                                                            }}
+                                                        />
+                                                        <div>
+                                                            <p className="font-semibold uppercase">
+                                                                {item.created_at
+                                                                    ? new Date(item.created_at).toLocaleString('es-ES', {
+                                                                        year: 'numeric',
+                                                                        month: '2-digit',
+                                                                        day: '2-digit',
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit',
+                                                                        hour12: true,
+                                                                    })
+                                                                    : 'Fecha no disponible'}
+                                                            </p>
+                                                            <p className="text-gray-600">{item.description}</p>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                        )}
                                     </div>
                                 </ScrollShadow>
                             </CardBody>
@@ -283,13 +339,21 @@ export default function AppointmentDetails(
                                     {selectedHistoryItem && (
                                         <>
                                             <Image
-                                                alt={`Service step ${selectedHistoryItem.id}`}
+                                                alt={`Service step ${selectedHistoryItem.id_image}`}
                                                 className="object-cover rounded-xl w-full"
-                                                src="/images/cars/R.jpg"
+                                                src={selectedHistoryItem.url}
                                                 width={400}
                                                 height={400}
                                             />
-                                            <p className="font-semibold mt-4">{selectedHistoryItem.date} - {selectedHistoryItem.time}</p>
+                                            <p className="font-semibold mt-4">{selectedHistoryItem.created_at ? new Date(selectedHistoryItem.created_at).toLocaleString('es-ES', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: true, // Para formato de 24 horas
+                                            })
+                                                : 'Fecha no disponible'}</p>
                                             <p className="text-gray-600">{selectedHistoryItem.description}</p>
                                         </>
                                     )}
@@ -297,6 +361,34 @@ export default function AppointmentDetails(
                                 <ModalFooter>
                                     <Button color="danger" variant="light" onPress={onClose}>
                                         Cerrar
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
+                <Modal isOpen={isAddModalOpen}
+                    onOpenChange={onAddModalChange} placement="top">
+                    <ModalContent>
+                        {(onClose) => (
+                            <>
+                                <ModalHeader className="flex flex-col">Ingresa una descripción</ModalHeader>
+                                <ModalBody className='pt-0 mb-0'>
+                                    <Input
+                                        label="Descripción"
+                                        placeholder="Escribe tu descripción aquí"
+                                        value={description}
+                                        className='mb-0 pb-0'
+                                        onChange={(e) => setDescription(e.target.value)}
+                                    />
+                                    <ImageUploader onImageUpload={handleImageUpload} />
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="danger" variant="light" onPress={onClose} className=''>
+                                        Cancelar
+                                    </Button>
+                                    <Button color="primary" className='"bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105' onClick={handleSubmitWork}>
+                                        Enviar
                                     </Button>
                                 </ModalFooter>
                             </>

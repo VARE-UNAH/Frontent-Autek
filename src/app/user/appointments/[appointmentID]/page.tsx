@@ -8,7 +8,7 @@ import { Appointment } from '@/types/appointment'
 import { WorkShop } from '@/types/workshop'
 import { getAppointmentById } from '@/services/appointments/appointmentsService'
 import { fetchWorkShopData } from '@/services/workshops/workshopsService'
-import PresupuestosCitaMobile from '@/components/Cards/Presupuestos'
+import {PresupuestosCitaMobile} from '@/components/Cards/Presupuestos'
 import ProtectedLayout from '@/components/Layouts/ProtectedLayout'
 
 // Mock data for the appointment
@@ -41,11 +41,11 @@ const appointmentData = {
 }
 
 type HistoryItem = {
-    id: number;
-    date: string; // Fecha en formato string, puedes usar un tipo de fecha si es necesario
-    time: string; // Hora en formato string
+    id_image: number;
+    id_appointment: number;
+    url: string;
     description: string;
-    image: string; // URL de la imagen
+    created_at: string | null; // 'created_at' can be a string or null
 };
 
 export default function AppointmentDetails(
@@ -286,25 +286,42 @@ export default function AppointmentDetails(
                             <CardBody>
                                 <ScrollShadow className={`w-full ${appointmentData.history.length > 2 ? 'h-80' : 'h-auto'}`}>
                                     <div className="space-y-4">
-                                        {appointmentData.history.map((item) => (
-                                            <div key={item.id} className="flex items-start space-x-4">
-                                                <Image
-                                                    alt={`Service step ${item.id}`}
-                                                    className="object-cover rounded-xl"
-                                                    src="/images/cars/R.jpg"
-                                                    width={100}
-                                                    height={100}
-                                                    onClick={() => {
-                                                        setSelectedHistoryItem(item);
-                                                        onOpen();
-                                                    }}
-                                                />
-                                                <div>
-                                                    <p className="font-semibold">{item.date} - {item.time}</p>
-                                                    <p className="text-gray-600">{item.description}</p>
+                                        {selectedAppointment?.images
+                                            ?.sort((a, b) => {
+                                                const dateA = a.created_at ? new Date(a.created_at) : new Date(0); // Si es null, lo tratamos como una fecha mínima
+                                                const dateB = b.created_at ? new Date(b.created_at) : new Date(0); // Lo mismo para b
+                                                return dateB.getTime() - dateA.getTime(); // Ordena de más reciente a más antiguo
+                                            })
+                                            .map((item) => (
+                                                <div key={item.id_image} className="flex items-start space-x-4">
+                                                    <Image
+                                                        alt={`Service step ${item.id_image}`}
+                                                        className="object-cover rounded-xl"
+                                                        src={item.url}
+                                                        width={100}
+                                                        height={100}
+                                                        onClick={() => {
+                                                            setSelectedHistoryItem(item);
+                                                            onOpen();
+                                                        }}
+                                                    />
+                                                    <div>
+                                                        <p className="font-semibold uppercase">
+                                                            {item.created_at
+                                                                ? new Date(item.created_at).toLocaleString('es-ES', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    hour12: true, // Para formato de 24 horas
+                                                                })
+                                                                : 'Fecha no disponible'}
+                                                        </p>
+                                                        <p className="text-gray-600">{item.description}</p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
                                     </div>
                                 </ScrollShadow>
                             </CardBody>
@@ -320,13 +337,21 @@ export default function AppointmentDetails(
                                     {selectedHistoryItem && (
                                         <>
                                             <Image
-                                                alt={`Service step ${selectedHistoryItem.id}`}
+                                                alt={`Service step ${selectedHistoryItem.id_image}`}
                                                 className="object-cover rounded-xl w-full"
-                                                src="/images/cars/R.jpg"
+                                                src={selectedHistoryItem.url}
                                                 width={400}
                                                 height={400}
                                             />
-                                            <p className="font-semibold mt-4">{selectedHistoryItem.date} - {selectedHistoryItem.time}</p>
+                                            <p className="font-semibold mt-4">{selectedHistoryItem.created_at ? new Date(selectedHistoryItem.created_at).toLocaleString('es-ES', {
+                                                year: 'numeric',
+                                                month: '2-digit',
+                                                day: '2-digit',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                                hour12: true, // Para formato de 24 horas
+                                            })
+                                                : 'Fecha no disponible'}</p>
                                             <p className="text-gray-600">{selectedHistoryItem.description}</p>
                                         </>
                                     )}

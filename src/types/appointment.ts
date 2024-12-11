@@ -24,5 +24,12 @@ export interface Appointment {
       id: number;
       name: string;
     } | null; // Optional or nullable
+    images?: {
+      id_image: number;
+      id_appointment: number;
+      url: string;
+      description: string;
+      created_at: string | null; // 'created_at' can be a string or null
+    }[]; //
   }
   

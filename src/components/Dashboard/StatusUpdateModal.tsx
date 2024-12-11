@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 interface StatusUpdateModalProps {
   appointment: Appointment;
   onClose: () => void;
-  onStatusUpdate: (appointmentId: number, newStatus: string) => void;
+  onStatusUpdate: (appointmentId: number, newStatus: number) => void;
 }
 
 export function StatusUpdateModal({
@@ -14,7 +14,7 @@ export function StatusUpdateModal({
   onClose,
   onStatusUpdate,
 }: StatusUpdateModalProps) {
-  const [newStatus, setNewStatus] = useState(appointment.appointment_status?.name || '');
+  const [newStatus, setNewStatus] = useState(appointment.appointment_status?.id);
   const [statuses, setStatuses] = useState<{ id_appointment_status: number; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export function StatusUpdateModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onStatusUpdate(appointment.id_appointment, newStatus);
+    onStatusUpdate(appointment.id_appointment, newStatus as number);
     onClose();
   };
 
@@ -66,14 +66,14 @@ export function StatusUpdateModal({
               <select
                 id="status"
                 value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onChange={(e) => setNewStatus(Number(e.target.value))}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm py-4 px-1 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               >
                 <option value="" disabled>
                   Seleccione un estado
                 </option>
                 {statuses.map((status) => (
-                  <option key={status.id_appointment_status} value={status.name}>
+                  <option key={status.id_appointment_status} value={status.id_appointment_status}>
                     {status.name}
                   </option>
                 ))}

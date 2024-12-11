@@ -1,3 +1,4 @@
+import { Appointment } from '@/types/appointment';
 import axios from 'axios';
 import useSWR from 'swr';
 
@@ -54,6 +55,26 @@ export const getCarById = async (carId: number): Promise<Car> => {
     }
 
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/cars/show/${carId}/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
+      },
+    });
+
+    return response.data; // Retorna los datos de los vehículos
+  } catch (error) {
+    console.error('Error al obtener los vehículos:', error);
+    throw error; // Lanza el error para manejarlo en el componente o en otro lugar
+  }
+};
+
+export const getAppointmentsByCarId = async (carId: number): Promise<Appointment> => {
+  try {
+    const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
+    if (!accessToken) {
+      throw new Error('No access token found');
+    }
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/show/car/${carId}/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
       },
