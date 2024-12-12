@@ -1,28 +1,43 @@
 import React from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Card, CardBody } from "@nextui-org/react";
 
-interface CardProps {
-  color: string;
+interface MenuCardProps {
+  gradient: string;
   icon: React.ReactNode;
   link: string;
   title: string;
 }
 
-const Card: React.FC<CardProps> = ({ color, icon, link, title }) => {
+const MenuCard: React.FC<MenuCardProps> = ({ gradient, icon, link, title }) => {
   return (
-    <div
-      className={`rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-white`}
-      style={{ backgroundColor: color }}
-    >
-      <div className="mb-4 w-12 h-12">{icon}</div>
-      
-      <a
-        href={link}
-        className="mt-2 text-sm underline text-white hover:text-gray-200"
+    <Link href={link} className="block w-full h-full">
+      <motion.div
+        whileHover={{ scale: 1.05, rotate: 1 }}
+        whileTap={{ scale: 0.95 }}
+        className="h-full"
       >
-      <h2 className="text-lg font-bold mb-2">{title}</h2>
-      </a>
-    </div>
+        <Card className="overflow-hidden h-full shadow-lg">
+          <CardBody className="p-0">
+            <div
+              className="relative p-6 flex flex-col items-center justify-center h-full bg-opacity-90 backdrop-blur-sm"
+              style={{
+                background: `linear-gradient(135deg, ${gradient})`,
+              }}
+            >
+              <div className="mb-4 w-16 h-16 flex items-center justify-center text-4xl bg-white bg-opacity-50 rounded-full shadow-inner">
+                {icon}
+              </div>
+              <h2 className="text-xl font-bold text-center text-gray-800">{title}</h2>
+              <div className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-300 ease-in-out" />
+            </div>
+          </CardBody>
+        </Card>
+      </motion.div>
+    </Link>
   );
 };
 
-export default Card;
+export default MenuCard;
+

@@ -9,13 +9,28 @@ import { Button } from '@/components/ui/button';
 import { StatusUpdateModal } from '../Dashboard/StatusUpdateModal';
 import Loader from '../common/Loader';
 import { toast } from 'sonner';
-import { Chip, Divider } from '@nextui-org/react';
+import { Chip, Divider, Input, Select, SelectItem } from '@nextui-org/react';
+type AppointmentStatus = 'Agendado' | 'En Proceso' | 'Completado' | 'Cancelado' | 'Solicitud enviada' | 'Nuevo Presupuesto';
 
 export function AppointmentsDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | 'Todas'>('Todas')
+
+  const filteredAppointments = appointments
+  .filter(appointment =>
+    (
+      appointment.workshops?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.car?.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.car?.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.car?.license_plate?.toLowerCase().includes(searchTerm.toLowerCase())
+    ) &&
+    (statusFilter === 'Todas' || appointment.appointment_status?.name === statusFilter)
+  )
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -74,8 +89,55 @@ export function AppointmentsDashboard() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="space-y-4">
-      {appointments.map((appointment) => (
+    <div className="space-y-2">
+      <Input
+        label="Buscar"
+        isClearable
+        variant="bordered"
+        color="primary"
+        radius="lg"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        classNames={{
+          label: "text-black/50 dark:text-white/90",
+          input: [
+            "bg-transparent",
+            "text-black/90 dark:text-white/90",
+            "placeholder:text-default-700/50 dark:placeholder:text-white/60",
+          ],
+          innerWrapper: "bg-transparent",
+          inputWrapper: [
+            "shadow-sm",
+            "bg-white",
+            "rounded-lg",
+            "dark:bg-default/60",
+            "backdrop-blur-xl",
+            "backdrop-saturate-200",
+            "!cursor-text",
+          ],
+        }}
+        placeholder="Buscar por lugar, vehciulo..."
+        startContent={
+          <i className="fa-solid fa-magnifying-glass text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0"></i>
+        }
+      />
+      <Select
+        placeholder="Filtar por Estado"
+        className="mb-2 rounded-lg bg-white"
+        size="md"
+        color="primary"
+        variant="bordered"
+        radius="sm"
+        onChange={(e) => setStatusFilter(e.target.value as AppointmentStatus | 'Todas')}
+      >
+        <SelectItem key="Todas" value="Todas">Todas</SelectItem>
+        <SelectItem key="Solicitud enviada" value="Solicitud enviada">Solicitud enviada</SelectItem>
+        <SelectItem key="Agendado" value="Agendado">Agendado</SelectItem>
+        <SelectItem key="En Proceso" value="En Proceso">En Proceso</SelectItem>
+        <SelectItem key="Completado" value="Completado">Completado</SelectItem>
+        <SelectItem key="Cancelado" value="Cancelado">Cancelado</SelectItem>
+      </Select>
+      {filteredAppointments.map((appointment) => (
         <div
           key={appointment.id_appointment}
           className="border border-stroke shadow-sm rounded-lg p-4 w-full bg-white space-y-2"
@@ -91,16 +153,13 @@ export function AppointmentsDashboard() {
               <strong>User:</strong> {appointment.user.first_name}
             </p>
             <p>
-              <strong>Car:</strong> {`${appointment.car.brand} ${appointment.car.model}`}
-            </p>
-            <p>
-              <strong>Workshop:</strong> {appointment.workshops.name}
+              <strong>Car:</strong> {`${appointment.car.brand} ${appointment.car.model} ${appointment.car.year}`}
             </p>
             <Chip
               size="sm"
               color={appointment.appointment_status?.name ? (
                 appointment.appointment_status?.name === "Agendado"
-                  ? "default"
+                  ? "secondary"
                   : appointment.appointment_status?.name === "En Proceso"
                     ? "primary"
                     : appointment.appointment_status?.name === "Completado"
@@ -113,7 +172,7 @@ export function AppointmentsDashboard() {
                             ? "secondary"
                             : "default" // Color por defecto para otros casos
               ) : "default"} // Utiliza un color por defecto si el estado es nulo o indefinido
-              className="rounded-md"
+              className="rounded-md text-white"
             >
               {appointment.appointment_status?.name ? appointment.appointment_status.name : "Status no disponible"}
             </Chip>

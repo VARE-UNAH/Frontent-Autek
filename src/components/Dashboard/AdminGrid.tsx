@@ -1,6 +1,6 @@
 import React from "react";
 import Card from "../Cards/AdminOptionCard";
-import { Wrench } from "lucide-react";
+import { HelpCircle, Home, Settings, User, Warehouse, Wrench } from "lucide-react";
 
 const Grid: React.FC = () => {
   const icons = {
@@ -39,21 +39,17 @@ const Grid: React.FC = () => {
     ),
   };
 
-  const cardsData = [
-    { color: "#4CAF50", icon: icons.wrench, link: "/admin/my-workshop", title: "Mi Taller" },
-    { color: "#FFC107", icon: icons.cog, link: "/admin/appointments", title: "Citas" },
+  const menuItems = [
+    { gradient: "#2664eb, #c2e9fb", icon: <Home className="text-blue-600" />, link: "/admin/appointments", title: "Citas" },
+    { gradient: "#d4fc79, #96e6a1", icon: <Warehouse className="text-green-600" />, link: "admin/my-workshop", title: "Taller" },
+    { gradient: "#ffecd2, #fcb69f", icon: <Settings className="text-orange-600" />, link: "/settings", title: "Ajustes" },
+    { gradient: "#84fab0, #8fd3f4", icon: <HelpCircle className="text-teal-600" />, link: "/help", title: "Ayuda" },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2">
-      {cardsData.map((card, index) => (
-        <Card
-          key={index}
-          color={card.color}
-          icon={card.icon}
-          link={card.link}
-          title={card.title}
-        />
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {menuItems.map((item, index) => (
+        <Card key={index} {...item} />
       ))}
     </div>
   );
