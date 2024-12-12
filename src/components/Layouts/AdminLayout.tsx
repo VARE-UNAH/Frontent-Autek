@@ -3,7 +3,7 @@ import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Toaster, toast } from 'sonner'
-import Footermenu from "../FooterMenu";
+import { AdminFootermenu, Footermenu } from "../FooterMenu";
 import Footer from "../Footer";
 import Navbarr from "../Navbarr";
 import HeaderBack from "../HeaderBack";
@@ -59,7 +59,7 @@ export default function AdminDefaultLayout({
 
           {/* <!-- ===== Content Area End ===== --> */}
         </div>
-        <Footermenu></Footermenu>
+        <AdminFootermenu></AdminFootermenu>
         {/* <!-- ===== Page Wrapper End ===== --> */}
       </>
     );

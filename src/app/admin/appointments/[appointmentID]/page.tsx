@@ -99,6 +99,8 @@ export default function AppointmentDetails(
         onOpenChange: onAddModalChange,
     } = useDisclosure();
 
+    
+
     const onOpen = () => {
         setIsOpen(true);
     };
@@ -131,9 +133,9 @@ export default function AppointmentDetails(
         <ProtectedLayout>
             <AdminLayoutBack>
                 <Breadcrumbs size="md" variant="bordered" className="pb-2">
-                    <BreadcrumbItem href="/user/home">Inicio</BreadcrumbItem>
-                    <BreadcrumbItem href="/user/appointments">Citas</BreadcrumbItem>
-                    <BreadcrumbItem href="/user/car" className="">Detalles Cita</BreadcrumbItem>
+                    <BreadcrumbItem href="/admin/home">Inicio</BreadcrumbItem>
+                    <BreadcrumbItem href="/admin/appointments">Citas</BreadcrumbItem>
+                    <BreadcrumbItem href={`/admin/appointment/${appointmentId}`} className="">Detalles Cita</BreadcrumbItem>
                 </Breadcrumbs>
                 <div className="container mx-auto space-y-4">
                     <h1 className="text-2xl font-bold mb-2">Detalles Cita</h1>
@@ -148,7 +150,7 @@ export default function AppointmentDetails(
                                                 <div className="w-full flex justify-center items-center">
                                                     <Image
                                                         alt={`${appointmentData.car.make} ${appointmentData.car.model}`}
-                                                        className="object-cover rounded-xl"
+                                                        className="object-cover rounded-xl z-0"
                                                         src="/images/cars/rav4.png"
                                                         width={300}
                                                         height={150}
@@ -273,7 +275,7 @@ export default function AppointmentDetails(
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Presupuestos</h2>
-                        <PresupuestosCitaMobileAdmin></PresupuestosCitaMobileAdmin>
+                        <PresupuestosCitaMobileAdmin appointmentId={appointmentId}></PresupuestosCitaMobileAdmin>
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>
@@ -399,4 +401,5 @@ export default function AppointmentDetails(
         </ProtectedLayout>
     )
 }
+
 

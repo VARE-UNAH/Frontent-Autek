@@ -1,17 +1,11 @@
 import React from "react";
 import Card from "../Cards/AdminOptionCard";
+import { Wrench } from "lucide-react";
 
 const Grid: React.FC = () => {
   const icons = {
     wrench: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        className="w-10 h-10 sm:w-full sm:h-full"
-      >
-        <path d="M22.7 19.2l-3.3-3.3a8.1 8.1 0 0 0-10.6-10.6l1.8 1.8a5.7 5.7 0 0 1 6.8 6.8l1.8 1.8a2 2 0 1 1-2.8 2.8l-1.8-1.8a5.7 5.7 0 0 1-6.8-6.8L4.1 5.7A8.1 8.1 0 0 0 19.2 22.7l3.3-3.3a1 1 0 0 0 0-1.4z" />
-      </svg>
+      <Wrench className="w-10 h-10"></Wrench>
     ),
     dealership: (
       <svg
@@ -46,9 +40,7 @@ const Grid: React.FC = () => {
   };
 
   const cardsData = [
-    { color: "#4CAF50", icon: icons.wrench, link: "/admin/talleres", title: "Talleres" },
-    { color: "#FF5722", icon: icons.dealership, link: "/admin/presupuesto", title: "Presupuesto" },
-    { color: "#2196F3", icon: icons.client, link: "/admin/clientes", title: "Clientes" },
+    { color: "#4CAF50", icon: icons.wrench, link: "/admin/my-workshop", title: "Mi Taller" },
     { color: "#FFC107", icon: icons.cog, link: "/admin/appointments", title: "Citas" },
   ];
 

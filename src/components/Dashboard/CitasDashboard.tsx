@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { StatusUpdateModal } from '../Dashboard/StatusUpdateModal';
 import Loader from '../common/Loader';
 import { toast } from 'sonner';
+import { Chip, Divider } from '@nextui-org/react';
 
 export function AppointmentsDashboard() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -40,11 +41,11 @@ export function AppointmentsDashboard() {
   const handleStatusUpdate = async (appointmentId: number, newStatus: number) => {
     try {
       const token = localStorage.getItem('accessToken'); // Retrieve the token from local storage
-  
+
       if (!token) {
         throw new Error('No hay token');
       }
-  
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/${appointmentId}/status/update/`,
         {
@@ -53,13 +54,13 @@ export function AppointmentsDashboard() {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ appointment_status: newStatus}),
+          body: JSON.stringify({ appointment_status: newStatus }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error('Failed to update appointment status');
-      }else{
+      } else {
         toast.success("Estado Actualizado Correctamente");
         window.location.reload();
       }
@@ -67,23 +68,24 @@ export function AppointmentsDashboard() {
       console.error('Error updating appointment status:', error);
     }
   };
-  
 
-  if (isLoading) return <Loader></Loader>;
+
+  if (isLoading) return <div className='h-screen'><Loader></Loader></div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4">
       {appointments.map((appointment) => (
         <div
           key={appointment.id_appointment}
-          className="border rounded-lg p-4 bg-white shadow-md space-y-2"
+          className="border border-stroke shadow-sm rounded-lg p-4 w-full bg-white space-y-2"
         >
           <div className="flex justify-between items-center">
-                        <h4 className="text-lg font-semibold">ID: {appointment.id_appointment}</h4>
+            <h4 className="text-lg font-semibold">ID: {appointment.id_appointment}</h4>
 
             <span className="text-sm text-gray-500">{formatDate(appointment.date)}</span>
           </div>
+          <Divider></Divider>
           <div className="text-sm text-gray-700">
             <p>
               <strong>User:</strong> {appointment.user.first_name}
@@ -94,13 +96,31 @@ export function AppointmentsDashboard() {
             <p>
               <strong>Workshop:</strong> {appointment.workshops.name}
             </p>
-            <p>
-              <strong>Status:</strong> {appointment.appointment_status?.name || 'No status'}
-            </p>
+            <Chip
+              size="sm"
+              color={appointment.appointment_status?.name ? (
+                appointment.appointment_status?.name === "Agendado"
+                  ? "default"
+                  : appointment.appointment_status?.name === "En Proceso"
+                    ? "primary"
+                    : appointment.appointment_status?.name === "Completado"
+                      ? "success"
+                      : appointment.appointment_status?.name === "Cancelado"
+                        ? "danger"
+                        : appointment.appointment_status?.name === "Solicitud enviada"
+                          ? "warning"
+                          : appointment.appointment_status?.name === "Nuevo Presupuesto"
+                            ? "secondary"
+                            : "default" // Color por defecto para otros casos
+              ) : "default"} // Utiliza un color por defecto si el estado es nulo o indefinido
+              className="rounded-md"
+            >
+              {appointment.appointment_status?.name ? appointment.appointment_status.name : "Status no disponible"}
+            </Chip>
           </div>
           <div className="flex space-x-2">
             <Link href={`/admin/appointments/${appointment.id_appointment}`}>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" color="primary">
                 <Eye className="h-4 w-4" />
                 <span className="sr-only">View</span>
               </Button>

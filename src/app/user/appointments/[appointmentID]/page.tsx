@@ -172,7 +172,7 @@ export default function AppointmentDetails(
                                             <div className="w-full flex justify-center items-center">
                                                 <Image
                                                     alt={`${appointmentData.car.make} ${appointmentData.car.model}`}
-                                                    className="object-cover rounded-xl"
+                                                    className="object-cover rounded-xl z-0"
                                                     src="/images/cars/rav4.png"
                                                     width={300}
                                                     height={150}
@@ -278,7 +278,7 @@ export default function AppointmentDetails(
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Presupuestos</h2>
-                        <PresupuestosCitaMobile></PresupuestosCitaMobile>
+                        <PresupuestosCitaMobile appointmentId={appointmentId}></PresupuestosCitaMobile>
                     </section>
                     <section>
                         <h2 className="text-xl font-semibold mb-2">Historial Servicio</h2>

@@ -16,7 +16,7 @@ const Home = () => {
     return (
         <ProtectedLayout>
             <AdminDefaultLayout>
-                <h1 className="text-3xl font-bold text-black pb-2">Administración</h1>
+            <h1 className="text-2xl font-bold mb-2">Adminstración de tu Taller</h1>
                 <Grid></Grid>
 
             </AdminDefaultLayout>

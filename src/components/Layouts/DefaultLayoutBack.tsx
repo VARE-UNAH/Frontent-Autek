@@ -3,7 +3,7 @@ import React, { useState, ReactNode } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { Toaster, toast } from 'sonner'
-import Footermenu from "../FooterMenu";
+import { Footermenu } from "../FooterMenu";
 import  Footer  from "../Footer";
 import Navbarr from "../Navbarr";
 import HeaderBack from "../HeaderBack";

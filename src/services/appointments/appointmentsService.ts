@@ -1,5 +1,6 @@
 // services/car/carService.ts
 import { Appointment } from "@/types/appointment";
+import { Budget } from "@/types/budget";
 import axios from "axios";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/create/one/`;
@@ -87,6 +88,26 @@ export const getAppointmentById = async (appointmentId: number): Promise<Appoint
         }
 
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/show/${appointmentId}/`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
+            },
+        });
+
+        return response.data; // Retorna los datos de los vehículos
+    } catch (error) {
+        console.error('Error al obtener el appointment:', error);
+        throw error; // Lanza el error para manejarlo en el componente o en otro lugar
+    }
+};
+
+export const getBudgetsByAppointmentId = async (appointmentId: number): Promise<Budget[]> => {
+    try {
+        const accessToken = localStorage.getItem('accessToken'); // Obtener el token del localStorage
+        if (!accessToken) {
+            throw new Error('No access token found');
+        }
+
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/service/appointment/${appointmentId}/budget/show/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`, // Configurar el Bearer token en el header
             },
