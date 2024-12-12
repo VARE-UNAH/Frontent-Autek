@@ -8,7 +8,7 @@ export const Footermenu: React.FC = () => {
     const pathname = usePathname(); // Obtiene la ruta actual
 
     return (
-        <footer className="bg-blue-600 dark:bg-gray-800 fixed bottom-0 left-0 w-full">
+        <footer className="bg-blue-600 dark:bg-gray-800 fixed bottom-0 left-0 w-full z-999999">
             <div className="w-full mx-auto max-w-screen-xl p-4">
                 <ul className="flex justify-center gap-x-16 items-center">
                     <li className="text-center">
@@ -57,7 +57,7 @@ export const AdminFootermenu: React.FC = () => {
     const pathname = usePathname(); // Obtiene la ruta actual
 
     return (
-        <footer className="bg-blue-600 dark:bg-gray-800 fixed bottom-0 left-0 w-full">
+        <footer className="bg-blue-600 dark:bg-gray-800 fixed bottom-0 left-0 w-full z-999999">
             <div className="w-full mx-auto max-w-screen-xl p-4">
                 <ul className="flex justify-center gap-x-16 items-center">
                     <li className="text-center">

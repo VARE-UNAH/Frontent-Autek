@@ -18,7 +18,7 @@ const MenuCard: React.FC<MenuCardProps> = ({ gradient, icon, link, title }) => {
         whileTap={{ scale: 0.95 }}
         className="h-full"
       >
-        <Card className="overflow-hidden h-full shadow-lg">
+        <Card className="overflow-hidden h-full shadow-lg rounded-lg">
           <CardBody className="p-0">
             <div
               className="relative p-6 flex flex-col items-center justify-center h-full bg-opacity-90 backdrop-blur-sm"

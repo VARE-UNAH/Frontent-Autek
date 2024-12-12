@@ -55,6 +55,7 @@ const SignIn = () => {
     <LoginLayout>
       {isLoading && <TrLoader />} {/* Mostrar el loader solo cuando isLoading sea true */}
       <Image
+        removeWrapper
         alt="Relaxing app background"
         className="z-0 w-full h-15 object-cover rounded-none absolute"
         src="https://images.pexels.com/photos/2244746/pexels-photo-2244746.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"

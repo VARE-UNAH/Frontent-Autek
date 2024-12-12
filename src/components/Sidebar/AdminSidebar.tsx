@@ -8,7 +8,7 @@ import SidebarItem from "@/components/Sidebar/SidebarItem";
 import ClickOutside from "@/components/ClickOutside";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { Button } from "@nextui-org/react";
-import { CalendarDays, CarFront, CircleX, LayoutDashboard, UsersRound, Warehouse } from "lucide-react";
+import { CalendarDays, CarFront, CircleHelpIcon, CircleX, Home, LayoutDashboard, Settings, UsersRound, Warehouse } from "lucide-react";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -21,31 +21,17 @@ const menuGroups = [
     menuItems: [
       {
         icon: (
-          <LayoutDashboard></LayoutDashboard>
+          <Home></Home>
         ),
         label: "Inicio",
         route: "/admin/home",
       },
       {
         icon: (
-          <UsersRound></UsersRound>
+          <LayoutDashboard></LayoutDashboard>
         ),
-        label: "Clientes",
-        route: "/admin/clientes",
-      },
-      {
-        icon: (
-          <CarFront/>
-        ),
-        label: "Vehículos",
-        route: "/admin/vehiculos",
-      },
-      {
-        icon: (
-          <Warehouse/>
-        ),
-        label: "Mi Taller",
-        route: "/admin/my-workshop",
+        label: "Dashboard",
+        route: "/admin/dashboard",
       },
       {
         icon: (
@@ -54,8 +40,43 @@ const menuGroups = [
         label: "Citas",
         route: "/admin/appointments",
       },
+      {
+        icon: (
+          <CarFront/>
+        ),
+        label: "Vehículos",
+        route: "/admin/cars",
+      },
+      {
+        icon: (
+          <Warehouse/>
+        ),
+        label: "Mi Taller",
+        route: "/admin/my-workshop",
+      },
     ],
-  }
+  },
+  {
+    name: "OTROS",
+    menuItems: [
+      //CLIENTES
+      {
+        icon: (
+          <Settings></Settings>
+        ),
+        label: "Ajustes",
+        route: "/admin/settings",
+      },
+      //MENU DASHBOARD
+      {
+        icon: (
+          <CircleHelpIcon></CircleHelpIcon>
+        ),
+        label: "Ayuda",
+        route: "/admin/help",
+      },
+    ],
+  },
 ];
 
 

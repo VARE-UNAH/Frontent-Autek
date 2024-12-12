@@ -42,8 +42,8 @@ const Grid: React.FC = () => {
   const menuItems = [
     { gradient: "#2664eb, #c2e9fb", icon: <Home className="text-blue-600" />, link: "/admin/appointments", title: "Citas" },
     { gradient: "#d4fc79, #96e6a1", icon: <Warehouse className="text-green-600" />, link: "admin/my-workshop", title: "Taller" },
-    { gradient: "#ffecd2, #fcb69f", icon: <Settings className="text-orange-600" />, link: "/settings", title: "Ajustes" },
-    { gradient: "#84fab0, #8fd3f4", icon: <HelpCircle className="text-teal-600" />, link: "/help", title: "Ayuda" },
+    { gradient: "#ffecd2, #fcb69f", icon: <Settings className="text-orange-600" />, link: "/admin/settings", title: "Ajustes" },
+    { gradient: "#84fab0, #8fd3f4", icon: <HelpCircle className="text-teal-600" />, link: "/admin/help", title: "Ayuda" },
   ];
 
   return (
