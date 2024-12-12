@@ -259,7 +259,7 @@ export default function AppointmentDetails(
                                                                                 ? "secondary"
                                                                                 : "default" // Color por defecto para otros casos
                                                     ) : "default"} // Utiliza un color por defecto si el estado es nulo o indefinido
-                                                    className="rounded-md ms-1"
+                                                    className="rounded-md ms-1 text-white"
                                                 >
                                                     {selectedAppointment?.appointment_status?.name ? selectedAppointment.appointment_status.name : "Status no disponible"}
                                                 </Chip>

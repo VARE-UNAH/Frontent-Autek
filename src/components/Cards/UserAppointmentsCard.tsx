@@ -57,7 +57,7 @@ const UserAppointmentsCard: React.FC<CardProps> = ({
                                                         : status === "Nuevo Presupuesto"
                                                             ? "secondary"
                                                             : "default" // Color por defecto para otros casos
-                                } className="rounded-md">{status}</Chip>
+                                } className="rounded-md text-white">{status}</Chip>
                                 <Link
                                     className="text-sm font-medium items-center text-zinc-400"
                                     href={linkUrl}

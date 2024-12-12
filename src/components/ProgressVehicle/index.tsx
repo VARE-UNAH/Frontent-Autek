@@ -15,15 +15,15 @@ const LatestCustomers = () => {
     const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
 
     useEffect(() => {
-        // Esta función se ejecuta cuando appointments cambia
-        const filtered = appointments.filter(appointment =>
-            appointment.appointment_status?.name !== 'Cancelado' &&
-            appointment.appointment_status?.name !== 'Completado'
-        );
+        const filtered = appointments
+            .filter(appointment =>
+                appointment.appointment_status?.name !== 'Cancelado' &&
+                appointment.appointment_status?.name !== 'Completado'
+            )
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         setFilteredAppointments(filtered);
         setIsLoading(false);
-
-    }, [appointments]); // Este useEffect se ejecuta cuando appointments cambia
+    }, [appointments]);
     //Funcion obtener appintments usuario
     const fetchAppointmentsUser = async () => {
         setIsLoading(true);
@@ -117,7 +117,7 @@ const LatestCustomers = () => {
                                                     size="sm"
                                                     color={
                                                         appointment.appointment_status?.name === "Agendado"
-                                                            ? "default"
+                                                            ? "secondary"
                                                             : appointment.appointment_status?.name === "En Proceso"
                                                                 ? "primary"
                                                                 : appointment.appointment_status?.name === "Completado"
@@ -130,7 +130,7 @@ const LatestCustomers = () => {
                                                                                 ? "secondary"
                                                                                 : "default" // Color por defecto para otros casos
                                                     }
-                                                    className="rounded-md font-semibold mt-1"
+                                                    className="rounded-md font-semibold mt-1 text-white"
                                                 >
                                                     {appointment.appointment_status?.name ?? "Pendiente"}
                                                 </Chip>
